@@ -42,6 +42,8 @@ nav.tabbar button.on{color:var(--ink);font-weight:700;box-shadow:inset 0 3px 0 v
 .car{border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:14px;font-size:20px;font-weight:800}.car.on{border-color:var(--accent);background:var(--accentsoft)}
 .stepper{display:grid;grid-template-columns:72px 1fr 72px;gap:8px;align-items:center}.stepper .btn{font-size:30px;padding:8px 0}.stepper div{display:flex;align-items:center;justify-content:center;gap:6px;font-size:20px;font-weight:700}.stepper input{width:110px;font-size:30px;font-weight:900;text-align:center;padding:6px}
 .mode-off{display:none!important}
+.tl{display:block;font-size:11px;font-weight:600;opacity:.9;line-height:1.25;margin-top:1px}.kind .tl{font-size:12px}.btn .tl{font-size:12px}.tabbar .tl{font-size:9px;font-weight:500}.hbtn.lang{font-size:12px;width:auto;padding:0 8px;margin-right:6px}
+.steps span .tl{font-size:10px}
 #pracBar{position:sticky;top:0;z-index:30;background:repeating-linear-gradient(45deg,#f4b400 0 14px,#ffd54a 14px 28px);color:#1b1b1b;font-weight:900;display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-size:15px}#pracBar button{border:0;background:#1b1b1b;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700}
 .vrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.vq{border:2px dashed var(--ink);border-radius:10px;padding:10px 12px;font-weight:800;font-family:ui-monospace,Consolas,monospace;font-size:15px;background:var(--surface);color:var(--ink)}.vq.kb{background:#f4b400;color:#1b1b1b;border-style:solid;border-color:#8a6a00}.vq.zn{background:#fff;color:#1f2a36}.vq.op{background:var(--teal);color:#fff}.vq.op2{background:var(--ng);color:#fff}
 #cCoach{border:3px solid var(--accent);background:var(--accentsoft);position:sticky;top:36px;z-index:12;padding:10px 12px;gap:6px;box-shadow:0 6px 14px rgba(0,0,0,.12)}#cCoach h2{font-size:15px;margin:0}.coachx{font-size:17px!important}
@@ -91,7 +93,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .onepage-off .pnav{display:none}
 </style></head><body>
 <div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
-<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span id="whoBadge" class="pill p-warn"></span><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
+<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
  <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
@@ -102,7 +104,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="health" id="health"></div></section>
  <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れる（かんばん・レイアウトのQR）</h2>
   <div class="cam" id="camBox"><video id="vid" playsinline muted></video><div class="frame"></div><div class="msg" id="camMsg">カメラを準備しています…</div></div>
-  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><label class="btn sub" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
+  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><label class="btn sub" id="photoLbl" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
  <section class="card" id="cVirt" data-tabs="scan" hidden><h2>仮のQR（押すと「読んだ」ことになります）</h2>
   <div class="vrow"><span class="note">かんばん</span><button class="vq kb" data-q="23JA-01">23JA-01</button><button class="vq kb" data-q="23JA-02">23JA-02</button><button class="vq kb" data-q="23JA-03">23JA-03</button></div>
   <div class="vrow"><span class="note">区画のQR</span><button class="vq zn" data-q="B-2">B-2</button><button class="vq zn" data-q="C-1">C-1</button><span class="note">操作カード</span><button class="vq op" data-q="入庫">入庫</button><button class="vq op2" data-q="回収">回収</button></div></section>
@@ -12612,6 +12614,32 @@ function kstate(){const S={},m=M();state.recs.forEach(r=>{const p=r.kid.replace(
 function inventory_old(){const L=lastByKid(),inv={};Object.values(L).forEach(r=>{if(r.kind==='入庫'){const p=r.kid.replace(/-\d+$/,'');(inv[p]=inv[p]||[]).push(r);}});return inv;}
 function status(x,n){if(!x.palQty||!x.total)return'枚数未設定';if(n<=0)return'欠品';if(x.rop!=null&&n<=x.rop)return'生産指示';if(x.rop!=null&&n<=x.rop+1)return'もうすぐ';return'';}
 const pillOf=s=>s==='欠品'||s==='生産指示'?'p-ng':s==='もうすぐ'||s==='枚数未設定'?'p-warn':'p-ok';
+/* ---------- 多言語（ボタンに併記） ---------- */
+const TL={
+ '#kLd':['Xếp lên pallet (sau ép)','Muat ke palet (setelah cetak)'],
+ '#kIn':['Nhập kho / chuyển vị trí','Masuk gudang / pindah lokasi'],
+ '#kOut':['Thu hồi kanban (hết hàng)','Ambil kanban (sudah kosong)'],
+ '#goIn':['Xác nhận nhập kho','Konfirmasi masuk gudang'],
+ '#goLoad':['Xác nhận','Konfirmasi'],
+ '#carP':['Pallet','Palet'],'#carC':['Xe đẩy','Troli'],
+ '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
+ '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
+ '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
+ '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
+ '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
+ '#cMap h2':['Chạm vào vị trí đã đặt','Ketuk lokasi tempat menaruh'],
+ '#cNow h2':['Kiểm tra rồi đăng ký','Periksa lalu daftar'],
+ '#cLoad h2':['Chọn loại và số thùng rồi xác nhận','Pilih jenis dan jumlah dus lalu konfirmasi']};
+const TLMODE={'積付':['Xếp lên pallet','Muat ke palet'],'入庫':['Nhập kho','Masuk gudang'],'回収':['Thu hồi kanban','Ambil kanban']};
+const TLSTEP={'かんばん':['Kanban','Kanban'],'置き場所':['Vị trí','Lokasi'],'入庫する':['Nhập kho','Masuk'],'荷姿・箱数':['Loại・số thùng','Jenis・jumlah dus'],'決定':['Xác nhận','Konfirmasi'],'回収箱へ':['Vào hộp thu hồi','Ke kotak kanban'],'':['','']};
+const LANGSETS=[[],['vi'],['id'],['vi','id']];
+function tlLines(arr){const L=state.langs||[];return (L.includes('vi')&&arr[0]?`<span class="tl">${esc(arr[0])}</span>`:'')+(L.includes('id')&&arr[1]?`<span class="tl">${esc(arr[1])}</span>`:'');}
+function applyLang(){Object.entries(TL).forEach(([sel,arr])=>$$(sel).forEach(el=>{if(el.dataset.ja==null)el.dataset.ja=el.innerHTML;el.innerHTML=el.dataset.ja+tlLines(arr);}));
+ const L=state.langs||[];$('#langBtn').textContent=L.length?'日+'+L.map(x=>x==='vi'?'VI':'ID').join('+'):'文/A';}
+$('#langBtn').onclick=()=>{const cur=JSON.stringify(state.langs||[]);let i=LANGSETS.findIndex(x=>JSON.stringify(x)===cur);i=(i+1)%LANGSETS.length;state.langs=LANGSETS[i];save();applyLang();upd();
+ toast(['日本語だけ','日本語＋Tiếng Việt','日本語＋Bahasa Indonesia','日本語＋Tiếng Việt＋Bahasa Indonesia'][i]);};
 /* ---------- scan flow ---------- */
 let palLock=false;
 let mode=state.mode==='積付'?'積付':'入庫',cur={kid:null,loc:null,car:'パレット',boxes:null};
@@ -12619,11 +12647,11 @@ let outTimer=null;
 function setMode(k,silent){mode=k;state.mode=k==='回収'?'入庫':k;save();clearTimeout(outTimer);if(k==='回収')outTimer=setTimeout(()=>{if(mode==='回収'&&!cur.kid){setMode('入庫');say('info','回収のまま1分たったので、入庫に戻しました。');}},60000);cur={kid:null,loc:null,car:'パレット',boxes:null};upd();if(!silent)say('info',k==='入庫'?'かんばんのQRを読んでください。':k==='積付'?'積付：成形したパレット（台車）のかんばんを読んでください。':'回収：空になったパレットのかんばんを読んでください。');}
 $('#kLd').onclick=()=>{for(const k in seen)delete seen[k];setMode('積付');};$('#kIn').onclick=()=>{for(const k in seen)delete seen[k];setMode('入庫');};$('#kOut').onclick=()=>{for(const k in seen)delete seen[k];setMode('回収');};
 function defBoxes(x,car){return car==='台車'?(x?.boxesCart??null):(x?.boxes??null);}
-function upd(){document.body.dataset.mode=mode;$('#modeTtl').textContent='① いまの作業：'+mode+(mode==='積付'?'（成形後）':mode==='入庫'?'（倉庫に置く・移す）':'（空になった）');$('#kLd').classList.toggle('on',mode==='積付');$('#kIn').classList.toggle('on',mode==='入庫');$('#kOut').classList.toggle('on',mode==='回収');
+function upd(){document.body.dataset.mode=mode;$('#modeTtl').innerHTML=esc('① いまの作業：'+mode+(mode==='積付'?'（成形後）':mode==='入庫'?'（倉庫に置く・移す）':'（空になった）'))+tlLines(TLMODE[mode]);$('#kLd').classList.toggle('on',mode==='積付');$('#kIn').classList.toggle('on',mode==='入庫');$('#kOut').classList.toggle('on',mode==='回収');
  $('#cLoad').classList.toggle('mode-off',mode!=='積付');$('#cMap').classList.toggle('mode-off',mode==='積付');$('#cNow').classList.toggle('mode-off',mode==='積付');
  $('#sKid').textContent=cur.kid||'－';$('#sLoc').textContent=mode==='回収'?'（いらない）':(cur.loc||'－');
- const sp=$$('#steps span');const names=mode==='積付'?['かんばん','荷姿・箱数','決定']:mode==='回収'?['かんばん','','回収箱へ']:['かんばん','置き場所','入庫する'];
- sp.forEach((e,i)=>{e.textContent=names[i];e.style.opacity=names[i]?1:.25;});
+ const sp=$$('#steps > span');const names=mode==='積付'?['かんばん','荷姿・箱数','決定']:mode==='回収'?['かんばん','','回収箱へ']:['かんばん','置き場所','入庫する'];
+ sp.forEach((e,i)=>{e.innerHTML=esc(names[i])+(names[i]?tlLines(TLSTEP[names[i]]||['','']):'');e.style.opacity=names[i]?1:.25;});
  const step=mode==='積付'?(!cur.kid?0:!cur.boxes?1:2):mode==='回収'?(cur.kid?2:0):(!cur.kid?0:!cur.loc?1:2);sp.forEach((e,i)=>{e.className=i<step?'done':i===step?'now':'';});
  $('#goIn').disabled=!(mode==='入庫'&&cur.kid&&cur.loc);const last=cur.kid?lastByKid()[cur.kid]:null;$('#quickOut').hidden=!(mode==='入庫'&&last&&last.kind==='入庫');
  // load card
@@ -12902,6 +12930,6 @@ function shareQR(){const url=location.href.split('#')[0].split('?')[0].replace(/
  <p class="note" style="margin:0">記録はそれぞれの端末に別々に残ります。在庫を記録する端末は1台に決めてください。</p><button class="btn" id="shqClose">閉じる</button></div>`;document.body.appendChild(d);d.querySelector('#shqClose').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove();};}
 /* ---------- init ---------- */
 window.addEventListener('storage',e=>{if(e.key!==KEY||!e.newValue)return;try{state=applyLoaded(JSON.parse(e.newValue));refresh();upd();toast('別の画面で変わった内容を読み込みました');}catch(x){}});
-whoUpd();showTab(PRACTICE?'scan':(state.tab||'scan'));upd();if(PRACTICE)setTimeout(coachShow,300);lPrev();if(state.layout)$('#lPaste').value=state.layout.map(r=>r.join('\t')).join('\n');else $('#lPaste').value=state.locs.join('\n');startCam();
+whoUpd();applyLang();showTab(PRACTICE?'scan':(state.tab||'scan'));upd();if(PRACTICE)setTimeout(coachShow,300);lPrev();if(state.layout)$('#lPaste').value=state.layout.map(r=>r.join('\t')).join('\n');else $('#lPaste').value=state.locs.join('\n');startCam();
 if(!state.master.length&&!tourDone().prep){setTimeout(()=>{const t=document.createElement('div');t.id='tip';t.style.left='12px';t.style.right='12px';t.style.bottom='130px';t.innerHTML='はじめに「？」→「準備」のガイドで品番マスタを入れてください。';document.body.appendChild(t);setTimeout(()=>t.remove(),15000);},800);}
 </script></body></html>
