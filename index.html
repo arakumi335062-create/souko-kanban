@@ -18,6 +18,7 @@ main{padding:12px 12px calc(140px + env(safe-area-inset-bottom,0px));max-width:8
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
 .card h2{margin:0;font-size:17px}
 .tab-off,.pg-off{display:none!important}
+.tab-dim{opacity:.4;pointer-events:none}
 nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
 nav.tabbar button{border:0;background:transparent;color:var(--sub);padding:8px 0 10px;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav.tabbar button b{font-size:20px;line-height:1}
@@ -26,6 +27,29 @@ nav.tabbar button.on{color:var(--ink);font-weight:700;box-shadow:inset 0 3px 0 v
 .pnav button{pointer-events:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 14px;color:var(--ink);font-size:14px}
 .big2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kind{border:0;border-radius:12px;padding:12px 8px;font-size:24px;font-weight:900;color:#fff;opacity:.45}
+.kind small{display:block;font-size:13px;font-weight:600;opacity:.9}
+.btn.go{width:100%;font-size:24px;font-weight:900;padding:16px;background:var(--teal)}.btn.go:disabled{opacity:.35}
+.slot3.two{grid-template-columns:1.4fr 1fr}.slot3 .v.big{font-size:26px}
+.map{display:grid;gap:6px;overflow-x:auto}.map .z,.legend .z{border:2px solid var(--line);border-radius:8px;background:var(--surface);min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--ink);padding:2px;user-select:none;-webkit-user-select:none}
+.map .aisle{min-height:14px}
+.nowrow{display:grid;gap:8px}@media(min-width:600px){.nowrow{grid-template-columns:1.6fr 1fr;align-items:stretch}}
+#cCam .cam{height:min(22vh,230px)}
+.map .z b{font-size:12px;font-weight:700;color:var(--sub)}
+.z.has{background:var(--bg)}.z.same{background:var(--accentsoft);border-color:var(--accent)}.z.here{border:3px dashed var(--ng)}.z.sel{background:var(--teal)!important;color:#fff!important;border-color:var(--teal)}.z.sel b{color:#fff}
+.map.off .z{opacity:.55}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--sub)}.legend .lg{display:flex;align-items:center;gap:4px}.legend .z{display:inline-block;width:18px;height:14px;min-height:0;padding:0}
+.big3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.big3 .kind{font-size:22px;padding:10px 4px}.kind.ld{background:#7a5a00}
+.car{border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:14px;font-size:20px;font-weight:800}.car.on{border-color:var(--accent);background:var(--accentsoft)}
+.stepper{display:grid;grid-template-columns:72px 1fr 72px;gap:8px;align-items:center}.stepper .btn{font-size:30px;padding:8px 0}.stepper div{display:flex;align-items:center;justify-content:center;gap:6px;font-size:20px;font-weight:700}.stepper input{width:110px;font-size:30px;font-weight:900;text-align:center;padding:6px}
+.mode-off{display:none!important}
+#pracBar{position:sticky;top:0;z-index:30;background:repeating-linear-gradient(45deg,#f4b400 0 14px,#ffd54a 14px 28px);color:#1b1b1b;font-weight:900;display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-size:15px}#pracBar button{border:0;background:#1b1b1b;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700}
+.vrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.vq{border:2px dashed var(--ink);border-radius:10px;padding:10px 12px;font-weight:800;font-family:ui-monospace,Consolas,monospace;font-size:15px;background:var(--surface);color:var(--ink)}.vq.kb{background:#f4b400;color:#1b1b1b;border-style:solid;border-color:#8a6a00}.vq.zn{background:#fff;color:#1f2a36}.vq.op{background:var(--teal);color:#fff}.vq.op2{background:var(--ng);color:#fff}
+#cCoach{border:3px solid var(--accent);background:var(--accentsoft);position:sticky;top:36px;z-index:12;padding:10px 12px;gap:6px;box-shadow:0 6px 14px rgba(0,0,0,.12)}#cCoach h2{font-size:15px;margin:0}.coachx{font-size:17px!important}
+body.prac #cCam{display:none!important}.cbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.cbar i{display:block;height:100%;background:var(--teal);width:0}.coachx{font-size:18px;font-weight:700;margin:0;line-height:1.5}
+.coach-hl{outline:4px solid var(--ng)!important;outline-offset:3px;border-radius:10px;animation:pulse 1s infinite}@keyframes pulse{50%{outline-color:transparent}}
+.health{font-size:13px;color:var(--sub);display:flex;flex-wrap:wrap;gap:6px 14px}.health b.ng{color:var(--ng)}
+body[data-mode='積付'] header{background:#5c4300}body[data-mode='回収'] header{background:#8e2a20}
+body[data-mode='積付'] #modeTtl{color:#7a5a00}body[data-mode='回収'] #modeTtl{color:var(--ng)}body[data-mode='入庫'] #modeTtl{color:var(--teal)}
 .kind.in{background:var(--teal)}.kind.out{background:var(--ng)}.kind.on{opacity:1;outline:4px solid var(--accent)}
 .steps{display:flex;gap:6px}.steps span{flex:1;text-align:center;font-size:13px;padding:6px 2px;border-radius:8px;background:var(--bg);color:var(--sub)}
 .steps span.now{background:var(--accent);color:#1b1b1b;font-weight:700}.steps span.done{background:var(--oksoft);color:var(--ok)}
@@ -50,6 +74,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .p-ng{background:var(--ngsoft);color:var(--ng)}.p-warn{background:var(--accentsoft);color:#7a5d00}.p-ok{background:var(--oksoft);color:var(--ok)}
 .note{font-size:13px;color:var(--sub)}
 .tw{overflow-x:auto}
+.palbox{max-height:46vh;overflow-y:auto}.palbox th{white-space:nowrap;font-size:12px;position:sticky;top:0;background:var(--surface)}.palbox input{width:64px;font-size:16px;padding:6px;text-align:right}.palbox tr.chg td{background:var(--accentsoft)}
 .strip{position:fixed;left:12px;right:12px;bottom:calc(98px + env(safe-area-inset-bottom,0px));z-index:14;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 12px;font-size:14px;display:flex;justify-content:space-between;gap:8px}
 /* tour */
 #tourHole{position:fixed;z-index:60;border:3px solid var(--accent);border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.42);pointer-events:none;transition:all .25s}
@@ -65,24 +90,40 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 #confirm .in{background:var(--surface);border-radius:14px;padding:18px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
 .onepage-off .pnav{display:none}
 </style></head><body>
+<div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
 <header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span id="whoBadge" class="pill p-warn"></span><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
- <section class="card" id="cKind" data-tabs="scan"><h2>① 入庫か回収か（操作カードを読んでもよい）</h2>
-  <div class="big2"><button class="kind in" id="kIn">入庫</button><button class="kind out" id="kOut">回収</button></div>
-  <div class="steps" id="steps"><span>区分</span><span>かんばん</span><span>置き場所</span><span>登録</span></div></section>
- <section class="card" id="cNow" data-tabs="scan"><h2>② いま読んだもの</h2>
-  <div class="slot3"><div><small>区分</small><span class="v" id="sKind">－</span></div><div><small>かんばん</small><span class="v" id="sKid">－</span></div><div><small>置き場所</small><span class="v" id="sLoc">－</span></div></div>
-  <div class="res info" id="result">入庫か回収を選んでから、かんばんのQRを読んでください。</div>
-  <div class="row"><button class="btn sub" id="clearCur">やり直す</button><button class="btn sub" id="undo">1つ前の登録を取り消す</button></div></section>
- <section class="card" id="cCam" data-tabs="scan"><h2>③ QRを枠に入れる</h2>
+ <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
+ <section class="card" id="cKind" data-tabs="scan"><h2 id="modeTtl">① いまの作業：入庫</h2>
+  <div class="big3"><button class="kind ld" id="kLd">積付<small>成形後・荷姿と箱数</small></button><button class="kind in on" id="kIn">入庫<small>置く・場所を移す</small></button><button class="kind out" id="kOut">回収<small>空になった</small></button></div>
+  <div class="steps" id="steps"><span>かんばん</span><span>置き場所</span><span>入庫する</span></div>
+  <div class="res info" id="result">かんばんのQRを読んでください。</div>
+  <div class="health" id="health"></div></section>
+ <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れる（かんばん・レイアウトのQR）</h2>
   <div class="cam" id="camBox"><video id="vid" playsinline muted></video><div class="frame"></div><div class="msg" id="camMsg">カメラを準備しています…</div></div>
-  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><label class="btn sub" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label></div>
-  <div class="row"><input id="manual" placeholder="スキャナー・手入力（Enterで確定）" style="flex:1;min-width:200px"><button class="btn sub" id="manualGo">確定</button></div></section>
+  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><label class="btn sub" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
+ <section class="card" id="cVirt" data-tabs="scan" hidden><h2>仮のQR（押すと「読んだ」ことになります）</h2>
+  <div class="vrow"><span class="note">かんばん</span><button class="vq kb" data-q="RENSHU-A1-01">RENSHU-A1-01</button><button class="vq kb" data-q="RENSHU-A1-02">RENSHU-A1-02</button><button class="vq kb" data-q="RENSHU-B2-01">RENSHU-B2-01</button></div>
+  <div class="vrow"><span class="note">区画のQR</span><button class="vq zn" data-q="B-2">B-2</button><button class="vq zn" data-q="C-1">C-1</button><span class="note">操作カード</span><button class="vq op" data-q="入庫">入庫</button><button class="vq op2" data-q="回収">回収</button></div></section>
+ <section class="card" id="cLoad" data-tabs="scan"><h2>③ 荷姿と箱数を選んで「決定」</h2>
+  <div class="slot3 two"><div><small>かんばん</small><span class="v" id="lKid">－</span></div><div><small>入数</small><span class="v big" id="lQty">－</span></div></div>
+  <div class="big2"><button class="car" id="carP" data-car="パレット">パレット</button><button class="car" id="carC" data-car="台車">台車</button></div>
+  <div class="stepper"><button class="btn sub" id="bxM">－</button><div><input id="bxN" type="number" inputmode="numeric" min="1"><span>箱</span></div><button class="btn sub" id="bxP">＋</button></div>
+  <p class="note" id="lHint"></p>
+  <button class="btn go" id="goLoad" disabled>決定</button>
+  <div class="row"><button class="btn sub" id="clearLd">やり直す</button><button class="btn sub" id="undoLd">1つ前の登録を取り消す</button></div></section>
+ <section class="card" id="cMap" data-tabs="scan"><h2>③ 置き場所をタップ（またはレイアウトのQRを読む）</h2>
+  <div id="map" class="map"></div>
+  <div class="legend"><span class="lg"><i class="z"></i>空き</span><span class="lg"><i class="z has"></i>パレットあり（数＝枚数）</span><span class="lg"><i class="z same"></i>同じ品番がある</span><span class="lg"><i class="z here"></i>このかんばんが今ある</span><span class="lg"><i class="z sel"></i>選んだ場所</span></div></section>
+ <section class="card" id="cNow" data-tabs="scan"><h2>④ 確かめて登録</h2>
+  <div class="nowrow"><div class="slot3 two"><div><small>かんばん</small><span class="v" id="sKid">－</span></div><div><small>置き場所</small><span class="v big" id="sLoc">－</span></div></div>
+  <button class="btn go" id="goIn" disabled>入庫する</button></div>
+  <div class="row"><button class="btn sub" id="quickOut" hidden>このかんばんを回収する</button><button class="btn sub" id="clearCur">やり直す</button><button class="btn sub" id="undo">1つ前の登録を取り消す</button></div></section>
  <!-- 在庫 -->
  <section class="card" id="cInv" data-tabs="inv"><h2>倉庫の在庫</h2>
   <div class="row"><select id="invM"><option value="">全部の機械</option></select><input id="invQ" placeholder="品番で絞る" style="flex:1;min-width:140px"></div>
-  <div class="tw"><table><thead><tr><th>品番</th><th class="n">枚</th><th class="n">何日分</th><th>状態</th></tr></thead><tbody id="invBody"></tbody></table></div></section>
+  <div class="tw"><table><thead><tr><th>品番</th><th class="n">枚</th><th class="n">個数</th><th class="n">何日分</th><th>状態</th></tr></thead><tbody id="invBody"></tbody></table></div></section>
  <section class="card" id="cFind" data-tabs="inv"><h2>どこにある？（品番で探す）</h2>
   <input id="findQ" placeholder="品番を入れる（一部でもよい）">
   <div id="findOut" class="note">品番を入れると、倉庫にあるパレットと置き場所が出ます。</div></section>
@@ -97,18 +138,29 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cExp" data-tabs="rec"><h2>Excelへ渡す</h2>
   <p>まだExcelに渡していない記録：<b id="unexp">0</b>件</p>
   <div class="row"><button class="btn" id="copyTsv">コピー（Excelに貼る）</button><button class="btn sub" id="dlCsv">CSVで保存</button><button class="btn sub" id="markExp">渡し済みにする</button></div>
+  <div class="row"><button class="btn sub" id="prune">渡し済みの古い記録を整理（90日より前）</button></div>
   <p class="note">Excel「倉庫在庫かんばん_運用版」の「入出庫記録」で、最後の行の次のA列を選んで貼り付けます（日付・時刻・区分・かんばん・置き場所・記入者・メモの順）。貼り付けたら「渡し済みにする」。</p></section>
  <!-- 設定 -->
  <section class="card" id="cWho" data-tabs="set"><h2>記入者</h2><div class="row"><input id="who" placeholder="名前（例：山田）"><button class="btn" id="whoSave">決める</button></div></section>
  <section class="card" id="cMaster" data-tabs="set"><h2>品番マスタを入れる</h2>
   <p class="note">Excelの「品番マスタ」で4行目から最後の行まで、A列〜L列をコピーして貼り付けます（機械・金型・品番・品名・箱入数・月の需要・1日の需要・パレット1枚の箱数・パレット1枚の個数・ロット・発注点・総枚数）。</p>
   <textarea id="mPaste"></textarea><div class="row"><button class="btn" id="mApply">取り込む</button><button class="btn sub" id="demo">練習用のデータを入れる</button><span class="note" id="mInfo"></span></div></section>
- <section class="card" id="cLoc" data-tabs="set"><h2>区画（置き場所）</h2>
-  <p class="note">区画の名前を1行に1つ（Excel「区画マスタ」のA列と同じ）。</p><textarea id="lPaste"></textarea><div class="row"><button class="btn" id="lApply">取り込む</button><span class="note" id="lInfo"></span></div></section>
+ <section class="card" id="cPal" data-tabs="set"><h2>パレット1枚に載る箱の数</h2>
+  <p class="note">箱の大きさで載る数が違うので、品番ごとに決めます。変えると「1枚の個数・発注点・かんばんの総枚数」が自動で計算し直されます。</p>
+  <div class="row"><select id="palM"><option value="">全部の機械</option></select><input id="palQ" placeholder="品番で絞る" style="flex:1;min-width:120px"><label class="note"><input type="checkbox" id="palOnly"> 未設定だけ</label></div>
+  <div class="res info" id="palMsg" hidden></div>
+  <div class="tw palbox"><table><thead><tr><th>品番</th><th class="n">箱入数</th><th class="n">箱数</th><th class="n">台車</th><th class="n">個数</th><th class="n">発注点</th><th class="n">総枚数</th></tr></thead><tbody id="palBody"></tbody></table></div>
+  <details><summary class="note">計算の決まり（Excelと同じ）</summary><div class="row"><label class="note">月の稼働日<input id="pWork" type="number" min="1" style="width:70px"></label><label class="note">安全在庫（日）<input id="pSafe" type="number" min="0" style="width:70px"></label><label class="note">補充日数<input id="pLead" type="number" min="0" style="width:70px"></label><button class="btn sub" id="pSave">決める</button></div>
+  <p class="note">1枚の個数＝箱入数×箱数。発注点＝1日の需要×（補充日数＋安全在庫）÷1枚の個数（切り上げ）。総枚数＝（ロット＋1日の需要×安全在庫）÷1枚の個数（切り上げ）＋発注点。</p></details>
+  <div class="row"><button class="btn sub" id="palCopy">Excelへ（品番マスタH列に貼る）</button></div></section>
+ <section class="card" id="cLoc" data-tabs="set"><h2>区画（倉庫のレイアウト）</h2>
+  <p class="note">Excelのマス目に倉庫の形どおり区画名を書き、その範囲をコピーして貼り付けます。空のマスは通路になります。1列だけ貼れば、区画の一覧として使えます。</p><textarea id="lPaste" placeholder="A-1	A-2		B-1	B-2&#10;A-3	A-4		B-3	B-4"></textarea><div class="row"><button class="btn" id="lApply">取り込む</button><span class="note" id="lInfo"></span></div>
+  <div id="lPrev" class="map off" style="margin-top:6px"></div></section>
  <section class="card" id="cBk" data-tabs="set"><h2>バックアップ</h2>
   <div class="row"><button class="btn" id="bkOut">ファイルに書き出す</button><label class="btn sub">読み込む<input type="file" id="bkIn" accept=".json,application/json" hidden></label></div>
   <div class="row"><button class="btn sub" id="clrRec">記録を全部消す（練習の後に）</button></div>
   <p class="note">毎日夕方に書き出しておくと、タブレットが壊れても戻せます。</p></section>
+ <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
  <section class="card" id="cView" data-tabs="set"><h2>表示</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
@@ -10219,17 +10271,24 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
 /******/ ])["default"];
 });</script>
 <script>
-const KEY='souko-kanban', TKEY='souko-kanban-tours';
+if(!Array.prototype.at)Array.prototype.at=function(i){i=Math.trunc(i)||0;if(i<0)i+=this.length;return this[i];};
+if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(let i=this.length-1;i>=0;i--)if(f(this[i],i,this))return i;return -1;};
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
+let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
+const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
-function applyLoaded(o){const d={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};return Object.assign(d,o||{});}
-try{state=applyLoaded(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
+try{state=applyLoaded(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){state=applyLoaded(null);}
+if(!Array.isArray(state.recs))state.recs=[];if(!Array.isArray(state.master))state.master=[];if(!Array.isArray(state.locs))state.locs=[];
+if(state.mode==='回収')state.mode='入庫';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(e){saveFail();return false;}}
+function saveFail(){const r=document.getElementById('result');if(r){r.className='res ng';r.textContent='保存できませんでした（タブレットの空きがない）。記録 →「渡し済みの古い記録を整理」をしてください。';}alert('保存できませんでした。今の登録は残りません。記録タブで古い記録を整理してください。');}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const num=s=>{const v=parseFloat(String(s??'').replace(/[,，\s]/g,''));return isNaN(v)?null:v;};
 /* ---------- pages ---------- */
-const PAGES={scan:[{n:'読み取り',s:['#cKind','#cCam','#cNow']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
- rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster']},{n:'区画',s:['#cLoc']},{n:'バックアップ',s:['#cBk']},{n:'表示',s:['#cView']}]};
+const PAGES={scan:[{n:'読み取り',s:['#cCoach','#cVirt','#cKind','#cCam','#cLoad','#cMap','#cNow']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
+ rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'バックアップ',s:['#cBk']},{n:'表示',s:['#cView']}]};
 let pgIdx={};
 function showTab(t){state.tab=t;save();$$('[data-tabs]').forEach(el=>el.classList.toggle('tab-off',!el.dataset.tabs.split(' ').includes(t)));
  $$('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderPages();refresh();}
@@ -10247,46 +10306,98 @@ document.addEventListener('touchend',e=>{if(!sx||!state.onePage)return;const dx=
 $$('#tabbar button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
 /* ---------- master helpers ---------- */
 const M=()=>{const m={};state.master.forEach(x=>m[x.p]=x);return m;};
-function lastByKid(){const L={};state.recs.forEach(r=>L[r.kid]=r);return L;}
-function inventory(){const L=lastByKid(),inv={};Object.values(L).forEach(r=>{if(r.kind==='入庫'){const p=r.kid.replace(/-\d+$/,'');(inv[p]=inv[p]||[]).push(r);}});return inv;}
+function lastByKid(){const L={};state.recs.forEach(r=>{if(r.kind!=='積付')L[r.kid]=r;});return L;}
+/* 各かんばんの今の状態（積付＝運ぶ途中／入庫＝倉庫／回収＝なし）と個数 */
+function kstate(){const S={},m=M();state.recs.forEach(r=>{const p=r.kid.replace(/-\d+$/,''),x=m[p],o=S[r.kid];
+ if(r.kind==='積付')S[r.kid]={st:'積付',loc:'',car:r.car,boxes:r.boxes,qty:r.qty,p,r};
+ else if(r.kind==='入庫'){const keep=o&&(o.st==='積付'||o.st==='入庫');S[r.kid]={st:'入庫',loc:r.loc,car:r.car??(keep?o.car:'パレット'),boxes:r.boxes??(keep?o.boxes:(x?.boxes??null)),qty:r.qty??(keep?o.qty:(x?.palQty??null)),p,r};}
+ else S[r.kid]={st:'回収',p,r};});return S;}
+function inventory_old(){const L=lastByKid(),inv={};Object.values(L).forEach(r=>{if(r.kind==='入庫'){const p=r.kid.replace(/-\d+$/,'');(inv[p]=inv[p]||[]).push(r);}});return inv;}
 function status(x,n){if(!x.palQty||!x.total)return'枚数未設定';if(n<=0)return'欠品';if(x.rop!=null&&n<=x.rop)return'生産指示';if(x.rop!=null&&n<=x.rop+1)return'もうすぐ';return'';}
 const pillOf=s=>s==='欠品'||s==='生産指示'?'p-ng':s==='もうすぐ'||s==='枚数未設定'?'p-warn':'p-ok';
 /* ---------- scan flow ---------- */
-let cur={kind:null,kid:null,loc:null};
-function setKind(k){cur={kind:k,kid:null,loc:null};upd();say('info',k==='入庫'?'かんばんのQRを読んでください。':'外したかんばんのQRを読んでください。');}
-$('#kIn').onclick=()=>{lastCode='';setKind('入庫');};$('#kOut').onclick=()=>{lastCode='';setKind('回収');};
-function upd(){$('#kIn').classList.toggle('on',cur.kind==='入庫');$('#kOut').classList.toggle('on',cur.kind==='回収');
- $('#sKind').textContent=cur.kind||'－';$('#sKid').textContent=cur.kid||'－';$('#sLoc').textContent=cur.kind==='回収'?'（いらない）':(cur.loc||'－');
- const st=$$('#steps span');const step=!cur.kind?0:!cur.kid?1:(cur.kind==='入庫'&&!cur.loc)?2:3;
- st.forEach((s,i)=>{s.className=i<step?'done':i===step?'now':'';});st[2].style.opacity=cur.kind==='回収'?.35:1;stripUpd();}
+let palLock=false;
+let mode=state.mode==='積付'?'積付':'入庫',cur={kid:null,loc:null,car:'パレット',boxes:null};
+let outTimer=null;
+function setMode(k,silent){mode=k;state.mode=k==='回収'?'入庫':k;save();clearTimeout(outTimer);if(k==='回収')outTimer=setTimeout(()=>{if(mode==='回収'&&!cur.kid){setMode('入庫');say('info','回収のまま1分たったので、入庫に戻しました。');}},60000);cur={kid:null,loc:null,car:'パレット',boxes:null};upd();if(!silent)say('info',k==='入庫'?'かんばんのQRを読んでください。':k==='積付'?'積付：成形したパレット（台車）のかんばんを読んでください。':'回収：空になったパレットのかんばんを読んでください。');}
+$('#kLd').onclick=()=>{for(const k in seen)delete seen[k];setMode('積付');};$('#kIn').onclick=()=>{for(const k in seen)delete seen[k];setMode('入庫');};$('#kOut').onclick=()=>{for(const k in seen)delete seen[k];setMode('回収');};
+function defBoxes(x,car){return car==='台車'?(x?.boxesCart??null):(x?.boxes??null);}
+function upd(){document.body.dataset.mode=mode;$('#modeTtl').textContent='① いまの作業：'+mode+(mode==='積付'?'（成形後）':mode==='入庫'?'（倉庫に置く・移す）':'（空になった）');$('#kLd').classList.toggle('on',mode==='積付');$('#kIn').classList.toggle('on',mode==='入庫');$('#kOut').classList.toggle('on',mode==='回収');
+ $('#cLoad').classList.toggle('mode-off',mode!=='積付');$('#cMap').classList.toggle('mode-off',mode==='積付');$('#cNow').classList.toggle('mode-off',mode==='積付');
+ $('#sKid').textContent=cur.kid||'－';$('#sLoc').textContent=mode==='回収'?'（いらない）':(cur.loc||'－');
+ const sp=$$('#steps span');const names=mode==='積付'?['かんばん','荷姿・箱数','決定']:mode==='回収'?['かんばん','','回収箱へ']:['かんばん','置き場所','入庫する'];
+ sp.forEach((e,i)=>{e.textContent=names[i];e.style.opacity=names[i]?1:.25;});
+ const step=mode==='積付'?(!cur.kid?0:!cur.boxes?1:2):mode==='回収'?(cur.kid?2:0):(!cur.kid?0:!cur.loc?1:2);sp.forEach((e,i)=>{e.className=i<step?'done':i===step?'now':'';});
+ $('#goIn').disabled=!(mode==='入庫'&&cur.kid&&cur.loc);const last=cur.kid?lastByKid()[cur.kid]:null;$('#quickOut').hidden=!(mode==='入庫'&&last&&last.kind==='入庫');
+ // load card
+ const x=cur.kid?M()[cur.kid.replace(/-\d+$/,'')]:null;$('#lKid').textContent=cur.kid||'－';
+ $('#carP').classList.toggle('on',cur.car==='パレット');$('#carC').classList.toggle('on',cur.car==='台車');
+ if(document.activeElement!==$('#bxN'))$('#bxN').value=cur.boxes??'';const q=x&&x.box&&cur.boxes?x.box*cur.boxes:null;$('#lQty').textContent=q?q.toLocaleString()+'個':'－';
+ const d=defBoxes(x,cur.car);$('#lHint').textContent=!cur.kid?'先にかんばんを読みます。':!x?.box?'この品番は箱入数が空です（設定 → 品番マスタ）。':d?`いつもは${cur.car}${d}箱（${(x.box*d).toLocaleString()}個）。半端なときだけ直します。`:`${cur.car}の箱数がまだ決まっていません（設定 →「箱数」）。数を入れて決定できます。`;
+ $('#goLoad').disabled=!(mode==='積付'&&cur.kid&&cur.boxes>0&&x?.box);
+ drawMap();stripUpd();}
 function say(t,m){const r=$('#result');r.className='res '+t;r.textContent=m;}
 let actx=null;function beep(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=ok?1320:220;g.gain.value=.12;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+(ok?.12:.35));}catch(e){} if(navigator.vibrate)navigator.vibrate(ok?60:[80,60,80]);}
-function checkKid(k){const m=M();const mm=/^(.+)-(\d+)$/.exec(k);if(!mm)return'かんばんのQRではありません（品番-番号の形ではない）';
- const x=m[mm[1]];if(!x)return'品番マスタにない品番です：'+mm[1];const n=parseInt(mm[2],10);if(n<1)return'かんばん番号がありません';if(x.total&&n>x.total)return`番号が総枚数（${x.total}枚）を超えています`;return null;}
-function handle(code){code=String(code||'').trim();if(!code)return;
- if(code==='入庫'||code==='回収'){setKind(code);beep(true);return;}
+function checkKid(k,noMax){const m=M();const mm=/^(.+)-(\d+)$/.exec(k);if(!mm)return'かんばんのQRではありません（品番-番号の形ではない）';
+ const x=m[mm[1]];if(!x)return'品番マスタにない品番です：'+mm[1];const n=parseInt(mm[2],10);if(n<1)return'かんばん番号がありません';if(!noMax&&x.total&&n>x.total)return`番号が総枚数（${x.total}枚）を超えています`;return null;}
+const isLoc=c=>state.locs.includes(c);
+const norm=c=>String(c||'').normalize('NFKC').replace(/[ー－―‐]/g,'-').trim().toUpperCase();
+function pickLoc(code,byTap){if(mode!=='入庫'){beep(false);say('ng',mode==='積付'?'積付のときは置き場所はいりません。倉庫に着いたら「入庫」で選びます。':'回収のときは置き場所はいりません。かんばんを読んでください。');return;}
+ if(!cur.kid){beep(false);say('ng','先にかんばんのQRを読んでください。');return;}
+ const last=lastByKid()[cur.kid];if(last&&last.kind==='入庫'&&last.loc===code){beep(false);say('ng',`${cur.kid} は今も ${code} にあります。動かしていなければ登録はいりません。`);return;}
+ cur.loc=code;if(!byTap)beep(true);upd();say('info',`置き場所：${code}。よければ「入庫する」を押してください。`);}
+function handle(code){code=norm(code);if(!code)return;if(document.getElementById('confirm'))return;
+ if(code==='入庫'||code==='回収'||code==='積付'){setMode(code);beep(true);return;}
  if(!state.master.length){beep(false);say('ng','品番マスタが入っていません。設定 → 品番マスタ で取り込んでください。');return;}
- if(!cur.kind){beep(false);say('ng','先に「入庫」か「回収」を選んでください（または操作カードを読む）。');return;}
- if(!cur.kid){const e=checkKid(code);if(e){beep(false);say('ng',e);return;}
-  const last=lastByKid()[code];
-  if(cur.kind==='回収'){if(!last||last.kind!=='入庫'){beep(false);say('ng','このかんばんは倉庫にありません（入庫のピッを忘れていないか確認）。');return;}
-   cur.kid=code;commit();return;}
-  cur.kid=code;upd();beep(true);say('info','置いた場所の札（区画のQR）を読んでください。');return;}
- if(cur.kind==='入庫'&&!cur.loc){if(/^.+-\d+$/.test(code)&&checkKid(code)===null&&!state.locs.includes(code)){beep(false);say('ng','かんばんをもう一度読んでいます。置き場所の札を読んでください。');return;}
-  if(state.locs.length&&!state.locs.includes(code)){beep(false);say('ng','区画の一覧にない置き場所です：'+code);return;}
-  const last=lastByKid()[cur.kid];if(last&&last.kind==='入庫'&&last.loc===code){beep(false);say('ng',`二重読みです（${cur.kid} はすでに ${code} に入庫済み）。`);cur={kind:cur.kind,kid:null,loc:null};upd();return;}
-  cur.loc=code;commit();}}
-function commit(){const d=new Date();const p2=n=>String(n).padStart(2,'0');
- const r={ts:d.getTime(),date:`${d.getFullYear()}/${p2(d.getMonth()+1)}/${p2(d.getDate())}`,time:`${p2(d.getHours())}:${p2(d.getMinutes())}`,kind:cur.kind,kid:cur.kid,loc:cur.kind==='入庫'?cur.loc:'',who:state.who||'',exp:false};
- const moved=lastByKid()[r.kid]?.kind==='入庫'&&r.kind==='入庫';state.recs.push(r);save();beep(true);
- say('ok',`登録しました：${r.kind} ${r.kid}${r.loc?' → '+r.loc:''}${moved?'（置き場所を移動）':''}`);
- cur={kind:cur.kind,kid:null,loc:null};upd();refresh();}
-$('#clearCur').onclick=()=>{lastCode='';cur={kind:cur.kind,kid:null,loc:null};upd();say('info','やり直します。かんばんのQRを読んでください。');};
-$('#undo').onclick=()=>{const r=state.recs[state.recs.length-1];if(!r)return;ask(`最後の登録（${r.kind} ${r.kid} ${r.loc}）を取り消しますか？`,()=>{state.recs.pop();save();say('info','取り消しました。');refresh();});};
+ if(isLoc(code)){pickLoc(code,false);return;}
+ const S=kstate()[code];const last=lastByKid()[code];let e=checkKid(code,mode==='回収'||last?.kind==='入庫'||S?.st==='積付');if(e&&mode==='回収'&&last?.kind==='入庫'&&e.startsWith('品番マスタにない'))e=null;
+ if(e){beep(false);say('ng',state.locs.length&&(!/^.+-\d+$/.test(code)||e.startsWith('品番マスタにない'))?'区画の一覧にない置き場所か、登録していない品番のQRです：'+code:e);return;}
+ if(mode==='回収'){if(!needWho())return;if(!last||last.kind!=='入庫'){beep(false);say('ng',S?.st==='積付'?'このかんばんはまだ入庫していません（積付のまま）。倉庫に置いたなら先に「入庫」。':'このかんばんは倉庫にありません（入庫のピッを忘れていないか確認）。');return;}
+  cur.kid=code;commit();return;}
+ if(mode==='積付'){if(S?.st==='入庫'){beep(false);say('ng',`このかんばんは倉庫（${S.loc}）にあります。空になったなら先に「回収」してから積付します。`);return;}
+  const x=M()[code.replace(/-\d+$/,'')];const car=S?.st==='積付'?S.car:'パレット';cur={kid:code,loc:null,car,boxes:S?.st==='積付'?S.boxes:defBoxes(x,car)};upd();beep(true);
+  say('info',S?.st==='積付'?`積付済み（${S.car} ${S.boxes}箱）。直すなら選び直して「決定」。`:'荷姿と箱数を確かめて「決定」を押してください。');return;}
+ if(cur.kid&&cur.kid!==code&&cur.loc){beep(false);say('ng',`まだ ${cur.kid} を登録していません。「入庫する」を押すか「やり直す」。`);return;}
+ cur={kid:code,loc:null,car:'パレット',boxes:null};upd();beep(true);
+ say('info',last&&last.kind==='入庫'?`このかんばんは今 ${last.loc} にあります。移したなら新しい場所を選んで「入庫する」。空になったなら「このかんばんを回収する」。`:S?.st==='積付'?`積付済み：${S.car} ${S.boxes}箱（${(S.qty||0).toLocaleString()}個）。置き場所をタップするか、レイアウトのQRを読んでください。`:'積付の記録がないので、いつもの箱数で入庫します。置き場所をタップするか、レイアウトのQRを読んでください。');
+ $('#cMap').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function stamp(){const d=new Date();const p2=n=>String(n).padStart(2,'0');return{ts:d.getTime(),date:`${d.getFullYear()}/${p2(d.getMonth()+1)}/${p2(d.getDate())}`,time:`${p2(d.getHours())}:${p2(d.getMinutes())}`};}
+function commit(){const S=kstate()[cur.kid];const x=M()[cur.kid.replace(/-\d+$/,'')];
+ const r=Object.assign(stamp(),{kind:mode,kid:cur.kid,loc:mode==='入庫'?cur.loc:'',who:state.who||'',exp:false});
+ if(mode==='入庫'){const keep=S&&(S.st==='積付'||S.st==='入庫');r.car=keep?S.car:'パレット';r.boxes=keep?S.boxes:(x?.boxes??null);r.qty=keep?S.qty:(x?.palQty??null);}
+ const moved=lastByKid()[r.kid]?.kind==='入庫'&&r.kind==='入庫';if(moved)r.moved=true;state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
+ const wasOut=mode==='回収';if(wasOut){mode='入庫';state.mode='入庫';save();}cur={kid:null,loc:null,car:'パレット',boxes:null};upd();refresh();
+ say('ok',wasOut?`回収しました：${r.kid}。かんばんを回収箱へ入れてください。`:`登録しました：入庫 ${r.kid} → ${r.loc}${moved?'（置き場所を移動）':''}${r.qty?`・${r.qty.toLocaleString()}個`:''}`);}
+function needWho(){if(state.who)return true;beep(false);say('ng','記入者が決まっていません。設定 →「記入者」で名前を入れてください。');return false;}
+$('#goIn').onclick=()=>{if(mode==='入庫'&&cur.kid&&cur.loc&&needWho())commit();};
+$('#quickOut').onclick=()=>{const k=cur.kid;ask(`${k} を回収します（パレットが空になった）。`,()=>{mode='回収';cur={kid:k,loc:null};commit();});};
+// 積付
+$$('.car').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にかんばんのQRを読んでください。');return;}const x=M()[cur.kid.replace(/-\d+$/,'')];cur.car=b.dataset.car;cur.boxes=defBoxes(x,cur.car);upd();});
+$('#bxM').onclick=()=>{if(!cur.kid)return;cur.boxes=Math.max(1,(cur.boxes||1)-1);upd();};$('#bxP').onclick=()=>{if(!cur.kid)return;cur.boxes=(cur.boxes||0)+1;upd();};
+$('#bxN').addEventListener('input',e=>{const v=parseInt(e.target.value,10);cur.boxes=v>0?v:null;upd();});
+$('#goLoad').onclick=()=>{if(!cur.kid)return;if(!needWho())return;const x=M()[cur.kid.replace(/-\d+$/,'')];if(!(cur.boxes>0&&x?.box))return;const d=defBoxes(x,cur.car);const snap={kid:cur.kid,car:cur.car,boxes:cur.boxes};
+ const go=()=>{if(cur.kid!==snap.kid)return;const r=Object.assign(stamp(),{kind:'積付',kid:snap.kid,loc:'',who:state.who||'',exp:true,car:snap.car,boxes:snap.boxes,qty:x.box*snap.boxes});state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
+  const k=cur.kid;cur={kid:null,loc:null,car:'パレット',boxes:null};upd();refresh();say('ok',`積付しました：${k}・${r.car} ${r.boxes}箱（${r.qty.toLocaleString()}個）。倉庫へ運んで「入庫」してください。`);};
+ const lim=d||100;if(cur.boxes>lim)ask(d?`いつもの${d}箱より多い${cur.boxes}箱です。このまま決定しますか？`:`${cur.boxes}箱で合っていますか？`,go);else go();};
+$('#clearLd').onclick=()=>$('#clearCur').click();$('#undoLd').onclick=()=>$('#undo').click();
+$('#clearCur').onclick=()=>{for(const k in seen)delete seen[k];cur={kid:null,loc:null,car:'パレット',boxes:null};upd();say('info','やり直します。かんばんのQRを読んでください。');};
+$('#undo').onclick=()=>{const r=state.recs[state.recs.length-1];if(!r)return;ask(`最後の登録（${r.kind} ${r.kid} ${r.loc||''}）を取り消しますか？`+(r.exp&&r.kind!=='積付'?'　この記録はExcelに渡し済みです。Excelの入出庫記録からも消してください。':''),()=>{if(state.recs[state.recs.length-1]!==r){say('ng','その間に別の登録がありました。もう一度押してください。');return;}state.recs.pop();save();say('info','取り消しました。');refresh();upd();});};
+/* ---------- layout map ---------- */
+function layoutRows(){if(state.layout&&state.layout.length)return state.layout;return null;}
+function drawMap(){const box=$('#map');if(!box)return;const L=layoutRows();const inv=lastByKid();const cnt={},same={};let here=null;
+ const p=cur.kid?cur.kid.replace(/-\d+$/,''):null;
+ Object.values(inv).forEach(r=>{if(r.kind!=='入庫')return;cnt[r.loc]=(cnt[r.loc]||0)+1;if(p&&r.kid.replace(/-\d+$/,'')===p)same[r.loc]=1;if(r.kid===cur.kid)here=r.loc;});
+ const cell=n=>`<button class="z${cnt[n]?' has':''}${same[n]?' same':''}${here===n?' here':''}${cur.loc===n?' sel':''}" data-loc="${esc(n)}">${esc(n)}${cnt[n]?`<b>${cnt[n]}枚</b>`:''}</button>`;
+ if(L){const cols=Math.max(...L.map(r=>r.length));box.style.gridTemplateColumns=`repeat(${cols},minmax(64px,1fr))`;
+  box.innerHTML=L.map(r=>Array.from({length:cols},(_,i)=>r.at(i)?cell(r.at(i)):'<div class="aisle"></div>').join('')).join('');}
+ else if(state.locs.length){box.style.gridTemplateColumns='repeat(auto-fill,minmax(80px,1fr))';box.innerHTML=state.locs.map(cell).join('');}
+ else box.innerHTML='<p class="note">設定 →「区画」で倉庫のレイアウトを入れると、ここに地図が出ます。</p>';
+ box.classList.toggle('off',mode==='回収'||!cur.kid);}
+$('#map').addEventListener('click',e=>{const z=e.target.closest('[data-loc]');if(!z)return;pickLoc(z.dataset.loc,true);});
 $('#manual').addEventListener('keydown',e=>{if(e.key==='Enter'){handle(e.target.value);e.target.value='';}});
 $('#manualGo').onclick=()=>{handle($('#manual').value);$('#manual').value='';};
 /* ---------- camera ---------- */
-let stream=null,det=null,lastCode='',lastAt=0,scanning=false;
+let stream=null,det=null,lastCode='',lastAt=0,scanning=false;const seen={};
 async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks().forEach(t=>t.stop());
  stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:960}},audio:false});
  const v=$('#vid');v.srcObject=stream;await v.play();msg.textContent='QRを枠の中に入れてください';
@@ -10294,62 +10405,119 @@ async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks(
  if(!scanning){scanning=true;loop();}}catch(e){msg.textContent='カメラが使えません。「写真で読む」かスキャナーで入力してください。';}}
 async function loop(){const v=$('#vid');if(state.tab==='scan'&&v.readyState>=2){let code=null;
  try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const q=jsQR(x.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'dontInvert'});if(q)code=q.data;}}catch(e){}
- if(code){const now=Date.now();/* 同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない */if(code!==lastCode||now-lastAt>1500){lastCode=code;handle(code);}lastAt=now;}}
+ if(code){const now=Date.now();/* 同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない。QRごとに覚える */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}
  setTimeout(()=>requestAnimationFrame(loop),180);}
 $('#camRetry').onclick=startCam;
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended')))startCam();});
 $('#photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=img.width*s;c.height=img.height*s;const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const q=jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height);if(q)handle(q.data);else{beep(false);say('ng','写真からQRが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
+/* ---------- pallet box count ---------- */
+function calcItem(x){const P=state.params;if(x.monthly!=null&&P.work)x.daily=x.monthly/P.work;if(x.box&&x.boxes){x.palQty=x.box*x.boxes;if(x.daily){x.rop=Math.ceil(x.daily*(P.lead+P.safe)/x.palQty);x.total=x.lot!=null?Math.ceil((x.lot+x.daily*P.safe)/x.palQty)+x.rop:x.total;}}else if(x.boxes===null&&x.box){x.palQty=null;x.rop=null;x.total=null;}return x;}
+function palRender(){fillMachines('#palM');const m=$('#palM').value,q=$('#palQ').value.trim().toUpperCase(),only=$('#palOnly').checked;
+ const L=state.master.filter(x=>(!m||x.m===m)&&(!q||x.p.toUpperCase().includes(q))&&(!only||!x.boxes));
+ $('#palBody').innerHTML=L.length?L.map(x=>`<tr data-p="${esc(x.p)}"><td>${esc(x.p)}<br><span class="note">${esc(x.m)}</span></td><td class="n">${x.box??'－'}</td><td class="n"><input data-k="boxes" type="number" inputmode="numeric" min="1" value="${x.boxes??''}" aria-label="${esc(x.p)}の箱数"></td><td class="n"><input data-k="boxesCart" type="number" inputmode="numeric" min="1" value="${x.boxesCart??''}" aria-label="${esc(x.p)}の台車の箱数"></td><td class="n">${x.palQty??'－'}</td><td class="n">${x.rop??'－'}</td><td class="n">${x.total??'－'}</td></tr>`).join(''):'<tr><td colspan="7" class="note">該当なし</td></tr>';
+ $('#pWork').value=state.params.work;$('#pSafe').value=state.params.safe;$('#pLead').value=state.params.lead;}
+const rng=(a,b)=>a===b?`${a}番`:`${a}〜${b}番`;
+function palMsg(t,m){const e=$('#palMsg');e.hidden=!m;e.className='res '+t;e.textContent=m||'';}
+function inStockMax(p){const inv=inventory()[p]||[];return inv.reduce((a,r)=>Math.max(a,parseInt(r.kid.slice(p.length+1),10)||0),0);}
+$('#palBody').addEventListener('change',e=>{const inp=e.target.closest('input');if(!inp)return;const tr=inp.closest('tr'),p=tr.dataset.p,x=M()[p];if(!x)return;
+ const v=num(inp.value);const k=inp.dataset.k||'boxes';if(v!=null&&(v<1||v!==Math.floor(v))){palMsg('ng','箱数は1以上の整数で入れてください。');inp.value=x[k]??'';return;}
+ if(k==='boxesCart'){x.boxesCart=v;save();palMsg('ok',`${p}：台車1台 ${v??'－'}箱${v&&x.box?`（${(x.box*v).toLocaleString()}個）`:''}。積付のとき「台車」を選ぶと、この箱数が最初に入ります。`);return;}
+ if(!x.box){palMsg('ng',`${p} は箱入数が空です。Excelの品番マスタE列を入れて取り込み直してください。`);inp.value='';return;}
+ const before=x.total;x.boxes=v;calcItem(x);save();palLock=true;refresh();palLock=false;
+ const tds=tr.querySelectorAll('td');tds[4].textContent=x.palQty??'－';tds[5].textContent=x.rop??'－';tds[6].textContent=x.total??'－';tr.classList.add('chg');
+ let msg=`${p}：1枚 ${x.palQty??'－'}個・発注点 ${x.rop??'－'}枚・総枚数 ${x.total??'－'}枚`;
+ if(before!=null&&x.total!=null&&x.total!==before){msg+=x.total>before?`。かんばんを ${rng(before+1,x.total)} 追加で印刷してください。`:`。${rng(x.total+1,before)}のかんばんは、回収したら使わずに外してください。`;}
+ const hi=inStockMax(p);if(x.total!=null&&hi>x.total)msg+=`（倉庫にある${hi}番などは今までどおり回収できます）`;
+ palMsg('ok',msg);toast('箱数を変えました');});
+['#palM','#palOnly'].forEach(s=>$(s).addEventListener('change',palRender));$('#palQ').addEventListener('input',palRender);
+$('#pSave').onclick=()=>{const w=num($('#pWork').value),sf=num($('#pSafe').value),ld=num($('#pLead').value);if(!w||w<1||sf==null||sf<0||ld==null||ld<0){palMsg('ng','数字を確かめてください。');return;}
+ ask(`稼働日${w}日・安全在庫${sf}日・補充${ld}日で、全品番の発注点と総枚数を計算し直します。`,()=>{state.params={work:w,safe:sf,lead:ld};state.master.forEach(calcItem);save();refresh();palRender();palMsg('ok','計算し直しました。総枚数が変わった品番は、かんばんの追加・回収をしてください。');});};
+$('#palCopy').onclick=async()=>{if(!state.master.length)return;if(!confirm(`Excelの品番マスタが、取り込んだときと同じ並び（${state.master.length}品番、最初が${state.master[0].p}、最後が${state.master.at(-1).p}）か確かめてください。同じならOK。`))return;const t=state.master.map(x=>x.boxes??'').join('\n');try{await navigator.clipboard.writeText(t);toast('コピーしました。Excelの品番マスタH5を選んで貼り付け');}catch(e){dl('\ufeff'+t,'パレット1枚の箱数.csv','text/csv');toast('ファイルに保存しました');}};
 /* ---------- views ---------- */
 function fillMachines(sel){const ms=[...new Set(state.master.map(x=>x.m))];const s=$(sel),v=s.value;s.innerHTML='<option value="">全部の機械</option>'+ms.map(m=>`<option>${esc(m)}</option>`).join('');s.value=v;}
-function rows(){const inv=inventory();return state.master.map(x=>{const n=(inv[x.p]||[]).length;const days=(x.daily&&x.palQty)?n*x.palQty/x.daily:null;const st=status(x,n);
- const make=(st==='欠品'||st==='生産指示')&&x.total&&x.palQty?(x.total-n)*x.palQty:0;return{x,n,days,st,make,locs:(inv[x.p]||[])};});}
+function inventory(){const S=kstate(),inv={};Object.entries(S).forEach(([k,v])=>{if(v.st==='入庫')(inv[v.p]=inv[v.p]||[]).push(Object.assign({kid:k},v));});return inv;}
+function transit(){const S=kstate(),t={};Object.entries(S).forEach(([k,v])=>{if(v.st==='積付')(t[v.p]=t[v.p]||[]).push(Object.assign({kid:k},v));});return t;}
+function rows(){const inv=inventory(),tr=transit();return state.master.map(x=>{const n=(inv[x.p]||[]).length;const pcs=(inv[x.p]||[]).reduce((a,v)=>a+(v.qty??x.palQty??0),0);const days=x.daily?pcs/x.daily:null;const nt=(tr[x.p]||[]).length;const st=status(x,n+nt);
+ const make=(st==='欠品'||st==='生産指示')&&x.total&&x.palQty?(x.total-n-nt)*x.palQty:0;return{x,n,pcs,nt,days,st,make,locs:(inv[x.p]||[])};});}
 function refresh(){fillMachines('#invM');fillMachines('#ordM');const R=rows();
  const q=$('#invQ').value.trim().toUpperCase(),m=$('#invM').value;
- $('#invBody').innerHTML=R.filter(r=>(!m||r.x.m===m)&&(!q||r.x.p.toUpperCase().includes(q))).map(r=>`<tr><td>${esc(r.x.p)}<br><span class="note">${esc(r.x.m)} ${esc(r.x.mold)}</span></td><td class="n">${r.n}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td>${r.st?`<span class="pill ${pillOf(r.st)}">${r.st}</span>`:''}</td></tr>`).join('')||'<tr><td colspan="4" class="note">品番マスタが入っていません</td></tr>';
+ $('#invBody').innerHTML=R.filter(r=>(!m||r.x.m===m)&&(!q||r.x.p.toUpperCase().includes(q))).map(r=>`<tr><td>${esc(r.x.p)}<br><span class="note">${esc(r.x.m)} ${esc(r.x.mold)}</span></td><td class="n">${r.n}${r.nt?`<br><span class="note">途中${r.nt}</span>`:''}</td><td class="n">${r.pcs?r.pcs.toLocaleString():'－'}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td>${r.st?`<span class="pill ${pillOf(r.st)}">${r.st}</span>`:''}</td></tr>`).join('')||'<tr><td colspan="5" class="note">品番マスタが入っていません</td></tr>';
  const om=$('#ordM').value;const O=R.filter(r=>(r.st==='欠品'||r.st==='生産指示')&&(!om||r.x.m===om)).sort((a,b)=>(a.days??0)-(b.days??0));
  $('#ordBody').innerHTML=O.map(r=>`<tr><td>${esc(r.x.m)}</td><td>${esc(r.x.p)}<br><span class="pill ${pillOf(r.st)}">${r.st}</span></td><td class="n">${r.n}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td class="n">${r.make.toLocaleString()}</td></tr>`).join('')||'<tr><td colspan="5" class="note">いま生産指示はありません</td></tr>';
- $('#recBody').innerHTML=state.recs.slice(-60).reverse().map(r=>`<tr><td>${r.date.slice(5)} ${r.time}</td><td><span class="pill ${r.kind==='入庫'?'p-ok':'p-ng'}">${r.kind}</span></td><td>${esc(r.kid)}</td><td>${esc(r.loc)}</td></tr>`).join('')||'<tr><td colspan="4" class="note">まだ記録はありません</td></tr>';
- $('#unexp').textContent=state.recs.filter(r=>!r.exp).length;findUpd();stripUpd();}
+ $('#recBody').innerHTML=state.recs.slice(-60).reverse().map(r=>`<tr><td>${r.date.slice(5)} ${r.time}</td><td><span class="pill ${r.kind==='入庫'?'p-ok':r.kind==='積付'?'p-warn':'p-ng'}">${r.kind}</span></td><td>${esc(r.kid)}</td><td>${esc(r.loc)}</td></tr>`).join('')||'<tr><td colspan="4" class="note">まだ記録はありません</td></tr>';
+ $('#unexp').textContent=toExp().length;findUpd();stripUpd();if(state.tab==='set'&&typeof palRender==='function'&&!palLock)palRender();}
 function findUpd(){const q=$('#findQ').value.trim().toUpperCase();if(!q){$('#findOut').innerHTML='品番を入れると、倉庫にあるパレットと置き場所が出ます。';return;}
  const inv=inventory();const hits=Object.keys(inv).filter(p=>p.toUpperCase().includes(q));
- $('#findOut').innerHTML=hits.length?hits.map(p=>`<div style="margin:6px 0"><b>${esc(p)}</b>　${inv[p].length}枚<br>${inv[p].map(r=>`<span class="pill p-ok" style="margin:2px">${esc(r.kid.replace(p+'-','No.'))} ＠ ${esc(r.loc)}</span>`).join('')}</div>`).join(''):'倉庫にありません。';}
+ $('#findOut').innerHTML=hits.length?hits.map(p=>`<div style="margin:6px 0"><b>${esc(p)}</b>　${inv[p].length}枚<br>${inv[p].map(r=>`<span class="pill p-ok" style="margin:2px">${esc(r.kid.replace(p+'-','No.'))} ＠ ${esc(r.loc)}${r.qty?` ・${r.qty.toLocaleString()}個`:''}</span>`).join('')}</div>`).join(''):'倉庫にありません。';}
 ['#invQ','#invM','#ordM'].forEach(s=>$(s).addEventListener('input',refresh));$('#findQ').addEventListener('input',findUpd);
-function stripUpd(){const R=rows();const k=R.filter(r=>r.st==='欠品').length,s=R.filter(r=>r.st==='生産指示').length;const st=$('#strip');
- if(state.tab==='ord'||(state.tab==='scan'&&innerHeight<900)||(!k&&!s)){st.hidden=true;return;}st.hidden=false;$('#stripTxt').textContent=`欠品 ${k}品番 ／ 生産指示 ${s}品番`;}
+function health(){const h=$('#health');if(!h)return;const ne=toExp().length;const lb=state.lastBackup?Math.floor((Date.now()-state.lastBackup)/864e5):null;
+ const S=kstate();const tr=Object.values(S).filter(v=>v.st==='積付');const old=tr.filter(v=>Date.now()-v.r.ts>12*36e5).length;
+ h.innerHTML=`<span>Excel未渡し <b class="${ne>200?'ng':''}">${ne}件</b></span><span>バックアップ <b class="${lb==null||lb>=2?'ng':''}">${lb==null?'まだ':lb===0?'今日':lb+'日前'}</b></span><span>運ぶ途中 <b class="${old?'ng':''}">${tr.length}枚${old?`（12時間以上 ${old}枚）`:''}</b></span>`;}
+function stripUpd(){health();const R=rows();const k=R.filter(r=>r.st==='欠品').length,s=R.filter(r=>r.st==='生産指示').length;const st=$('#strip');
+ if(state.tab==='ord'||state.tab==='scan'||(!k&&!s)){st.hidden=true;return;}st.hidden=false;$('#stripTxt').textContent=`欠品 ${k}品番 ／ 生産指示 ${s}品番`;}
 $('#strip').onclick=()=>showTab('ord');
 /* ---------- export ---------- */
-const fields=r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,''];
-$('#copyTsv').onclick=async()=>{const t=state.recs.filter(r=>!r.exp).map(r=>fields(r).join('\t')).join('\n');if(!t){say('info','渡していない記録はありません。');return;}
- try{await navigator.clipboard.writeText(t);toast('コピーしました。Excelの入出庫記録に貼り付けてください。');}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('コピーしました。');}};
-$('#dlCsv').onclick=()=>{const rs=state.recs.filter(r=>!r.exp);const csv='﻿日付,時刻,区分,かんばん,置き場所,記入者,メモ\n'+rs.map(r=>fields(r).join(',')).join('\n');dl(csv,`入出庫記録_${new Date().toISOString().slice(0,10)}.csv`,'text/csv');};
-$('#markExp').onclick=()=>ask('今ある記録をすべて「Excelに渡し済み」にしますか？',()=>{state.recs.forEach(r=>r.exp=true);save();refresh();});
+const fields=r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,[r.moved?'移動':'',r.kind==='入庫'&&r.qty?`${r.car} ${r.boxes}箱 ${r.qty}個`:''].filter(Boolean).join(' ')];
+const csvq=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+let copied=null;
+const toExp=()=>state.recs.filter(r=>!r.exp&&r.kind!=='積付');
+$('#copyTsv').onclick=async()=>{const rs=toExp();if(!rs.length){toast('渡していない記録はありません。');return;}const t=rs.map(r=>fields(r).join('\t')).join('\n');
+ const ok=()=>{copied=rs;expMsg(`${rs.length}件コピーしました。Excelの入出庫記録で、最後の行の次のA列に貼り付け →「渡し済みにする」。`);};
+ try{await navigator.clipboard.writeText(t);ok();}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();const r=document.execCommand('copy');ta.remove();if(r)ok();else expMsg('コピーできませんでした。「CSVで保存」を使ってください。',true);}};
+$('#dlCsv').onclick=()=>{const rs=toExp();if(!rs.length){toast('渡していない記録はありません。');return;}const csv='﻿日付,時刻,区分,かんばん,置き場所,記入者,メモ\n'+rs.map(r=>fields(r).map(csvq).join(',')).join('\n');dl(csv,`入出庫記録_${today()}.csv`,'text/csv');copied=rs;expMsg(`${rs.length}件をCSVに保存しました。Excelに貼ったら「渡し済みにする」。`);};
+$('#markExp').onclick=()=>{if(copied&&copied.length){const n=copied.length,later=toExp().length-n;ask(`コピーした${n}件を「渡し済み」にします。`+(later>0?`（コピーの後の${later}件は、次回に渡します）`:''),()=>{copied.forEach(r=>r.exp=true);copied=null;save();refresh();expMsg(`${n}件を渡し済みにしました。`);});}
+ else ask('まだコピーしていません。今ある記録をすべて「渡し済み」にしますか？（Excelに貼っていないなら「やめる」）',()=>{state.recs.forEach(r=>r.exp=true);save();refresh();});};
+function expMsg(m,ng){let e=$('#expMsg');if(!e){e=document.createElement('div');e.id='expMsg';$('#markExp').closest('.row').after(e);}e.className='res '+(ng?'ng':'ok');e.textContent=m;}
+$('#prune').onclick=()=>{const keep=Date.now()-90*864e5;const S=kstate();const cur_=new Set(Object.values(S).map(v=>v.r));const old=state.recs.filter(r=>r.exp&&r.ts<keep&&!cur_.has(r));
+ if(!old.length){toast('整理できる古い記録はありません（90日より前で渡し済みのもの）。');return;}
+ ask(`90日より前でExcelに渡し済みの記録${old.length}件を、このタブレットから消します（Excelには残っています）。先にバックアップを書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');const del=new Set(old);state.recs=state.recs.filter(r=>!del.has(r));save();refresh();toast(`${old.length}件を整理しました`);});};
 function dl(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 /* ---------- settings ---------- */
 $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.trim();save();whoUpd();toast('記入者を決めました');};
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
-$('#mApply').onclick=()=>{const out=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=(c[2]||'').trim();if(!p||p==='品番')return;
- out.push({m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),daily:num(c[6]),palQty:num(c[8]),rop:num(c[10]),total:num(c[11])});});
+$('#mApply').onclick=()=>{const out=[],dup=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=norm(c[2]);if(!p||p==='品番')return;if(out.some(y=>y.p===p)){dup.push(p);return;}
+ const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};
+ const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;calcItem(x);out.push(x);});
  if(!out.length){$('#mInfo').textContent='取り込めませんでした（A〜L列をコピーしているか確認）';return;}
- ask(`${out.length}品番を取り込みます。今の品番マスタは置き換わります（記録は消えません）。`,()=>{state.master=out;save();$('#mInfo').textContent=`${out.length}品番を取り込みました`;refresh();});};
-$('#lApply').onclick=()=>{const L=$('#lPaste').value.split(/\r?\n/).map(s=>s.split('\t')[0].trim()).filter(s=>s&&s!=='区画');state.locs=[...new Set(L)];save();$('#lInfo').textContent=`${state.locs.length}区画を取り込みました`;};
+ if(dup.length){$('#mInfo').textContent='同じ品番が2行あります：'+[...new Set(dup)].join(', ')+'。Excelを直してから取り込んでください。';return;}
+ const inv=inventory(),tr=transit(),lost=[...new Set([...Object.keys(inv),...Object.keys(tr)])].filter(p=>!out.some(y=>y.p===p));const diff=out.filter(y=>y._diff!=null);
+ let msg=`${out.length}品番を取り込みます。今の品番マスタは置き換わります（記録は消えません）。`;
+ if(diff.length)msg+=`\n\n箱数がタブレットと違う品番が${diff.length}あり、Excelの値になります：`+diff.slice(0,5).map(y=>`${y.p}（${y._diff}→${y.boxes}箱）`).join('、')+(diff.length>5?' ほか':'');
+ if(lost.length)msg+=`\n\n注意：倉庫や運ぶ途中にあるのにマスタから消える品番：`+lost.slice(0,5).join('、')+(lost.length>5?' ほか':'')+'（回収はできます）';
+ ask(msg,()=>{out.forEach(y=>delete y._diff);state.master=out;save();$('#mInfo').textContent=`${out.length}品番を取り込みました`;refresh();});};
+$('#lApply').onclick=()=>{const rows=$('#lPaste').value.replace(/\r/g,'').split('\n').map(l=>l.split('\t').map(c=>norm(c))).reduce((a,r,i,all)=>{const f=all.findIndex(x=>x.some(Boolean)),l=all.findLastIndex(x=>x.some(Boolean));if(i>=f&&i<=l&&f>=0)a.push(r);return a;},[]).map(r=>r.map(c=>c==='区画'?'':c));
+ if(!rows.length){$('#lInfo').textContent='貼り付けてください';return;}const names=rows.flat().filter(Boolean),dup=names.filter((n,i)=>names.indexOf(n)!==i);
+ if(dup.length){$('#lInfo').textContent='同じ区画名が2つあります：'+[...new Set(dup)].join(', ');return;}
+ const bad=names.filter(n=>/^.+-\d+$/.test(n)&&checkKid(n,true)===null);if(bad.length){$('#lInfo').textContent='かんばんと同じ形の名前は使えません：'+bad.join(', ');return;}
+ const dateLike=names.filter(n=>/^\d{1,2}-\d{1,2}$/.test(n));if(dateLike.length&&!confirm(`${dateLike.slice(0,3).join('、')} のような「数字-数字」の名前は、Excelで日付に変わることがあります。このまま使いますか？`))return;
+ const single=rows.every(r=>r.filter(Boolean).length<=1);state.layout=single?null:rows;state.locs=[...new Set(names)];save();
+ const gone=Object.values(lastByKid()).filter(r=>r.kind==='入庫'&&!state.locs.includes(r.loc)).length;
+ $('#lInfo').textContent=`${state.locs.length}区画を取り込みました`+(single?'（一覧）':'（レイアウト）')+(gone?`。注意：今ない区画に置いたままのパレットが${gone}枚あります`:'');lPrev();drawMap();};
+function lPrev(){const b=$('#lPrev');const L=state.layout;if(!L){b.innerHTML='';return;}const cols=Math.max(...L.map(r=>r.length));b.style.gridTemplateColumns=`repeat(${cols},minmax(48px,1fr))`;b.innerHTML=L.map(r=>Array.from({length:cols},(_,i)=>r.at(i)?`<div class="z">${esc(r.at(i))}</div>`:'<div class="aisle"></div>').join('')).join('');}
 $('#lPaste').value=state.locs.join('\n');
-$('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。',()=>{state.master=[
- {m:'8号機',mold:'練習A-0',p:'RENSHU-A1',n:'練習品',box:50,daily:509,palQty:1000,rop:3,total:9},{m:'8号機',mold:'練習B-0',p:'RENSHU-B2',n:'練習品',box:100,daily:235,palQty:1000,rop:2,total:6},
- {m:'9号機',mold:'練習C-0',p:'RENSHU-C3',n:'',box:96,daily:617,palQty:960,rop:5,total:12},{m:'10号機',mold:'練習D-0',p:'RENSHU-D4',n:'',box:500,daily:1752,palQty:5000,rop:3,total:7},{m:'11号機',mold:'練習E-0',p:'RENSHU-E5',n:'',box:56,daily:431,palQty:560,rop:7,total:15}];
- state.locs=[];'ABCD'.split('').forEach(a=>{for(let i=1;i<=4;i++)state.locs.push(a+'-'+i)});$('#lPaste').value=state.locs.join('\n');save();refresh();$('#mInfo').textContent='練習用のデータを入れました';});
-$('#bkOut').onclick=()=>dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${new Date().toISOString().slice(0,10)}.json`,'application/json');
-$('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。先にバックアップを書き出しましたか？`,()=>{state.recs=[];save();refresh();toast('記録を消しました');});
+function loadDemo(){state.master=[
+ {m:'8号機',mold:'練習A-0',p:'RENSHU-A1',n:'練習品',box:50,daily:509,boxes:20,boxesCart:8,palQty:1000,rop:3,total:9},{m:'8号機',mold:'練習B-0',p:'RENSHU-B2',n:'練習品',box:100,daily:235,boxes:10,palQty:1000,rop:2,total:6},
+ {m:'9号機',mold:'練習C-0',p:'RENSHU-C3',n:'',box:96,daily:617,boxes:10,palQty:960,rop:5,total:12},{m:'10号機',mold:'練習D-0',p:'RENSHU-D4',n:'',box:500,daily:1752,boxes:10,palQty:5000,rop:3,total:7},{m:'11号機',mold:'練習E-0',p:'RENSHU-E5',n:'',box:56,daily:431,boxes:10,palQty:560,rop:7,total:15}];
+ state.layout=[['A-1','A-2','','B-1','B-2','','C-1','C-2'],['A-3','A-4','','B-3','B-4','','C-3','C-4'],['','','','','','','',''],['D-1','D-2','D-3','D-4','','E-1','E-2','E-3']];state.locs=state.layout.flat().filter(Boolean);$('#lPaste').value=state.layout.map(r=>r.join('\t')).join('\n');save();lPrev();upd();refresh();$('#mInfo').textContent='練習用のデータを入れました';}
+$('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。',loadDemo);
+$('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
+$('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。消す前に、バックアップを自動で書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');state.recs=[];save();refresh();upd();toast('記録を消しました');});
 $('#bkIn').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
- ask(`バックアップ（記録${(o.recs||[]).length}件）で今のデータを上書きします。`,()=>{state=applyLoaded(o);save();location.reload();});});e.target.value='';};
+ if(!o||typeof o!=='object'||!Array.isArray(o.recs)||!Array.isArray(o.master)){toast('倉庫かんばんのバックアップではありません');return;}
+ ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件）で今のデータを上書きします。`,()=>{state=applyLoaded(o);save();location.reload();});});e.target.value='';};
 $('#onePage').checked=state.onePage;$('#onePage').onchange=e=>{state.onePage=e.target.checked;save();renderPages();};
 /* ---------- confirm / toast ---------- */
-function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0">${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sub" id="cNo">やめる</button><button class="btn" id="cYes">はい</button></div></div>`;document.body.appendChild(d);
+function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;white-space:pre-line">${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sub" id="cNo">やめる</button><button class="btn" id="cYes">はい</button></div></div>`;document.body.appendChild(d);
  d.querySelector('#cNo').onclick=()=>d.remove();d.querySelector('#cYes').onclick=()=>{d.remove();yes();};}
 function toast(m){const t=document.createElement('div');t.id='tip';t.style.left='50%';t.style.top='70px';t.style.transform='translateX(-50%)';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 /* ---------- long-press help ---------- */
-const HELP=[{a:'scan',s:'#kIn',t:'入庫',x:'倉庫にパレットを置いたとき。押してから かんばん → 置き場所の札 の順に読む。操作カード「入庫」を読んでも同じ。'},
- {a:'scan',s:'#kOut',t:'回収',x:'倉庫からパレットを出すとき。かんばんを外して読む。そのあと回収ポストへ。'},
+const HELP=[{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
+ {a:'scan',s:'#kOut',t:'回収',x:'パレットの製品がなくなったとき。押してからかんばんを読むと回収。1回ごとに入庫に戻ります。'},
+ {a:'scan',s:'#goIn',t:'入庫する',x:'かんばんと置き場所がそろうと押せます。押したときに登録されます。'},
+ {a:'layout',s:'#map',t:'置き場所の地図',x:'数字はその区画のパレット枚数。黄色は同じ品番がある区画、赤い点線はこのかんばんが今ある区画。'},
  {a:'camera',s:'#camRetry',t:'カメラを開き直す',x:'映らないとき、止まったときに押す。'},{a:'mistake',s:'#undo',t:'取り消し',x:'間違えて登録したときに、最後の1件だけ取り消す。'},
- {a:'excel',s:'#copyTsv',t:'コピー',x:'まだExcelに渡していない記録をコピー。Excelの入出庫記録の最後の行の次に貼る。'},{a:'order',s:'#strip',t:'欠品・生産指示',x:'押すと生産指示の画面へ。'}];
+ {a:'excel',s:'#copyTsv',t:'コピー',x:'まだExcelに渡していない記録をコピー。Excelの入出庫記録の最後の行の次に貼る。'},{a:'order',s:'#strip',t:'欠品・生産指示',x:'押すと生産指示の一覧へ。'}];
 HELP.forEach(h=>{const el=$(h.s);if(!el)return;let tm=null,st=null,fired=false;
  el.addEventListener('pointerdown',e=>{fired=false;st=[e.clientX,e.clientY];tm=setTimeout(()=>{fired=true;const r=el.getBoundingClientRect();const t=document.createElement('div');t.id='tip';t.innerHTML=`<b>${h.t}</b><br>${h.x}`+(h.a?`<br><a href="manual.html#${h.a}" target="_blank" rel="noopener" style="color:inherit">取説で詳しく →</a>`:'');t.style.left=Math.max(8,Math.min(innerWidth-310,r.left))+'px';t.style.top=(r.bottom+8)+'px';document.body.appendChild(t);setTimeout(()=>t.remove(),4500);},550);});
  el.addEventListener('pointermove',e=>{if(st&&Math.hypot(e.clientX-st[0],e.clientY-st[1])>10)clearTimeout(tm);});
@@ -10361,12 +10529,14 @@ const TOURS=[
  {id:'prep',name:'準備：品番マスタと区画を入れる',sub:'最初に1回',time:'約3分',steps:[
   {tab:'set',s:'#cWho',t:'記入者を決める',x:'名前を入れて「決める」。記録に残ります。'},
   {tab:'set',s:'#cMaster',t:'品番マスタを貼り付ける',x:'Excelの品番マスタA〜L列（4行目から）をコピーして、ここに貼り付け「取り込む」。練習なら「練習用のデータを入れる」。',a:'tap'},
-  {tab:'set',s:'#cLoc',t:'区画を入れる',x:'倉庫の区画を1行に1つ。札のQRと同じ文字にします。'},
+  {tab:'set',s:'#cLoc',t:'レイアウトを入れる',x:'Excelのマス目に倉庫の形どおり区画名を書いてコピーし、貼り付けて「取り込む」。'},
   {tab:'set',s:'#cBk',t:'バックアップ',x:'毎日夕方に「ファイルに書き出す」。'}]},
  {id:'run',name:'本番：入庫と回収の読み方',sub:'毎回の作業',time:'約2分',steps:[
-  {tab:'scan',s:'#cKind',t:'入庫か回収を選ぶ',x:'ボタンを押すか、入口に貼った操作カードを読みます。',a:'tap'},
-  {tab:'scan',s:'#cCam',t:'かんばんのQRを読む',x:'枠に入れるとピッと鳴ります。入庫なら続けて置き場所の札を読みます。'},
-  {tab:'scan',s:'#cNow',t:'結果を確かめる',x:'緑なら登録済み。赤なら理由が出るので、その場で読み直します。'},
+  {tab:'scan',s:'#cKind',t:'成形後は「積付」',x:'成形が終わったら「積付」を押し、かんばんを読んで、パレットか台車・箱数を選んで「決定」。',a:'tap'},
+  {tab:'scan',s:'#cCam',t:'倉庫では「入庫」でかんばんを読む',x:'「入庫」を押して、パレットのかんばんを枠に入れるとピッと鳴ります。'},
+  {tab:'scan',s:'#cMap',t:'置き場所をタップ',x:'置いた区画を指でタップします。入口のレイアウト図のQRを読んでも同じです。黄色は同じ品番がある区画です。'},
+  {tab:'scan',s:'#cNow',t:'「入庫する」を押す',x:'かんばんと置き場所を確かめて押します。緑で「登録しました」。'},
+  {tab:'scan',s:'#cKind',t:'空になったら回収',x:'「回収」を押してかんばんを読み、かんばんは回収箱へ。'},
   {tab:'inv',s:'#cInv',t:'在庫を見る',x:'品番ごとの枚数と何日分か。赤は生産指示・欠品です。'}]},
  {id:'end',name:'終わった後：Excelに渡す',sub:'毎日夕方',time:'約2分',steps:[
   {tab:'rec',s:'#cExp',t:'コピーしてExcelへ',x:'「コピー」→ Excelの入出庫記録に貼る →「渡し済みにする」。'},
@@ -10381,11 +10551,56 @@ function tourShow(){$('#tourHole')?.remove();$('#tourCard')?.remove();if(!tour)r
  c.querySelector('#tEnd').onclick=endTour;c.querySelector('#tPrev').onclick=()=>{if(tour.i>0){tour.i--;tourShow();}};c.querySelector('#tNext').onclick=()=>{if(tour.i<n-1){tour.i++;tourShow();}else{const d=tourDone();d[tour.t.id]=1;localStorage.setItem(TKEY,JSON.stringify(d));endTour();}};
  if(st.a==='tap'){const once=()=>{el.removeEventListener('click',once,true);setTimeout(()=>{if(tour&&tour.t.steps[tour.i]===st&&tour.i<n-1){tour.i++;tourShow();}},900);};el.addEventListener('click',once,true);}},250);}
 function endTour(){tour=null;$('#tourHole')?.remove();$('#tourCard')?.remove();}
-function openSheet(){const d=tourDone();const s=document.createElement('div');s.id='sheet';s.innerHTML=`<div class="in"><h2 style="margin:0">使い方ガイド</h2>${TOURS.map(t=>`<button class="gitem" data-id="${t.id}"><span><b>${t.name}</b><br><span class="note">${t.sub}・${t.time}</span></span><span>${d[t.id]?'✓':'›'}</span></button>`).join('')}<a class="gitem" href="manual.html" target="_blank" rel="noopener"><span><b>取扱説明書とQ&A</b></span><span>›</span></a><button class="btn sub" id="shClose">閉じる</button></div>`;
- document.body.appendChild(s);s.onclick=e=>{if(e.target===s)closeSheet();};s.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>startTour(b.dataset.id));s.querySelector('#shClose').onclick=closeSheet;}
+function openSheet(){const d=tourDone();const s=document.createElement('div');s.id='sheet';s.innerHTML=`<div class="in"><h2 style="margin:0">使い方ガイド</h2>${TOURS.map(t=>`<button class="gitem" data-id="${t.id}"><span><b>${t.name}</b><br><span class="note">${t.sub}・${t.time}</span></span><span>${d[t.id]?'✓':'›'}</span></button>`).join('')}<button class="gitem" id="shPrac"><span><b>バーチャル練習（約5分）</b><br><span class="note">仮のQRで、積付→入庫→移動→回収→間違いを体験</span></span><span>›</span></button><a class="gitem" href="manual.html" target="_blank" rel="noopener"><span><b>取扱説明書とQ&A</b></span><span>›</span></a><button class="btn sub" id="shClose">閉じる</button></div>`;
+ document.body.appendChild(s);s.onclick=e=>{if(e.target===s)closeSheet();};s.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>startTour(b.dataset.id));s.querySelector('#shClose').onclick=closeSheet;s.querySelector('#shPrac').onclick=()=>{closeSheet();if(PRACTICE)return;$('#pracGo').click();};}
 function closeSheet(){$('#sheet')?.remove();}
 $('#helpBtn').onclick=openSheet;
+/* ---------- バーチャル練習 ---------- */
+const LESSONS=[
+ {t:'1. 積付（成形後）',steps:[
+  {x:'「積付」ボタンを押します（成形が終わったとき）。',hl:'#kLd',ok:()=>mode==='積付'},
+  {x:'仮のQRの「RENSHU-A1-01」を押します（パレットのかんばんを読んだことになります）。',hl:'[data-q="RENSHU-A1-01"]',ok:()=>mode==='積付'&&cur.kid==='RENSHU-A1-01'},
+  {x:'台車に載せたので「台車」を押します。',hl:'#carC',ok:()=>cur.kid==='RENSHU-A1-01'&&cur.car==='台車'},
+  {x:'半端で7箱でした。「－」を1回押して7箱にします。',hl:'#bxM',ok:()=>cur.car==='台車'&&cur.boxes===7},
+  {x:'「決定」を押します。',hl:'#goLoad',ok:()=>lastRec(r=>r.kind==='積付'&&r.kid==='RENSHU-A1-01'&&r.boxes===7)}]},
+ {t:'2. 入庫（倉庫に置く）',steps:[
+  {x:'倉庫に運びました。「入庫」ボタンを押します。',hl:'#kIn',ok:()=>mode==='入庫'},
+  {x:'かんばん「RENSHU-A1-01」を押します。',hl:'[data-q="RENSHU-A1-01"]',ok:()=>mode==='入庫'&&cur.kid==='RENSHU-A1-01'},
+  {x:'地図で置いた区画「B-2」をタップします。',hl:'#map [data-loc="B-2"]',ok:()=>cur.loc==='B-2'},
+  {x:'かんばんと置き場所を確かめて「入庫する」を押します。',hl:'#goIn',ok:()=>lastRec(r=>r.kind==='入庫'&&r.kid==='RENSHU-A1-01'&&r.loc==='B-2')}]},
+ {t:'3. 場所を移す',steps:[
+  {x:'フォークでC-1へ移しました。かんばん「RENSHU-A1-01」を押します（入庫のまま）。',hl:'[data-q="RENSHU-A1-01"]',ok:()=>mode==='入庫'&&cur.kid==='RENSHU-A1-01'},
+  {x:'赤い点線が今ある場所です。今度は区画のQR「C-1」を押します（レイアウト図のQRを読んだことになります）。',hl:'[data-q="C-1"]',ok:()=>cur.loc==='C-1'},
+  {x:'「入庫する」を押します。「置き場所を移動」と出ます。',hl:'#goIn',ok:()=>lastRec(r=>r.kind==='入庫'&&r.kid==='RENSHU-A1-01'&&r.loc==='C-1')}]},
+ {t:'4. 回収（空になった）',steps:[
+  {x:'パレットが空になりました。「回収」ボタンを押します（上の帯が赤くなります）。',hl:'#kOut',ok:()=>mode==='回収'},
+  {x:'かんばん「RENSHU-A1-01」を押します。かんばんは回収箱へ。',hl:'[data-q="RENSHU-A1-01"]',ok:()=>lastRec(r=>r.kind==='回収'&&r.kid==='RENSHU-A1-01')}]},
+ {t:'5. 間違いを体験（赤で止まる）',steps:[
+  {x:'わざと間違えます。入庫のまま、かんばんより先に区画「B-2」を押してください。',hl:'[data-q="B-2"]',ok:()=>/先にかんばん/.test($('#result').textContent)},
+  {x:'赤で止まりました。次は「回収」を押します。',hl:'#kOut',ok:()=>mode==='回収'},
+  {x:'倉庫に入れていないかんばん「RENSHU-B2-01」を押してください。',hl:'[data-q="RENSHU-B2-01"]',ok:()=>/倉庫にありません|まだ入庫していません/.test($('#result').textContent)},
+  {x:'これも赤で止まりました。間違いは登録されません。「入庫」を押して戻します。',hl:'#kIn',ok:()=>mode==='入庫'&&!/倉庫にありません/.test($('#result').textContent)}]},
+ {t:'6. 在庫を見る',steps:[
+  {x:'下の「在庫」タブを押して、品番ごとの枚数・個数を見ます。',hl:'#tabbar [data-t="inv"]',ok:()=>state.tab==='inv'},
+  {x:'おつかれさまでした。これで一通りです。上の「練習を終わる」で本番に戻ります。何度でも「最初からやり直す」で練習できます。',hl:'#pracEnd',ok:()=>false}]}];
+const lastRec=f=>{const r=state.recs[state.recs.length-1];return !!r&&f(r);};
+let coach={l:0,s:0};
+function coachShow(){if(!PRACTICE)return;$$('.coach-hl').forEach(e=>e.classList.remove('coach-hl'));const L=LESSONS[coach.l];if(!L)return;const st=L.steps[coach.s];
+ const total=LESSONS.reduce((a,l)=>a+l.steps.length,0),done=LESSONS.slice(0,coach.l).reduce((a,l)=>a+l.steps.length,0)+coach.s;
+ $('#coachT').textContent=`練習のお題　${L.t}（${coach.s+1}/${L.steps.length}）`;$('#coachX').textContent=st.x;$('#coachBar').style.width=(done/total*100)+'%';
+ const el=document.querySelector(st.hl);if(el){el.classList.add('coach-hl');const r=el.getBoundingClientRect(),top=$('#cCoach').getBoundingClientRect().bottom;if(r.top<top+8||r.bottom>innerHeight-130)window.scrollBy({top:r.top-top-90,behavior:'smooth'});}}
+function coachTick(){if(!PRACTICE)return;const L=LESSONS[coach.l];if(!L)return;const st=L.steps[coach.s];
+ try{if(st.ok()){coach.s++;if(coach.s>=L.steps.length){coach.l++;coach.s=0;if(LESSONS[coach.l]){toast('できました！ 次のお題へ');if(coach.l===3||coach.l===4)setMode('入庫',true);}}coachShow();}}catch(e){}
+ const el=document.querySelector(L.steps[coach.s]?.hl);if(el&&!el.classList.contains('coach-hl'))coachShow();}
+function practiceSetup(){loadDemo();state.who='練習';state.recs=[];state.mode='入庫';mode='入庫';save();whoUpd();}
+$('#pracGo').onclick=()=>ask('バーチャル練習を始めます。本番のデータはそのまま残り、練習の記録とは分かれます。',()=>{try{localStorage.setItem('souko-kanban-practice-on','1');localStorage.removeItem('souko-kanban-practice');}catch(e){}location.reload();});
+$('#pracEnd').onclick=()=>ask('練習を終わって、本番の画面に戻ります。',()=>{try{localStorage.removeItem('souko-kanban-practice-on');localStorage.removeItem('souko-kanban-practice');}catch(e){}location.reload();});
+$('#coachSkip').onclick=()=>{coach.s++;const L=LESSONS[coach.l];if(coach.s>=L.steps.length){coach.l=Math.min(coach.l+1,LESSONS.length-1);coach.s=0;}coachShow();};
+$('#coachReset').onclick=()=>ask('練習を最初からやり直します。',()=>{practiceSetup();coach={l:0,s:0};setMode('入庫');refresh();upd();coachShow();});
+$$('.vq').forEach(b=>b.onclick=()=>{for(const k in seen)delete seen[k];handle(b.dataset.q);});
+if(PRACTICE){document.body.classList.add('prac');$('#pracBar').hidden=false;$('#cCoach').hidden=false;$('#cVirt').hidden=false;if(!state.master.length)practiceSetup();setInterval(coachTick,300);}
 /* ---------- init ---------- */
-whoUpd();showTab(state.tab||'scan');upd();startCam();
+window.addEventListener('storage',e=>{if(e.key!==KEY||!e.newValue)return;try{state=applyLoaded(JSON.parse(e.newValue));refresh();upd();toast('別の画面で変わった内容を読み込みました');}catch(x){}});
+whoUpd();showTab(PRACTICE?'scan':(state.tab||'scan'));upd();if(PRACTICE)setTimeout(coachShow,300);lPrev();if(state.layout)$('#lPaste').value=state.layout.map(r=>r.join('\t')).join('\n');else $('#lPaste').value=state.locs.join('\n');startCam();
 if(!state.master.length&&!tourDone().prep){setTimeout(()=>{const t=document.createElement('div');t.id='tip';t.style.left='12px';t.style.right='12px';t.style.bottom='130px';t.innerHTML='はじめに「？」→「準備」のガイドで品番マスタを入れてください。';document.body.appendChild(t);setTimeout(()=>t.remove(),15000);},800);}
 </script></body></html>
