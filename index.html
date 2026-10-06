@@ -12624,8 +12624,9 @@ const M=()=>{const m={};state.master.forEach(x=>m[x.p]=x);return m;};
 function lastByKid(){const L={};state.recs.forEach(r=>{if(r.kind!=='積付'&&r.kind!=='成形終了')L[r.kid]=r;});return L;}
 /* 各かんばんの今の状態（積付＝運ぶ途中／入庫＝倉庫／回収＝なし）と個数 */
 /* 成形の区切り：品番ごとに、成形終了までの積付を読んだ順にまとめる */
-function runs(){const open={},done=[];state.recs.forEach(r=>{if(r.kind==='積付'){const p=r.kid.replace(/-\d+$/,'');const run=open[p]||(open[p]={p,start:r.ts,items:[]});
-  const i=run.items.findIndex(v=>v.kid===r.kid);const it={kid:r.kid,car:r.car,boxes:r.boxes,qty:r.qty,ts:r.ts,time:r.time,fin:r.fin};if(i>=0)run.items[i]=it;else run.items.push(it);if(r.end){run.end=r.ts;run.endTime=r.time;done.push(run);delete open[p];}}
+function runs(){const open={},done=[],lk={};state.recs.forEach(r=>{const prevK=lk[r.kid];if(r.kind!=='成形終了')lk[r.kid]=r.kind;if(r.kind==='積付'){const p=r.kid.replace(/-\d+$/,'');const run=open[p]||(open[p]={p,start:r.ts,items:[]});
+  /* 積付のままの読み直し＝訂正（置き換え）。入庫・回収の後の積付＝同じかんばんの次のパレット（追加） */
+  let i=-1;if(prevK==='積付')for(let j=run.items.length-1;j>=0;j--)if(run.items[j].kid===r.kid){i=j;break;}const it={kid:r.kid,car:r.car,boxes:r.boxes,qty:r.qty,ts:r.ts,time:r.time,fin:r.fin};if(i>=0)run.items[i]=it;else run.items.push(it);if(r.end){run.end=r.ts;run.endTime=r.time;done.push(run);delete open[p];}}
  else if(r.kind==='成形終了'){const run=open[r.kid];if(run){run.end=r.ts;run.endTime=r.time;done.push(run);delete open[r.kid];}}});
  return{open:Object.values(open),done};}
 function kstate(){const S={},m=M();state.recs.forEach(r=>{if(r.kind==='成形終了')return;const p=r.kid.replace(/-\d+$/,''),x=m[p],o=S[r.kid];
@@ -12711,7 +12712,7 @@ function handleProduct(p,code){const tag=code===p?'':`（現品表 ${code}）`;
  if(mode==='回収'){const W=pallets(p,'入庫');if(!W.length){beep(false);say('ng',`${p} は倉庫にありません。`);return;}
   chooser(`${p}${tag}：どのパレットが空になりましたか？`,W,v=>`No.${esc(v.kid.slice(p.length+1))}　＠ <b>${esc(v.loc)}</b>　${esc(v.car||'')} ${v.boxes??''}箱・入庫 ${esc(v.r.date.slice(5))} ${esc(v.r.time)}`,v=>handle(v.kid));return;}}
 function learnAlias(code){if(!state.master.length)return;const head=code.slice(0,4);const cand=state.master.filter(x=>x.p.startsWith(head)).concat(state.master.filter(x=>!x.p.startsWith(head)));
- const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">知らないバーコードです：${esc(code)}</p><p class="note" style="margin:0">現品表のバーコードなら、どの品番か選んでください。次からは自動で分かります。</p><input id="alQ" placeholder="品番で絞る" value="${esc(head)}"><div id="alL" style="display:flex;flex-direction:column;gap:6px;max-height:32vh;overflow:auto"></div>
+ const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">知らないバーコードです：${esc(code)}</p><p class="note" style="margin:0">現品表のバーコードなら、どの品番か選んでください。次からは自動で分かります。</p><input id="alQ" placeholder="品番で絞る" value="${state.master.some(x=>x.p.startsWith(head))?esc(head):''}"><div id="alL" style="display:flex;flex-direction:column;gap:6px;max-height:32vh;overflow:auto"></div>
  <details id="alNew"><summary><b>マスタにない → このコードのまま品番として登録</b></summary><div style="display:flex;flex-direction:column;gap:6px;margin-top:6px"><label class="note">機械 <select id="alM">${[...new Set(state.master.map(x=>x.m))].map(m=>`<option>${esc(m)}</option>`).join('')}<option>未設定</option></select></label>
  <div class="row"><label class="note">箱入数 <input id="alBox" type="number" inputmode="numeric" min="1" style="width:90px"></label><label class="note">パレット <input id="alBx" type="number" inputmode="numeric" min="1" style="width:70px">箱</label><label class="note">台車 <input id="alBc" type="number" inputmode="numeric" min="1" style="width:70px">箱</label></div>
  <button class="btn go" id="alAdd">このコードで登録</button><span class="note">月の数・発注点はあとで品番マスタ（Excel）に入れると正しく出ます。Excelから取り込み直しても、ここで登録した品番は残ります。</span></div></details>
@@ -12870,9 +12871,9 @@ function findUpd(){const q=$('#findQ').value.trim().toUpperCase();if(!q){$('#fin
  const inv=inventory();const hits=Object.keys(inv).filter(p=>p.toUpperCase().includes(q));
  $('#findOut').innerHTML=hits.length?hits.map(p=>`<div style="margin:6px 0"><b>${esc(p)}</b>　${inv[p].length}枚<br>${inv[p].map(r=>`<span class="pill ${r.fin==='未完'?'p-ng':'p-ok'}" style="margin:2px">${esc(r.kid.replace(p+'-','No.'))} ＠ ${esc(r.loc)}${r.qty?` ・${r.qty.toLocaleString()}個`:''}${r.fin==='未完'?' ・未完':''}</span>`).join('')}</div>`).join(''):'倉庫にありません。';}
 ['#invQ','#invM','#ordM'].forEach(s=>$(s).addEventListener('input',refresh));$('#findQ').addEventListener('input',findUpd);
-function health(){const h=$('#health');if(!h)return;const ne=toExp().length;const lb=state.lastBackup?Math.floor((Date.now()-state.lastBackup)/864e5):null;
+function health(){const h=$('#health');if(!h)return;let pct=0;try{pct=Math.round((localStorage.getItem(KEY)||'').length/5e6*100);}catch(e){}const ne=toExp().length;const lb=state.lastBackup?Math.floor((Date.now()-state.lastBackup)/864e5):null;
  const S=kstate();const tr=Object.values(S).filter(v=>v.st==='積付');const old=tr.filter(v=>Date.now()-v.r.ts>12*36e5).length;
- h.innerHTML=`<span>Excel未渡し <b class="${ne>200?'ng':''}">${ne}件</b></span><span>バックアップ <b class="${lb==null||lb>=2?'ng':''}">${lb==null?'まだ':lb===0?'今日':lb+'日前'}</b></span><span>運ぶ途中 <b class="${old?'ng':''}">${tr.length}枚${old?`（12時間以上 ${old}枚）`:''}</b></span>`;}
+ h.innerHTML=`<span>Excel未渡し <b class="${ne>200?'ng':''}">${ne}件</b></span><span>バックアップ <b class="${lb==null||lb>=2?'ng':''}">${lb==null?'まだ':lb===0?'今日':lb+'日前'}</b></span><span>運ぶ途中 <b class="${old?'ng':''}">${tr.length}枚${old?`（12時間以上 ${old}枚）`:''}</b></span>`+(pct>=50?`<span>保存容量 <b class="${pct>=80?'ng':''}">${pct}%</b>${pct>=80?'（記録 →「渡し済みの古い記録を整理」）':''}</span>`:'');}
 function stripUpd(){health();const R=rows();const k=R.filter(r=>r.st==='欠品').length,s=R.filter(r=>r.st==='生産指示').length;const st=$('#strip');
  if(state.tab==='ord'||state.tab==='scan'||(!k&&!s)){st.hidden=true;return;}st.hidden=false;$('#stripTxt').textContent=`欠品 ${k}品番 ／ 生産指示 ${s}品番`;}
 $('#strip').onclick=()=>showTab('ord');
@@ -12903,7 +12904,7 @@ $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.t
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
 $('#mApply').onclick=()=>{const out=[],dup=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=norm(c[2]);if(!p||p==='品番')return;if(out.some(y=>y.p===p)){dup.push(p);return;}
  const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};
- const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;calcItem(x);out.push(x);});
+ const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total;calcItem(x);if(x.total==null&&xt!=null)x.total=xt;out.push(x);});
  if(!out.length){$('#mInfo').textContent='取り込めませんでした（A〜L列をコピーしているか確認）';return;}
  if(dup.length){$('#mInfo').textContent='同じ品番が2行あります：'+[...new Set(dup)].join(', ')+'。Excelを直してから取り込んでください。';return;}
  const keepG=state.master.filter(y=>y.src==='現品表'&&!out.some(z=>z.p===y.p));const inv=inventory(),tr=transit(),lost=[...new Set([...Object.keys(inv),...Object.keys(tr)])].filter(p=>!out.some(y=>y.p===p)&&!keepG.some(y=>y.p===p));const diff=out.filter(y=>y._diff!=null);
