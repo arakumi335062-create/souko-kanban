@@ -176,10 +176,21 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cLoc" data-tabs="set"><h2>区画（倉庫のレイアウト）</h2>
   <p class="note">Excelのマス目に倉庫の形どおり区画名を書き、その範囲をコピーして貼り付けます。空のマスは通路になります。1列だけ貼れば、区画の一覧として使えます。</p><div class="row"><label class="note">倉庫 <select id="lWh"></select></label><button class="btn sub" id="lWhAdd">＋倉庫を追加</button></div><textarea id="lPaste" placeholder="A-1	A-2		B-1	B-2&#10;A-3	A-4		B-3	B-4"></textarea><div class="row"><button class="btn" id="lApply">取り込む</button><span class="note" id="lInfo"></span></div>
   <div id="lPrev" class="map off" style="margin-top:6px"></div></section>
- <section class="card" id="cBk" data-tabs="set"><h2>バックアップ</h2>
-  <div class="row"><button class="btn" id="bkOut">ファイルに書き出す</button><label class="btn sub">読み込む<input type="file" id="bkIn" accept=".json,application/json" hidden></label></div>
+ <section class="card" id="cBk" data-tabs="set"><h2>SDカード・ファイル（書き出し・取り込み）</h2>
+  <b>書き出す（タブレット → SDカード）</b>
+  <div class="row"><button class="btn" id="sdOut">まとめて書き出す</button><span class="note">バックアップ・Excel用の入出庫記録（まだ渡していない分）・在庫一覧を、日付つきで3つ保存します。毎日夕方に1回。</span></div>
+  <div class="row"><button class="btn sub" id="bkOut">バックアップだけ書き出す</button></div>
+  <b>取り込む（SDカード → タブレット）</b>
+  <div class="row"><label class="btn" id="sdInLbl">ファイルを取り込む<input type="file" id="sdIn" accept=".json,.txt,.tsv,.csv,application/json,text/plain,text/csv" hidden></label><span class="note">バックアップ（.json）なら全部を戻します。品番マスタ（.txt・.csv）なら品番マスタに取り込みます。種類は自動で見分けます。</span></div>
+  <input type="file" id="bkIn" accept=".json,application/json" hidden>
+  <details id="sdHow"><summary>SDカードを使う設定（最初に1回）</summary>
+  <ol class="note" style="margin:6px 0;padding-left:20px">
+  <li><b>書き出しをSDカードに入れる：</b>Chromeの右上「︙」→「設定」→「ダウンロード」→「ダウンロード先」を<b>「SDカード」</b>にします。以後、このアプリで書き出したファイルはSDカードの Download フォルダに入ります。（毎回場所を選びたいときは「保存先を毎回確認する」をオン）</li>
+  <li><b>SDカードから取り込む：</b>「ファイルを取り込む」を押す → 左上の「≡」→「SDカード」（またはSDカードの名前）→ ファイルを選びます。</li>
+  <li><b>PCとのやりとり：</b>SDカードをPCに差し、Download フォルダのCSVをExcelで開く／PCの「かんばん発行」で保存した「タブレット用_品番マスタ.txt」をSDカードに入れてタブレットへ。</li>
+  <li>「複数のファイルをダウンロードしますか？」と出たら「許可」を押します。</li></ol></details>
   <div class="row"><button class="btn sub" id="clrRec">記録を全部消す（練習の後に）</button></div>
-  <p class="note">毎日夕方に書き出しておくと、タブレットが壊れても戻せます。</p></section>
+  <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
  <section class="card" id="cView" data-tabs="set"><h2>表示</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label></section>
 </main>
@@ -12605,7 +12616,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&g
 const num=s=>{const v=parseFloat(String(s??'').replace(/[,，\s]/g,''));return isNaN(v)?null:v;};
 /* ---------- pages ---------- */
 const PAGES={scan:[{n:'読み取り',s:['#cCoach','#cVirt','#cKind','#cCam','#cLoad','#cRun','#cMap','#cNow']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
- rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster','#cAlias']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'バックアップ',s:['#cBk']},{n:'表示',s:['#cView']}]};
+ rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster','#cAlias']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'SDカード',s:['#cBk']},{n:'表示',s:['#cView']}]};
 let pgIdx={};
 function showTab(t){state.tab=t;save();$$('[data-tabs]').forEach(el=>el.classList.toggle('tab-off',!el.dataset.tabs.split(' ').includes(t)));
  $$('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderPages();refresh();}
@@ -12650,7 +12661,7 @@ const TL={
  '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
  '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
  '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
- '#camRetry':['Mở lại camera','Buka ulang kamera'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#sdOut':['Xuất tất cả (thẻ SD)','Ekspor semua (kartu SD)'],'#sdInLbl':['Nhập tệp (thẻ SD)','Impor file (kartu SD)'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
  '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
  '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
  '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
@@ -12916,8 +12927,7 @@ function dl(text,name,type){const a=document.createElement('a');a.href=URL.creat
 $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.trim();save();whoUpd();toast('記入者を決めました');};
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
 function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
-$('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const rd=new FileReader();rd.onload=()=>{const buf=rd.result;let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}
- t=t.replace(/^\ufeff/,'');if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);$('#mPaste').value=t;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();};rd.readAsArrayBuffer(f);};
+$('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);$('#mPaste').value=t;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
 $('#mApply').onclick=()=>{const out=[],dup=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=norm(c[2]);if(!p||p==='品番')return;if(out.some(y=>y.p===p)){dup.push(p);return;}
  const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};
  const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total;calcItem(x);if(x.total==null&&xt!=null)x.total=xt;out.push(x);});
@@ -12950,9 +12960,21 @@ function loadDemo(){state.master=[
 $('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。',loadDemo);
 $('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
 $('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。消す前に、バックアップを自動で書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');state.recs=[];save();refresh();upd();toast('記録を消しました');});
-$('#bkIn').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
+function restoreText(t){let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
  if(!o||typeof o!=='object'||!Array.isArray(o.recs)||!Array.isArray(o.master)){toast('倉庫かんばんのバックアップではありません');return;}
- ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件）で今のデータを上書きします。`,()=>{state=applyLoaded(o);save();location.reload();});});e.target.value='';};
+ const last=o.recs.length?o.recs[o.recs.length-1]:null;
+ ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件${last?`・最後の記録 ${last.date} ${last.time}`:''}）で今のデータを上書きします。`+(state.recs.length?`\n今のタブレットの記録（${state.recs.length}件）は、念のため先に書き出します。`:''),()=>{if(state.recs.length)dl(JSON.stringify(state),`倉庫かんばん_戻す前_${today()}.json`,'application/json');state=applyLoaded(o);save();setTimeout(()=>location.reload(),600);});}
+$('#bkIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;f.text().then(restoreText);};
+function readTextFile(f,cb){const rd=new FileReader();rd.onload=()=>{const buf=rd.result;let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}cb(t.replace(/^\ufeff/,''));};rd.readAsArrayBuffer(f);}
+$('#sdIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{const s=t.trim();
+ if(/\.json$/i.test(f.name)||s.startsWith('{')){restoreText(s);return;}
+ const tsv=!s.includes('\t')&&s.includes(',')?csvToTsv(s):s;const n=tsv.split(/\r?\n/).filter(l=>{const c=l.split('\t');return c.length>=12&&c[2]&&norm(c[2])!=='品番';}).length;
+ if(!n){toast('品番マスタの形（A〜L列）ではありません');say('ng',`${f.name}：品番マスタ（A〜L列）でもバックアップでもないので取り込めません。`);return;}
+ $('#mPaste').value=tsv;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
+$('#sdOut').onclick=()=>{const rs=toExp();state.lastBackup=Date.now();save();
+ dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');
+ setTimeout(()=>{if(rs.length)$('#dlCsv').click();},700);setTimeout(()=>$('#invCsv').click(),1400);
+ setTimeout(()=>{health();say('ok',`SDカード（ダウンロード先）に保存しました：バックアップ${rs.length?`・入出庫記録${rs.length}件`:''}・在庫一覧。`+(rs.length?'ExcelのA列に貼ったら「記録」→「渡し済みにする」。':''));toast('書き出しました');},1600);};
 $('#onePage').checked=state.onePage;$('#onePage').onchange=e=>{state.onePage=e.target.checked;save();renderPages();};
 /* ---------- confirm / toast ---------- */
 function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;white-space:pre-line">${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sub" id="cNo">やめる</button><button class="btn" id="cYes">はい</button></div></div>`;document.body.appendChild(d);
