@@ -113,7 +113,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="health" id="health"></div></section>
  <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れる（かんばん・レイアウトのQR）</h2>
   <div class="cam" id="camBox"><video id="vid" playsinline muted></video><div class="frame"></div><div class="msg" id="camMsg">カメラを準備しています…</div></div>
-  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><label class="btn sub" id="photoLbl" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
+  <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><button class="btn sub" id="camSw" hidden>カメラ切替（前/後）</button><label class="btn sub" id="photoLbl" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
  <section class="card" id="cVirt" data-tabs="scan" hidden><h2>仮のQR（押すと「読んだ」ことになります）</h2>
   <div class="vrow"><span class="note">かんばん</span><button class="vq kb" data-q="23JA-01">23JA-01</button><button class="vq kb" data-q="23JA-02">23JA-02</button><button class="vq kb" data-q="23JA-03">23JA-03</button></div>
   <div class="vrow"><span class="note">区画のQR</span><button class="vq zn" data-q="B-2">B-2</button><button class="vq zn" data-q="C-1">C-1</button><span class="note">操作カード</span><button class="vq op" data-q="入庫">入庫</button><button class="vq op2" data-q="回収">回収</button></div></section>
@@ -12648,7 +12648,7 @@ const TL={
  '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
  '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
  '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
- '#camRetry':['Mở lại camera','Buka ulang kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
  '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
  '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
  '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
@@ -12667,8 +12667,9 @@ $('#langBtn').onclick=()=>{const cur=JSON.stringify(state.langs||[]);let i=LANGS
 let palLock=false;
 let mode=state.mode==='積付'?'積付':'入庫',cur={kid:null,loc:null,car:'パレット',boxes:null};
 let outTimer=null;
-function setMode(k,silent){mode=k;state.mode=k==='回収'?'入庫':k;save();clearTimeout(outTimer);if(k==='回収')outTimer=setTimeout(()=>{if(mode==='回収'&&!cur.kid){setMode('入庫');say('info','回収のまま1分たったので、入庫に戻しました。');}},60000);cur={kid:null,loc:null,car:'パレット',boxes:null};upd();if(!silent)say('info',k==='入庫'?'かんばんのQRを読んでください。':k==='積付'?'積付：成形したパレット（台車）のかんばんを読んでください。':'回収：空になったパレットのかんばんを読んでください。');}
-$('#kLd').onclick=()=>{for(const k in seen)delete seen[k];setMode('積付');};$('#kIn').onclick=()=>{for(const k in seen)delete seen[k];setMode('入庫');};$('#kOut').onclick=()=>{for(const k in seen)delete seen[k];setMode('回収');};
+function setMode(k,silent){mode=k;state.mode=k==='回収'?'入庫':k;save();clearTimeout(outTimer);if(k==='回収')outTimer=setTimeout(()=>{if(mode==='回収'&&!cur.kid){setMode('入庫');say('info','回収のまま1分たったので、入庫に戻しました。');}},60000);cur={kid:null,loc:null,car:'パレット',boxes:null};upd();camMsgUpd();if(!silent)say('info',k==='入庫'?'かんばんのQRを読んでください。':k==='積付'?'積付：成形したパレット（台車）のかんばんを読んでください。':'回収：空になったパレットのかんばんを読んでください。');}
+const modeBtn=k=>()=>{for(const c in seen)delete seen[c];setMode(k);camEnsure();const cam=$('#cCam');if(cam&&!cam.classList.contains('pg-off')){const r=cam.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)cam.scrollIntoView({behavior:'smooth',block:'center'});}};
+$('#kLd').onclick=modeBtn('積付');$('#kIn').onclick=modeBtn('入庫');$('#kOut').onclick=modeBtn('回収');
 function defBoxes(x,car){return car==='台車'?(x?.boxesCart??null):(x?.boxes??null);}
 function upd(){document.body.dataset.mode=mode;$('#modeTtl').innerHTML=esc('① いまの作業：'+mode+(mode==='積付'?'（成形後）':mode==='入庫'?'（倉庫に置く・移す）':'（空になった）'))+tlLines(TLMODE[mode]);$('#kLd').classList.toggle('on',mode==='積付');$('#kIn').classList.toggle('on',mode==='入庫');$('#kOut').classList.toggle('on',mode==='回収');
  $('#cLoad').classList.toggle('mode-off',mode!=='積付');$('#cRun').classList.toggle('mode-off',mode!=='積付');runRender();$('#cMap').classList.toggle('mode-off',mode==='積付');$('#cNow').classList.toggle('mode-off',mode==='積付');
@@ -12818,17 +12819,27 @@ let zx=null;function zxReader(){if(zx!==null)return zx;try{const Z=window.ZXing;
 function zxDecode(img,w,h){const r=zxReader();if(!r)return null;try{const d=img.data,lum=new Uint8ClampedArray(w*h);for(let i=0,j=0;i<lum.length;i++,j+=4)lum[i]=(d[j]*299+d[j+1]*587+d[j+2]*114)/1000;const src=new ZXing.RGBLuminanceSource(lum,w,h);const res=r.decode(new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(src)));return res?res.getText():null;}catch(e){return null;}finally{try{r.reset();}catch(e){}}}
 let zxTurn=0;
 async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks().forEach(t=>t.stop());
- stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:960}},audio:false});
- const v=$('#vid');v.srcObject=stream;await v.play();msg.textContent='QRを枠の中に入れてください';
+ camBusy=true;const vc=state.camId?{deviceId:{exact:state.camId},width:{ideal:1280},height:{ideal:960}}:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:960}};
+ try{stream=await navigator.mediaDevices.getUserMedia({video:vc,audio:false});}catch(e){if(!state.camId)throw e;state.camId='';save();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});}
+ const v=$('#vid');v.srcObject=stream;await v.play();camT=v.currentTime;camAt=Date.now();camBusy=false;camMsgUpd();camListUpd();
  if('BarcodeDetector' in window){try{const want=['qr_code','code_128','code_39','code_93','codabar','ean_13','ean_8','itf','upc_a','upc_e','data_matrix'];let sup=want;try{sup=(await BarcodeDetector.getSupportedFormats()).filter(f=>want.includes(f));}catch(e){}if(!sup.includes('qr_code'))sup.unshift('qr_code');det=new BarcodeDetector({formats:sup});barFormats=sup;}catch(e){det=null;}}
- if(!scanning){scanning=true;loop();}}catch(e){msg.textContent='カメラが使えません。「写真で読む」かスキャナーで入力してください。';}}
-async function loop(){const v=$('#vid');if(state.tab==='scan'&&v.readyState>=2){let code=null;
+ if(!scanning){scanning=true;loop();}}catch(e){camBusy=false;msg.textContent='カメラが使えません。「写真で読む」かスキャナーで入力してください。';}}
+let camBusy=false,camT=0,camAt=0,camList=[];
+function camMsgUpd(){try{const m=$('#camMsg');if(m&&stream&&stream.active)m.textContent=mode==='積付'?'積付：かんばん（または現品表）を枠に入れてください':mode==='回収'?'回収：空になったパレットのかんばんを枠に':'入庫：かんばん → 区画のQRを枠に';}catch(e){}}
+async function camListUpd(){try{camList=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');}catch(e){camList=[];}const b=$('#camSw');if(b)b.hidden=camList.length<2;}
+/* カメラが止まった・固まった（映像が進まない）ときは自動で開き直す */
+function camDead(){if(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended'))return true;const v=$('#vid');return v.paused||Date.now()-camAt>2500;}
+function camEnsure(){if(camBusy)return;if(camDead())startCam();else camMsgUpd();}
+async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentTime;camAt=Date.now();}
+ if(state.tab==='scan'&&!document.hidden&&!camBusy&&stream&&Date.now()-camAt>4000){camAt=Date.now();startCam();}
+ if(state.tab==='scan'&&v.readyState>=2){let code=null;
  try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const im=x.getImageData(0,0,w,h);const q=jsQR(im.data,w,h,{inversionAttempts:'dontInvert'});if(q)code=q.data;else if((zxTurn=(zxTurn+1)%2)===0){const c2=$('#cv2'),W=800,H=Math.round(800*v.videoHeight/v.videoWidth)||600;c2.width=W;c2.height=H;const x2=c2.getContext('2d',{willReadFrequently:true});x2.drawImage(v,0,0,W,H);code=zxDecode(x2.getImageData(0,0,W,H),W,H);}}}catch(e){}
  if(code){const now=Date.now();/* 同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない。QRごとに覚える */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}
  setTimeout(()=>requestAnimationFrame(loop),180);}
 $('#camRetry').onclick=startCam;
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended')))startCam();});
-$('#photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height);const q=jsQR(im.data,c.width,c.height);const t=q?q.data:zxDecode(im,c.width,c.height);if(t)handle(t);else{beep(false);say('ng','写真からQR・バーコードが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
+$('#camSw').onclick=async()=>{await camListUpd();if(camList.length<2)return;const curId=stream?.getVideoTracks()[0]?.getSettings?.().deviceId||state.camId;const i=camList.findIndex(d=>d.deviceId===curId);const nx=camList[(i+1)%camList.length];state.camId=nx.deviceId;save();await startCam();toast(`カメラ：${nx.label||((i+1)%camList.length+1)+'番目'}（次からもこのカメラ）`);};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){camAt=Date.now();setTimeout(camEnsure,800);}});window.addEventListener('focus',()=>setTimeout(camEnsure,800));
+$('#photo').onchange=e=>{setTimeout(camEnsure,800);const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height);const q=jsQR(im.data,c.width,c.height);const t=q?q.data:zxDecode(im,c.width,c.height);if(t)handle(t);else{beep(false);say('ng','写真からQR・バーコードが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
 /* ---------- pallet box count ---------- */
 function calcItem(x){const P=state.params;if(x.monthly!=null&&P.work)x.daily=x.monthly/P.work;if(x.box&&x.boxes){x.palQty=x.box*x.boxes;if(x.daily){x.rop=Math.ceil(x.daily*(P.lead+P.safe)/x.palQty);x.total=x.lot!=null?Math.ceil((x.lot+x.daily*P.safe)/x.palQty)+x.rop:x.total;}}else if(x.boxes===null&&x.box){x.palQty=null;x.rop=null;x.total=null;}return x;}
 function palRender(){fillMachines('#palM');const m=$('#palM').value,q=$('#palQ').value.trim().toUpperCase(),only=$('#palOnly').checked;
