@@ -39,8 +39,8 @@ nav.tabbar button.on{color:var(--ink);font-weight:700;box-shadow:inset 0 3px 0 v
 .map.off .z{opacity:.55}
 .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--sub)}.legend .lg{display:flex;align-items:center;gap:4px}.legend .z{display:inline-block;width:18px;height:14px;min-height:0;padding:0}
 .big3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.big3 .kind{font-size:22px;padding:10px 4px}.kind.ld{background:#7a5a00}
-.finsel{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fin{border:3px solid var(--line);background:var(--surface);color:var(--sub);border-radius:12px;padding:10px;font-size:18px;font-weight:800}.fin.on[data-fin="完成"]{border-color:var(--ok);background:var(--oksoft);color:var(--ok)}.fin.on[data-fin="未完"]{border-color:var(--ng);background:var(--ngsoft);color:var(--ng)}.finsel.off .fin{opacity:.45}.fin.on::before{content:"✓ "}
-.lc.mi{border-color:var(--ng);color:var(--ng)}.mi-t{color:var(--ng);font-weight:700}
+.finsel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.fin{border:3px solid var(--line);background:var(--surface);color:var(--sub);border-radius:12px;padding:10px;font-size:18px;font-weight:800}.fin.on[data-fin="セット品"]{border-color:var(--ok);background:var(--oksoft);color:var(--ok)}.fin.on[data-fin="単品"]{border-color:var(--teal);background:var(--tealsoft);color:var(--teal)}.fin.on[data-fin="未セット品"]{border-color:var(--ng);background:var(--ngsoft);color:var(--ng)}.finsel.off .fin{opacity:.45}.fin.on::before{content:"✓ "}
+.lc.mi{border-color:var(--ng);color:var(--ng)}.mi-t{color:var(--ng);font-weight:700}.ft{font-weight:700;font-size:12px}.ft0{color:var(--ng)}.ft1{color:var(--ok)}.ft2{color:var(--teal)}
 .car{border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:14px;font-size:20px;font-weight:800}.car.on{border-color:var(--accent);background:var(--accentsoft)}
 .stepper{display:grid;grid-template-columns:72px 1fr 72px;gap:8px;align-items:center}.stepper .btn{font-size:30px;padding:8px 0}.stepper div{display:flex;align-items:center;justify-content:center;gap:6px;font-size:20px;font-weight:700}.stepper input{width:110px;font-size:30px;font-weight:900;text-align:center;padding:6px}
 .mode-off{display:none!important}
@@ -69,7 +69,7 @@ body[data-mode='積付'] #modeTtl{color:#7a5a00}body[data-mode='回収'] #modeTt
 .slot3{display:grid;grid-template-columns:.7fr 1.6fr 1fr;gap:6px}.slot3>div{background:var(--bg);border-radius:8px;padding:4px 8px;display:flex;flex-direction:column}.slot3 small{color:var(--sub);font-size:11px}.slot3 .v{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:15px;word-break:break-all}
 #cKind,#cNow,#cCam{padding:10px 12px;gap:8px}
 .cam video{width:100%;height:100%;object-fit:cover}
-.cam .frame{position:absolute;inset:18%;border:4px dashed var(--accent);border-radius:12px;pointer-events:none}
+.cam .frame{position:absolute;inset:18%;border:4px dashed var(--accent);border-radius:12px;pointer-events:none}.cam.idle .frame{border-color:rgba(255,255,255,.35)}.cam.armed .frame{border:5px solid #35d07f;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}.scanbtn{font-size:24px;padding:16px}.scanbtn.armed{background:#1f9d5c}body.autoscan .scanbtn{display:none}
 .cam .msg{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.55);color:#fff;font-size:14px;padding:6px 10px;text-align:center}
 .slot{display:grid;grid-template-columns:90px 1fr;gap:6px 10px;font-size:15px;align-items:center}
 .slot .v{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:17px;word-break:break-all}
@@ -112,15 +112,16 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="steps" id="steps"><span>かんばん</span><span>置き場所</span><span>入庫する</span></div>
   <div class="res info" id="result">かんばんのQRを読んでください。</div>
   <div class="health" id="health"></div></section>
- <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れる（かんばん・レイアウトのQR）</h2>
+ <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れて「読む」（かんばん・レイアウトのQR）</h2>
   <div class="cam" id="camBox"><video id="vid" playsinline muted></video><div class="frame"></div><div class="msg" id="camMsg">カメラを準備しています…</div></div>
+  <button class="btn go scanbtn" id="scanGo">📷 読む</button>
   <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><button class="btn sub" id="camSw" hidden>カメラ切替（前/後）</button><label class="btn sub" id="photoLbl" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
  <section class="card" id="cVirt" data-tabs="scan" hidden><h2>仮のQR（押すと「読んだ」ことになります）</h2>
   <div class="vrow"><span class="note">かんばん</span><button class="vq kb" data-q="23JA-01">23JA-01</button><button class="vq kb" data-q="23JA-02">23JA-02</button><button class="vq kb" data-q="23JA-03">23JA-03</button></div>
   <div class="vrow"><span class="note">区画のQR</span><button class="vq zn" data-q="B-2">B-2</button><button class="vq zn" data-q="C-1">C-1</button><span class="note">操作カード</span><button class="vq op" data-q="入庫">入庫</button><button class="vq op2" data-q="回収">回収</button></div></section>
  <section class="card" id="cLoad" data-tabs="scan"><h2>③ 荷姿と箱数を選んで「決定」</h2>
   <div class="slot3 two"><div><small>かんばん</small><span class="v" id="lKid">－</span></div><div><small>入数</small><span class="v big" id="lQty">－</span></div></div>
-  <div class="finsel"><button class="fin" data-fin="完成">完成品</button><button class="fin" data-fin="未完">未完（仕掛）</button></div><div class="big2"><button class="car" id="carP" data-car="パレット">パレット</button><button class="car" id="carC" data-car="台車">台車</button></div>
+  <div class="finsel"><button class="fin" data-fin="未セット品">未セット品</button><button class="fin" data-fin="セット品">セット品</button><button class="fin" data-fin="単品">単品</button></div><div class="big2"><button class="car" id="carP" data-car="パレット">パレット</button><button class="car" id="carC" data-car="台車">台車</button></div>
   <div class="stepper"><button class="btn sub" id="bxM">－</button><div><input id="bxN" type="number" inputmode="numeric" min="1"><span>箱</span></div><button class="btn sub" id="bxP">＋</button></div>
   <p class="note" id="lHint"></p>
   <div class="ldbtns"><button class="btn go" id="goLoad" disabled>決定（成形中・続く）</button><button class="btn go end" id="goLoadEnd" disabled>決定して成形終了<small>この型の最後のパレット</small></button></div>
@@ -142,7 +143,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cNow" data-tabs="scan"><h2>④ 確かめて登録</h2>
   <div class="nowrow"><div class="slot3 two"><div><small>かんばん</small><span class="v" id="sKid">－</span></div><div><small>置き場所</small><span class="v big" id="sLoc">－</span></div></div>
   <button class="btn go" id="goIn" disabled>入庫する</button></div>
-  <div class="finsel"><button class="fin" data-fin="完成">完成品</button><button class="fin" data-fin="未完">未完（仕掛）</button></div>
+  <div class="finsel"><button class="fin" data-fin="未セット品">未セット品</button><button class="fin" data-fin="セット品">セット品</button><button class="fin" data-fin="単品">単品</button></div>
   <div class="row"><button class="btn sub" id="quickOut" hidden>このかんばんを回収する</button><button class="btn sub" id="clearCur">やり直す</button><button class="btn sub" id="undo">1つ前の登録を取り消す</button></div></section>
  <!-- 在庫 -->
  <section class="card" id="cInv" data-tabs="inv"><h2>倉庫の在庫</h2>
@@ -201,7 +202,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="clrRec">記録を全部消す（練習の後に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
- <section class="card" id="cView" data-tabs="set"><h2>表示</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label></section>
+ <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
 <div class="pnav"><button id="prevPg">◀ 前</button><button id="nextPg">次 ▶</button></div>
@@ -12665,13 +12666,13 @@ const TL={
  '#kIn':['Nhập kho / chuyển vị trí','Masuk gudang / pindah lokasi'],
  '#kOut':['Thu hồi kanban (hết hàng)','Ambil kanban (sudah kosong)'],
  '#goIn':['Xác nhận nhập kho','Konfirmasi masuk gudang'],
- '.fin[data-fin="完成"]':['Thành phẩm','Barang jadi'],'.fin[data-fin="未完"]':['Chưa xong','Belum selesai'],
+ '.fin[data-fin="未セット品"]':['Chưa ghép bộ','Belum diset'],'.fin[data-fin="セット品"]':['Đã ghép bộ','Sudah diset'],'.fin[data-fin="単品"]':['Hàng đơn','Satuan'],
  '#goLoad':['Xác nhận (đang ép, tiếp tục)','Konfirmasi (masih cetak)'],'#goLoadEnd':['Xác nhận & kết thúc ép','Konfirmasi & selesai cetak'],'#cRun h2':['Mã đang ép (theo thứ tự quét)','Sedang dicetak (urutan pindai)'],
  '#carP':['Pallet','Palet'],'#carC':['Xe đẩy','Troli'],
  '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
  '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
  '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
- '#camRetry':['Mở lại camera','Buka ulang kamera'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#sdOut':['Xuất tất cả (thẻ SD)','Ekspor semua (kartu SD)'],'#sdInLbl':['Nhập tệp (thẻ SD)','Impor file (kartu SD)'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#scanGo':['Quét','Pindai'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#sdOut':['Xuất tất cả (thẻ SD)','Ekspor semua (kartu SD)'],'#sdInLbl':['Nhập tệp (thẻ SD)','Impor file (kartu SD)'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
  '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
  '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
  '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
@@ -12720,7 +12721,7 @@ function pickLoc(code,byTap){if(mode==='移動'){if(!cur.kid){beep(false);say('n
   cur.to=code;cur.dest='区画';if(!byTap)beep(true);upd();say('info',`行き先：${code}（バラ箱として在庫に残ります）。箱数を確かめて「移動する」。`);return;}
  if(mode!=='入庫'){beep(false);say('ng',mode==='積付'?'積付のときは置き場所はいりません。倉庫に着いたら「入庫」で選びます。':'回収のときは置き場所はいりません。かんばんを読んでください。');return;}
  if(!cur.kid){beep(false);say('ng','先にかんばんのQRを読んでください。');return;}
- const last=lastByKid()[cur.kid];if(last&&last.kind==='入庫'&&last.loc===code&&(kstate()[cur.kid]?.fin||'完成')===cur.fin){beep(false);say('ng',`${cur.kid} は今も ${code} にあります。動かしていなければ登録はいりません。`);return;}
+ const last=lastByKid()[cur.kid];if(last&&last.kind==='入庫'&&last.loc===code&&finN(kstate()[cur.kid]?.fin)===cur.fin){beep(false);say('ng',`${cur.kid} は今も ${code} にあります。動かしていなければ登録はいりません。`);return;}
  cur.loc=code;if(!byTap)beep(true);upd();say('info',`置き場所：${code}。よければ「入庫する」を押してください。`);}
 /* ---------- 現品表のバーコード（品番だけ・番号なし） ---------- */
 const pad2=n=>String(n).padStart(2,'0');
@@ -12738,7 +12739,7 @@ function handleProduct(p,code){const tag=code===p?'':`（現品表 ${code}）`;
   const n=freeNum(p);if(n==null){beep(false);say('ng',`${p} のかんばん番号が全部使われています。`);return;}handle(`${p}-${pad2(n)}`);say('info',`現品表から ${p}${tag}。積付の記録がないので、新しく No.${pad2(n)}（いつもの箱数）で入庫します。置き場所を選んでください。`);return;}
  if(mode==='移動'){const W=pallets(p,'入庫').filter(v=>v.boxes==null||v.boxes>0);if(!W.length){beep(false);say('ng',`${p} は倉庫にありません。`);return;}
   if(W.length===1){handle(W[0].kid);return;}
-  chooser(`${p}${tag}：どのパレットから取り出しますか？`,W,v=>`No.${esc(v.kid.slice(p.length+1))}　＠ <b>${esc(v.loc)}</b>　残り${v.boxes??'？'}箱${v.fin==='未完'?'・未完':''}・入庫 ${esc(v.r.date.slice(5))}`,v=>handle(v.kid));return;}
+  chooser(`${p}${tag}：どのパレットから取り出しますか？`,W,v=>`No.${esc(v.kid.slice(p.length+1))}　＠ <b>${esc(v.loc)}</b>　残り${v.boxes??'？'}箱・${finShort(v.fin)}・入庫 ${esc(v.r.date.slice(5))}`,v=>handle(v.kid));return;}
  if(mode==='回収'){const W=pallets(p,'入庫');if(!W.length){beep(false);say('ng',`${p} は倉庫にありません。`);return;}
   chooser(`${p}${tag}：どのパレットが空になりましたか？`,W,v=>`No.${esc(v.kid.slice(p.length+1))}　＠ <b>${esc(v.loc)}</b>　${esc(v.car||'')} ${v.boxes??''}箱・入庫 ${esc(v.r.date.slice(5))} ${esc(v.r.time)}`,v=>handle(v.kid));return;}}
 function learnAlias(code){if(!state.master.length)return;const head=code.slice(0,4);const cand=state.master.filter(x=>x.p.startsWith(head)).concat(state.master.filter(x=>!x.p.startsWith(head)));
@@ -12765,7 +12766,7 @@ function handle(code){code=norm(code);if(!code)return;if(document.getElementById
  if(mode==='移動'){if(S?.st!=='入庫'){beep(false);say('ng',S?.st==='積付'?'このかんばんはまだ入庫していません（運ぶ途中）。先に「入庫」で置き場所を登録します。':'このかんばんは倉庫にありません。');return;}
   if(cur.kid&&cur.kid!==code&&(cur.to||cur.dest==='出荷')&&cur.take){/* 別のパレットに読み替え */}
   if(S.boxes!=null&&S.boxes<=0){beep(false);say('ng',`${code} は箱が0です。空なら「回収」してください。`);return;}
-  cur={kid:code,loc:S.loc,take:1,dest:cur.dest||'区画',to:null,fin:S.fin||'完成'};upd();beep(true);
+  cur={kid:code,loc:S.loc,take:1,dest:cur.dest||'区画',to:null,fin:finN(S.fin)};upd();beep(true);
   say('info',`${code}（${S.loc}・残り${S.boxes!=null?S.boxes+'箱':'？箱'}）。取り出す箱数と行き先を選んで「移動する」。`);$('#cMove').scrollIntoView({behavior:'smooth',block:'nearest'});return;}
  if(mode==='回収'){if(!needWho())return;if(!last||last.kind!=='入庫'){beep(false);say('ng',S?.st==='積付'?'このかんばんはまだ入庫していません（積付のまま）。倉庫に置いたなら先に「入庫」。':'このかんばんは倉庫にありません（入庫のピッを忘れていないか確認）。');return;}
   cur.kid=code;commit();return;}
@@ -12774,17 +12775,19 @@ function handle(code){code=norm(code);if(!code)return;if(document.getElementById
   say('info',S?.st==='積付'?`積付済み（${S.car} ${S.boxes}箱）。直すなら選び直して「決定」。`:'荷姿と箱数を確かめて「決定」を押してください。');return;}
  if(cur.kid&&cur.kid!==code&&cur.loc){beep(false);say('ng',`まだ ${cur.kid} を登録していません。「入庫する」を押すか「やり直す」。`);return;}
  cur={kid:code,loc:null,car:'パレット',boxes:null,fin:finOf(S,code.replace(/-\d+$/,''))};upd();beep(true);
- say('info',last&&last.kind==='入庫'?`このかんばんは今 ${last.loc} にあります（${S?.fin||'完成'}）。移したなら新しい場所を選んで「入庫する」。完成⇔未完だけ変えるなら下のボタン。空になったなら「このかんばんを回収する」。`:S?.st==='積付'?`積付済み：${S.car} ${S.boxes}箱（${(S.qty||0).toLocaleString()}個）。置き場所をタップするか、レイアウトのQRを読んでください。`:'積付の記録がないので、いつもの箱数で入庫します。置き場所をタップするか、レイアウトのQRを読んでください。');
+ say('info',last&&last.kind==='入庫'?`このかんばんは今 ${last.loc} にあります（${finN(S?.fin)}）。移したなら新しい場所を選んで「入庫する」。区分（未セット・セット・単品）だけ変えるなら下のボタン。空になったなら「このかんばんを回収する」。`:S?.st==='積付'?`積付済み：${S.car} ${S.boxes}箱（${(S.qty||0).toLocaleString()}個）。置き場所をタップするか、レイアウトのQRを読んでください。`:'積付の記録がないので、いつもの箱数で入庫します。置き場所をタップするか、レイアウトのQRを読んでください。');
  $('#cMap').scrollIntoView({behavior:'smooth',block:'nearest'});}
-function finOf(S,p){return S&&(S.st==='積付'||S.st==='入庫')?(S.fin||'完成'):((state.finDef||{})[p]||'完成');}
+const FINS=['未セット品','セット品','単品'];const finN=v=>v==='完成'?'セット品':v==='未完'?'未セット品':(FINS.includes(v)?v:'単品');const finShort=v=>({'未セット品':'未セット','セット品':'セット','単品':'単品'})[finN(v)];
+const finTag=v=>`<span class="ft ft${FINS.indexOf(finN(v))}">${finShort(v)}</span>`;
+function finOf(S,p){return S&&(S.st==='積付'||S.st==='入庫')?finN(S.fin):finN((state.finDef||{})[p]);}
 $$('.fin').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にかんばん（または現品表）を読んでください。');return;}const p=cur.kid.replace(/-\d+$/,'');cur.fin=b.dataset.fin;state.finDef=state.finDef||{};state.finDef[p]=cur.fin;save();
- if(mode==='入庫'){const S=kstate()[cur.kid];if(S?.st==='入庫'){const was=S.fin||'完成';if(cur.fin!==was&&!cur.loc){cur.loc=S.loc;upd();say('info',`${cur.kid}（${S.loc}）を「${was}」→「${cur.fin}」に変えます。よければ「入庫する」。`);return;}if(cur.fin===was&&cur.loc===S.loc){cur.loc=null;upd();say('info','元の状態に戻しました。動かしたなら置き場所を選びます。');return;}}}
+ if(mode==='入庫'){const S=kstate()[cur.kid];if(S?.st==='入庫'){const was=finN(S.fin);if(cur.fin!==was&&!cur.loc){cur.loc=S.loc;upd();say('info',`${cur.kid}（${S.loc}）を「${was}」→「${cur.fin}」に変えます。よければ「入庫する」。`);return;}if(cur.fin===was&&cur.loc===S.loc){cur.loc=null;upd();say('info','元の状態に戻しました。動かしたなら置き場所を選びます。');return;}}}
  upd();});
 function stamp(){const d=new Date();const p2=n=>String(n).padStart(2,'0');return{ts:d.getTime(),date:`${d.getFullYear()}/${p2(d.getMonth()+1)}/${p2(d.getDate())}`,time:`${p2(d.getHours())}:${p2(d.getMinutes())}`};}
 function commit(){const S=kstate()[cur.kid];const x=M()[cur.kid.replace(/-\d+$/,'')];
  const r=Object.assign(stamp(),{kind:mode,kid:cur.kid,loc:mode==='入庫'?cur.loc:'',who:state.who||'',exp:false});
  if(mode==='入庫'){const keep=S&&(S.st==='積付'||S.st==='入庫');r.car=keep?S.car:'パレット';r.boxes=keep?S.boxes:(x?.boxes??null);r.qty=keep?S.qty:(x?.palQty??null);r.fin=cur.fin||finOf(S,x?.p);}
- const prev=lastByKid()[r.kid];let moved=prev?.kind==='入庫'&&r.kind==='入庫',chg=null;if(moved&&prev.loc===r.loc){moved=false;chg=`${S?.fin||'完成'}→${r.fin}`;r.chg=chg;}if(moved)r.moved=true;state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
+ const prev=lastByKid()[r.kid];let moved=prev?.kind==='入庫'&&r.kind==='入庫',chg=null;if(moved&&prev.loc===r.loc){moved=false;chg=`${finN(S?.fin)}→${r.fin}`;r.chg=chg;}if(moved)r.moved=true;state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
  const wasOut=mode==='回収';if(wasOut){mode='入庫';state.mode='入庫';save();}cur={kid:null,loc:null,car:'パレット',boxes:null};upd();refresh();
  say('ok',wasOut?`回収しました：${r.kid}。かんばんを回収箱へ入れてください。`:chg?`登録しました：${r.kid}（${r.loc}）を ${chg} に変えました。`:`登録しました：入庫 ${r.kid} → ${r.loc}${moved?'（置き場所を移動）':''}${r.qty?`・${r.qty.toLocaleString()}個`:''}・${r.fin}`);}
 /* ---------- 移動（箱単位） ---------- */
@@ -12803,7 +12806,7 @@ $$('.mvdest button').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にか�
 $('#clearMv').onclick=()=>$('#clearCur').click();$('#undoMv').onclick=()=>$('#undo').click();
 $('#goMv').onclick=()=>{if(mode!=='移動'||!cur.kid||!needWho())return;const S=kstate()[cur.kid];if(S?.st!=='入庫'){say('ng','このかんばんは倉庫にありません。');return;}
  const x=M()[cur.kid.replace(/-\d+$/,'')];const n=cur.take;if(!(n>0)||(S.boxes!=null&&n>S.boxes))return;const to=cur.dest==='出荷'?'出荷':cur.to;if(!to)return;
- const r=Object.assign(stamp(),{kind:'移動',kid:cur.kid,loc:S.loc,to,boxes:n,qty:x?.box?x.box*n:(S.qty!=null&&S.boxes?Math.round(S.qty/S.boxes*n):null),fin:S.fin||'完成',who:state.who||'',exp:true});
+ const r=Object.assign(stamp(),{kind:'移動',kid:cur.kid,loc:S.loc,to,boxes:n,qty:x?.box?x.box*n:(S.qty!=null&&S.boxes?Math.round(S.qty/S.boxes*n):null),fin:finN(S.fin),who:state.who||'',exp:true});
  state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);const kid=cur.kid;const left=S.boxes!=null?S.boxes-n:null;
  cur={kid:null,loc:null,take:1,dest:cur.dest,to:null};upd();refresh();
  say('ok',`移動しました：${kid}（${r.loc}）から ${n}箱${r.qty?`（${r.qty.toLocaleString()}個）`:''} → ${to==='出荷'?'出荷・持ち出し':to+'（バラ）'}。`+(left!=null?`パレットの残り ${left}箱。`:''));
@@ -12817,7 +12820,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('.lc.bara');if(!c
 function runRender(){const box=$('#runList');if(!box)return;const R=runs();const today=new Date();today.setHours(0,0,0,0);
  const done=R.done.filter(v=>v.end>=today.getTime()).slice(-3).reverse();
  const one=(v,isDone)=>`<div class="run${isDone?' done':''}"><h3><span>${esc(v.p)}　${isDone?`<span class="pill p-ok">成形終了 ${esc(v.endTime||'')}</span>`:'<span class="pill p-run">成形中</span>'}</span><span class="note">${v.items.length}枚・${v.items.reduce((a,x)=>a+(x.qty||0),0).toLocaleString()}個</span>${isDone?'':`<button class="btn sub" data-end="${esc(v.p)}">成形終了にする</button>`}</h3>
- <div class="seq">${v.items.map((x,i)=>`<span><b>${i+1}枚目</b> No.${esc(x.kid.slice(v.p.length+1))}・${esc(x.car)}${x.boxes}箱${x.fin==='未完'?'・<span class="mi-t">未完</span>':''}・${esc(x.time||'')}</span>`).join('')}</div></div>`;
+ <div class="seq">${v.items.map((x,i)=>`<span><b>${i+1}枚目</b> No.${esc(x.kid.slice(v.p.length+1))}・${esc(x.car)}${x.boxes}箱・${finTag(x.fin)}・${esc(x.time||'')}</span>`).join('')}</div></div>`;
  box.innerHTML=(R.open.length?R.open.map(v=>one(v,false)).join(''):'<p class="note">いま成形中の品番はありません。かんばんを読んで「決定」すると、ここに読んだ順に並びます。</p>')+done.map(v=>one(v,true)).join('');}
 $('#runList').addEventListener('click',e=>{const b=e.target.closest('[data-end]');if(!b)return;const p=b.dataset.end;const run=runs().open.find(v=>v.p===p);if(!run)return;
  ask(`${p} の成形を終了にします（全${run.items.length}枚・${run.items.reduce((a,x)=>a+(x.qty||0),0).toLocaleString()}個）。`,()=>{const r=Object.assign(stamp(),{kind:'成形終了',kid:p,loc:'',who:state.who||'',exp:true});state.recs.push(r);if(!save()){state.recs.pop();return;}upd();refresh();say('ok',`${p} の成形を終了にしました。`);});});
@@ -12828,7 +12831,7 @@ $('#quickOut').onclick=()=>{const k=cur.kid;ask(`${k} を回収します（パ�
 $$('.car').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にかんばんのQRを読んでください。');return;}const x=M()[cur.kid.replace(/-\d+$/,'')];cur.car=b.dataset.car;cur.boxes=defBoxes(x,cur.car);upd();});
 $('#bxM').onclick=()=>{if(!cur.kid)return;cur.boxes=Math.max(1,(cur.boxes||1)-1);upd();};$('#bxP').onclick=()=>{if(!cur.kid)return;cur.boxes=(cur.boxes||0)+1;upd();};
 $('#bxN').addEventListener('input',e=>{const v=parseInt(e.target.value,10);cur.boxes=v>0?v:null;upd();});
-function goLoad(end){if(!cur.kid)return;if(!needWho())return;const x=M()[cur.kid.replace(/-\d+$/,'')];if(!(cur.boxes>0&&x?.box))return;const d=defBoxes(x,cur.car);const snap={kid:cur.kid,car:cur.car,boxes:cur.boxes,fin:cur.fin||'完成'};
+function goLoad(end){if(!cur.kid)return;if(!needWho())return;const x=M()[cur.kid.replace(/-\d+$/,'')];if(!(cur.boxes>0&&x?.box))return;const d=defBoxes(x,cur.car);const snap={kid:cur.kid,car:cur.car,boxes:cur.boxes,fin:finN(cur.fin)};
  const go=()=>{if(cur.kid!==snap.kid)return;const r=Object.assign(stamp(),{kind:'積付',kid:snap.kid,loc:'',who:state.who||'',exp:true,car:snap.car,boxes:snap.boxes,qty:x.box*snap.boxes,fin:snap.fin});if(end)r.end=true;state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
   const k=cur.kid;cur={kid:null,loc:null,car:'パレット',boxes:null};upd();refresh();const rn=runs();const run=end?rn.done.at(-1):rn.open.find(v=>v.p===k.replace(/-\d+$/,''));const seq=run?run.items.findIndex(v=>v.kid===k)+1:1;
   say('ok',`積付しました：${k}・${r.fin}・${r.car} ${r.boxes}箱（${r.qty.toLocaleString()}個）・${seq}枚目。`+(end?`成形終了（全${run.items.length}枚・${run.items.reduce((a,v)=>a+(v.qty||0),0).toLocaleString()}個）。`:'')+'倉庫へ運んで「入庫」してください。');};
@@ -12886,18 +12889,24 @@ async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks(
  if('BarcodeDetector' in window){try{const want=['qr_code','code_128','code_39','code_93','codabar','ean_13','ean_8','itf','upc_a','upc_e','data_matrix'];let sup=want;try{sup=(await BarcodeDetector.getSupportedFormats()).filter(f=>want.includes(f));}catch(e){}if(!sup.includes('qr_code'))sup.unshift('qr_code');det=new BarcodeDetector({formats:sup});barFormats=sup;}catch(e){det=null;}}
  if(!scanning){scanning=true;loop();}}catch(e){camBusy=false;msg.textContent='カメラが使えません。「写真で読む」かスキャナーで入力してください。';}}
 let camBusy=false,camT=0,camAt=0,camList=[];
-function camMsgUpd(){try{const m=$('#camMsg');if(m&&stream&&stream.active)m.textContent=mode==='移動'?'移動：箱を取り出すパレットのかんばんを枠に':mode==='積付'?'積付：かんばん（または現品表）を枠に入れてください':mode==='回収'?'回収：空になったパレットのかんばんを枠に':'入庫：かんばん → 区画のQRを枠に';}catch(e){}}
+function camMsgUpd(){try{const m=$('#camMsg');if(m&&stream&&stream.active)m.textContent=(state.autoScan?'':'「読む」を押す → ')+(mode==='移動'?'移動：箱を取り出すパレットのかんばんを枠に':mode==='積付'?'積付：かんばん（または現品表）を枠に入れてください':mode==='回収'?'回収：空になったパレットのかんばんを枠に':'入庫：かんばん → 区画のQRを枠に');}catch(e){}}
 async function camListUpd(){try{camList=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');}catch(e){camList=[];}const b=$('#camSw');if(b)b.hidden=camList.length<2;}
 /* カメラが止まった・固まった（映像が進まない）ときは自動で開き直す */
 function camDead(){if(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended'))return true;const v=$('#vid');return v.paused||Date.now()-camAt>2500;}
 function camEnsure(){if(camBusy)return;if(camDead())startCam();else camMsgUpd();}
 async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentTime;camAt=Date.now();}
  if(state.tab==='scan'&&!document.hidden&&!camBusy&&stream&&Date.now()-camAt>4000){camAt=Date.now();startCam();}
- if(state.tab==='scan'&&v.readyState>=2){let code=null;
+ if(state.tab==='scan'&&v.readyState>=2&&(state.autoScan||armedUntil>Date.now())){let code=null;
  try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const im=x.getImageData(0,0,w,h);const q=jsQR(im.data,w,h,{inversionAttempts:'dontInvert'});if(q)code=q.data;else if((zxTurn=(zxTurn+1)%2)===0){const c2=$('#cv2'),W=800,H=Math.round(800*v.videoHeight/v.videoWidth)||600;c2.width=W;c2.height=H;const x2=c2.getContext('2d',{willReadFrequently:true});x2.drawImage(v,0,0,W,H);code=zxDecode(x2.getImageData(0,0,W,H),W,H);}}}catch(e){}
- if(code){const now=Date.now();/* 同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない。QRごとに覚える */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}
+ if(code){const now=Date.now();if(!state.autoScan){disarm();handle(code);}else{/* 連続読み取り：同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}}
+ else if(!state.autoScan&&armedUntil&&armedUntil<=Date.now()){disarm();say('ng','読めませんでした。QRを枠の中に入れて、もう一度「読む」。');beep(false);}
  setTimeout(()=>requestAnimationFrame(loop),180);}
 $('#camRetry').onclick=startCam;
+/* ボタンで読む：押してから6秒の間に見えた最初の1つだけ読む（連続で何度も読まない） */
+let armedUntil=0;function scanUi(){const b=$('#scanGo'),c=$('#camBox');const on=armedUntil>Date.now();if(b){b.classList.toggle('armed',on);b.firstChild.textContent=on?'読み取り中…（QRを枠に）':'📷 読む';}if(c){c.classList.toggle('armed',on&&!state.autoScan);c.classList.toggle('idle',!on&&!state.autoScan);}document.body.classList.toggle('autoscan',!!state.autoScan);}
+function arm(){if(document.getElementById('confirm'))return;camEnsure();armedUntil=Date.now()+6000;scanUi();}
+function disarm(){armedUntil=0;scanUi();}
+$('#scanGo').onclick=()=>armedUntil>Date.now()?disarm():arm();$('#camBox').addEventListener('click',()=>{if(!state.autoScan)arm();});
 $('#camSw').onclick=async()=>{await camListUpd();if(camList.length<2)return;const curId=stream?.getVideoTracks()[0]?.getSettings?.().deviceId||state.camId;const i=camList.findIndex(d=>d.deviceId===curId);const nx=camList[(i+1)%camList.length];state.camId=nx.deviceId;save();await startCam();toast(`カメラ：${nx.label||((i+1)%camList.length+1)+'番目'}（次からもこのカメラ）`);};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){camAt=Date.now();setTimeout(camEnsure,800);}});window.addEventListener('focus',()=>setTimeout(camEnsure,800));
 $('#photo').onchange=e=>{setTimeout(camEnsure,800);const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height);const q=jsQR(im.data,c.width,c.height);const t=q?q.data:zxDecode(im,c.width,c.height);if(t)handle(t);else{beep(false);say('ng','写真からQR・バーコードが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
@@ -12933,20 +12942,20 @@ function bara(){const B={};state.recs.forEach(r=>{if(r.kind==='移動'&&r.to&&r.
 function baraBy(){const m={};bara().forEach(b=>(m[b.p]=m[b.p]||[]).push(b));return m;}
 function inventory(){const S=kstate(),inv={};Object.entries(S).forEach(([k,v])=>{if(v.st==='入庫')(inv[v.p]=inv[v.p]||[]).push(Object.assign({kid:k},v));});return inv;}
 function transit(){const S=kstate(),t={};Object.entries(S).forEach(([k,v])=>{if(v.st==='積付')(t[v.p]=t[v.p]||[]).push(Object.assign({kid:k},v));});return t;}
-function rows(){const inv=inventory(),tr=transit(),bb=baraBy();return state.master.map(x=>{const n=(inv[x.p]||[]).length;const ba=bb[x.p]||[];const pcs=(inv[x.p]||[]).reduce((a,v)=>a+(v.qty??x.palQty??0),0)+ba.reduce((a,v)=>a+(v.qty||0),0);const days=x.daily?pcs/x.daily:null;const nt=(tr[x.p]||[]).length;const mi=(inv[x.p]||[]).filter(v=>v.fin==='未完').length;const st=status(x,n+nt);
- const make=(st==='欠品'||st==='生産指示')&&x.total&&x.palQty?(x.total-n-nt)*x.palQty:0;return{x,n,pcs,nt,mi,days,st,make,locs:(inv[x.p]||[]),ba};});}
-function locChips(L){if(!L||!L.length)return '';const c={};L.forEach(v=>{const k=v.loc+'\t'+(v.fin==='未完'?'未完':'');c[k]=(c[k]||0)+1;});
- return Object.keys(c).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true})).map(k=>{const [l,f]=k.split('\t');return `<span class="lc${f?' mi':''}">${esc(l)}${f?' 未完':''}${c[k]>1?`<b>×${c[k]}</b>`:''}</span>`;}).join('');}
+function rows(){const inv=inventory(),tr=transit(),bb=baraBy();return state.master.map(x=>{const n=(inv[x.p]||[]).length;const ba=bb[x.p]||[];const pcs=(inv[x.p]||[]).reduce((a,v)=>a+(v.qty??x.palQty??0),0)+ba.reduce((a,v)=>a+(v.qty||0),0);const days=x.daily?pcs/x.daily:null;const nt=(tr[x.p]||[]).length;const fc=FINS.map(f=>(inv[x.p]||[]).filter(v=>finN(v.fin)===f).length);const mi=fc[0];const st=status(x,n+nt);
+ const make=(st==='欠品'||st==='生産指示')&&x.total&&x.palQty?(x.total-n-nt)*x.palQty:0;return{x,n,pcs,nt,mi,fc,days,st,make,locs:(inv[x.p]||[]),ba};});}
+function locChips(L){if(!L||!L.length)return '';const c={};L.forEach(v=>{const k=v.loc+'\t'+finN(v.fin);c[k]=(c[k]||0)+1;});
+ return Object.keys(c).sort((a,b)=>a.localeCompare(b,'ja',{numeric:true})).map(k=>{const [l,f]=k.split('\t');return `<span class="lc${f==='未セット品'?' mi':''}">${esc(l)} ${finTag(f)}${c[k]>1?`<b>×${c[k]}</b>`:''}</span>`;}).join('');}
 function refresh(){const openP=new Set(runs().open.map(v=>v.p));fillMachines('#invM');fillMachines('#ordM');const R=rows();
  const q=$('#invQ').value.trim().toUpperCase(),m=$('#invM').value;
- $('#invBody').innerHTML=R.filter(r=>(!m||r.x.m===m)&&(!q||r.x.p.toUpperCase().includes(q))).map(r=>`<tr><td>${esc(r.x.p)}<br><span class="note">${esc(r.x.m)} ${esc(r.x.mold)}</span></td><td class="n">${r.n}${r.mi?`<br><span class="mi-t">未完${r.mi}</span>`:''}${r.nt?`<br><span class="note">途中${r.nt}</span>`:''}</td><td class="n">${r.pcs?r.pcs.toLocaleString():'－'}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td>${r.st?`<span class="pill ${pillOf(r.st)}">${r.st}</span>`:''}${openP.has(r.x.p)?'<span class="pill p-run">成形中</span>':''}</td><td class="locs">${(locChips(r.locs)+r.ba.map(b=>`<span class="lc bara" data-bp="${esc(b.p)}" data-bl="${esc(b.loc)}">${esc(b.loc)} バラ${b.boxes}箱</span>`).join(''))||'<span class="note">－</span>'}</td></tr>`).join('')||'<tr><td colspan="6" class="note">品番マスタが入っていません</td></tr>';
+ $('#invBody').innerHTML=R.filter(r=>(!m||r.x.m===m)&&(!q||r.x.p.toUpperCase().includes(q))).map(r=>`<tr><td>${esc(r.x.p)}<br><span class="note">${esc(r.x.m)} ${esc(r.x.mold)}</span></td><td class="n">${r.n}${r.n?'<br>'+r.fc.map((n,i)=>n?`<span class="ft ft${i}">${finShort(FINS[i])}${n}</span>`:'').filter(Boolean).join(' '):''}${r.nt?`<br><span class="note">途中${r.nt}</span>`:''}</td><td class="n">${r.pcs?r.pcs.toLocaleString():'－'}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td>${r.st?`<span class="pill ${pillOf(r.st)}">${r.st}</span>`:''}${openP.has(r.x.p)?'<span class="pill p-run">成形中</span>':''}</td><td class="locs">${(locChips(r.locs)+r.ba.map(b=>`<span class="lc bara" data-bp="${esc(b.p)}" data-bl="${esc(b.loc)}">${esc(b.loc)} バラ${b.boxes}箱</span>`).join(''))||'<span class="note">－</span>'}</td></tr>`).join('')||'<tr><td colspan="6" class="note">品番マスタが入っていません</td></tr>';
  const om=$('#ordM').value;const O=R.filter(r=>(r.st==='欠品'||r.st==='生産指示')&&(!om||r.x.m===om)).sort((a,b)=>(a.days??0)-(b.days??0));
  $('#ordBody').innerHTML=O.map(r=>`<tr><td>${esc(r.x.m)}</td><td>${esc(r.x.p)}<br><span class="pill ${pillOf(r.st)}">${r.st}</span></td><td class="n">${r.n}</td><td class="n">${r.days==null?'－':r.days.toFixed(1)}</td><td class="n">${r.make.toLocaleString()}</td></tr>`).join('')||'<tr><td colspan="5" class="note">いま生産指示はありません</td></tr>';
  $('#recBody').innerHTML=state.recs.slice(-60).reverse().map(r=>`<tr><td>${r.date.slice(5)} ${r.time}</td><td><span class="pill ${r.kind==='入庫'?'p-ok':r.kind==='積付'||r.kind==='成形終了'||r.kind==='移動'||r.kind==='バラ出'?'p-warn':'p-ng'}">${r.kind}</span></td><td>${esc(r.kid)}${r.boxes&&(r.kind==='移動'||r.kind==='バラ出')?` <span class="note">${r.boxes}箱</span>`:''}</td><td>${esc(r.loc)}${r.to?` → ${esc(r.to)}`:''}</td></tr>`).join('')||'<tr><td colspan="4" class="note">まだ記録はありません</td></tr>';
  $('#unexp').textContent=toExp().length;findUpd();stripUpd();if(state.tab==='set'&&typeof palRender==='function'&&!palLock)palRender();}
 function findUpd(){const q=$('#findQ').value.trim().toUpperCase();if(!q){$('#findOut').innerHTML='品番を入れると、倉庫にあるパレットと置き場所が出ます。';return;}
  const inv=inventory(),bb=baraBy();const hits=[...new Set([...Object.keys(inv),...Object.keys(bb)])].filter(p=>p.toUpperCase().includes(q));
- $('#findOut').innerHTML=hits.length?hits.map(p=>`<div style="margin:6px 0"><b>${esc(p)}</b>　${(inv[p]||[]).length}枚${bb[p]?`・バラ${bb[p].reduce((a,b)=>a+b.boxes,0)}箱`:''}<br>${(bb[p]||[]).map(b=>`<span class="lc bara" data-bp="${esc(b.p)}" data-bl="${esc(b.loc)}">${esc(b.loc)} バラ${b.boxes}箱</span>`).join('')}${(inv[p]||[]).map(r=>`<span class="pill ${r.fin==='未完'?'p-ng':'p-ok'}" style="margin:2px">${esc(r.kid.replace(p+'-','No.'))} ＠ ${esc(r.loc)}${r.qty?` ・${r.qty.toLocaleString()}個`:''}${r.fin==='未完'?' ・未完':''}</span>`).join('')}</div>`).join(''):'倉庫にありません。';}
+ $('#findOut').innerHTML=hits.length?hits.map(p=>`<div style="margin:6px 0"><b>${esc(p)}</b>　${(inv[p]||[]).length}枚${bb[p]?`・バラ${bb[p].reduce((a,b)=>a+b.boxes,0)}箱`:''}<br>${(bb[p]||[]).map(b=>`<span class="lc bara" data-bp="${esc(b.p)}" data-bl="${esc(b.loc)}">${esc(b.loc)} バラ${b.boxes}箱</span>`).join('')}${(inv[p]||[]).map(r=>`<span class="pill ${finN(r.fin)==='未セット品'?'p-ng':'p-ok'}" style="margin:2px">${esc(r.kid.replace(p+'-','No.'))} ＠ ${esc(r.loc)}${r.qty?` ・${r.qty.toLocaleString()}個`:''}・${finShort(r.fin)}</span>`).join('')}</div>`).join(''):'倉庫にありません。';}
 ['#invQ','#invM','#ordM'].forEach(s=>$(s).addEventListener('input',refresh));$('#findQ').addEventListener('input',findUpd);
 function health(){const h=$('#health');if(!h)return;let pct=0;try{pct=Math.round((localStorage.getItem(KEY)||'').length/5e6*100);}catch(e){}const ne=toExp().length;const lb=state.lastBackup?Math.floor((Date.now()-state.lastBackup)/864e5):null;
  const S=kstate();const tr=Object.values(S).filter(v=>v.st==='積付');const old=tr.filter(v=>Date.now()-v.r.ts>12*36e5).length;
@@ -12955,7 +12964,7 @@ function stripUpd(){health();const R=rows();const k=R.filter(r=>r.st==='欠品')
  if(state.tab==='ord'||state.tab==='scan'||(!k&&!s)){st.hidden=true;return;}st.hidden=false;$('#stripTxt').textContent=`欠品 ${k}品番 ／ 生産指示 ${s}品番`;}
 $('#strip').onclick=()=>showTab('ord');
 /* ---------- export ---------- */
-const fields=r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,[r.moved?'移動':'',r.chg?`状態変更 ${r.chg}`:'',r.kind==='入庫'&&r.qty?`${r.car} ${r.boxes}箱 ${r.qty}個`:'',r.kind==='入庫'&&r.fin==='未完'&&!r.chg?'未完':''].filter(Boolean).join(' ')];
+const fields=r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,[r.moved?'移動':'',r.chg?`状態変更 ${r.chg}`:'',r.kind==='入庫'&&r.qty?`${r.car} ${r.boxes}箱 ${r.qty}個`:'',r.kind==='入庫'&&!r.chg?finN(r.fin):''].filter(Boolean).join(' ')];
 const csvq=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 let copied=null;
@@ -12967,11 +12976,11 @@ $('#dlCsv').onclick=()=>{const rs=toExp();if(!rs.length){toast('渡していな�
 $('#markExp').onclick=()=>{if(copied&&copied.length){const n=copied.length,later=toExp().length-n;ask(`コピーした${n}件を「渡し済み」にします。`+(later>0?`（コピーの後の${later}件は、次回に渡します）`:''),()=>{copied.forEach(r=>r.exp=true);copied=null;save();refresh();expMsg(`${n}件を渡し済みにしました。`);});}
  else ask('まだコピーしていません。今ある記録をすべて「渡し済み」にしますか？（Excelに貼っていないなら「やめる」）',()=>{state.recs.forEach(r=>r.exp=true);save();refresh();});};
 function expMsg(m,ng){let e=$('#expMsg');if(!e){e=document.createElement('div');e.id='expMsg';$('#markExp').closest('.row').after(e);}e.className='res '+(ng?'ng':'ok');e.textContent=m;}
-$('#allCsv').onclick=()=>{if(!state.recs.length){toast('記録がありません');return;}const csv='﻿日付,時刻,区分,かんばん,置き場所,記入者,荷姿,箱数,個数,完成/未完,移動,成形終了,Excel渡し済み\n'+state.recs.map(r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,r.car||'',r.boxes??'',r.qty??'',r.fin||'',r.to?`→${r.to}`:r.moved?'移動':r.chg?'状態変更 '+r.chg:'',r.end||r.kind==='成形終了'?'終了':'',r.exp&&r.kind!=='積付'&&r.kind!=='成形終了'?'済':''].map(csvq).join(',')).join('\n');dl(csv,`全記録_${today()}.csv`,'text/csv');expMsg(`${state.recs.length}件をCSVに保存しました（見る・集計する用。Excelの入出庫記録に貼るのは「コピー」の方）。`);};
+$('#allCsv').onclick=()=>{if(!state.recs.length){toast('記録がありません');return;}const csv='﻿日付,時刻,区分,かんばん,置き場所,記入者,荷姿,箱数,個数,区分,移動,成形終了,Excel渡し済み\n'+state.recs.map(r=>[r.date,r.time,r.kind,r.kid,r.loc,r.who,r.car||'',r.boxes??'',r.qty??'',r.fin?finN(r.fin):'',r.to?`→${r.to}`:r.moved?'移動':r.chg?'状態変更 '+r.chg:'',r.end||r.kind==='成形終了'?'終了':'',r.exp&&r.kind!=='積付'&&r.kind!=='成形終了'?'済':''].map(csvq).join(',')).join('\n');dl(csv,`全記録_${today()}.csv`,'text/csv');expMsg(`${state.recs.length}件をCSVに保存しました（見る・集計する用。Excelの入出庫記録に貼るのは「コピー」の方）。`);};
 $('#runCsv').onclick=()=>{const R=runs();const all=[...R.done,...R.open.map(v=>Object.assign({},v,{end:null}))];if(!all.length){toast('成形の記録がありません');return;}
  const fmt=t=>{if(!t)return'';const d=new Date(t);return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
  const csv='﻿品番,状態,開始,終了,枚数,個数,読んだ順\n'+all.map(v=>[v.p,v.end?'成形終了':'成形中',fmt(v.start),fmt(v.end),v.items.length,v.items.reduce((a,x)=>a+(x.qty||0),0),v.items.map((x,i)=>`${i+1}:${x.kid.slice(v.p.length+1)}(${x.car}${x.boxes}箱)`).join(' ')].map(csvq).join(',')).join('\n');dl(csv,`成形実績_${today()}.csv`,'text/csv');expMsg(`${all.length}件の成形を保存しました。`);};
-$('#invCsv').onclick=()=>{const R=rows();const openP=new Set(runs().open.map(v=>v.p));const csv='﻿機械,品番,品名,倉庫の枚数,うち未完,運ぶ途中,バラ(箱),個数,何日分,状態,成形中,置き場所\n'+R.map(r=>{const c={};r.locs.forEach(v=>c[v.loc]=(c[v.loc]||0)+1);return [r.x.m,r.x.p,r.x.n,r.n,r.mi,r.nt,r.ba.reduce((a,b)=>a+b.boxes,0)||'',r.pcs||0,r.days==null?'':r.days.toFixed(1),r.st,openP.has(r.x.p)?'成形中':'',Object.keys(c).sort().map(k=>c[k]>1?`${k}×${c[k]}`:k).concat(r.ba.map(b=>`${b.loc}バラ${b.boxes}箱`)).join(' ')].map(csvq).join(',');}).join('\n');dl(csv,`在庫一覧_${today()}.csv`,'text/csv');toast('在庫一覧を保存しました');};
+$('#invCsv').onclick=()=>{const R=rows();const openP=new Set(runs().open.map(v=>v.p));const csv='﻿機械,品番,品名,倉庫の枚数,未セット品,セット品,単品,運ぶ途中,バラ(箱),個数,何日分,状態,成形中,置き場所\n'+R.map(r=>{const c={};r.locs.forEach(v=>c[v.loc]=(c[v.loc]||0)+1);return [r.x.m,r.x.p,r.x.n,r.n,...r.fc,r.nt,r.ba.reduce((a,b)=>a+b.boxes,0)||'',r.pcs||0,r.days==null?'':r.days.toFixed(1),r.st,openP.has(r.x.p)?'成形中':'',Object.keys(c).sort().map(k=>c[k]>1?`${k}×${c[k]}`:k).concat(r.ba.map(b=>`${b.loc}バラ${b.boxes}箱`)).join(' ')].map(csvq).join(',');}).join('\n');dl(csv,`在庫一覧_${today()}.csv`,'text/csv');toast('在庫一覧を保存しました');};
 $('#prune').onclick=()=>{const keep=Date.now()-90*864e5;const S=kstate();const cur_=new Set(Object.values(S).map(v=>v.r));const old=state.recs.filter(r=>r.exp&&r.ts<keep&&!cur_.has(r));
  if(!old.length){toast('整理できる古い記録はありません（90日より前で渡し済みのもの）。');return;}
  ask(`90日より前でExcelに渡し済みの記録${old.length}件を、このタブレットから消します（Excelには残っています）。先にバックアップを書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');const del=new Set(old);state.recs=state.recs.filter(r=>!del.has(r));save();refresh();toast(`${old.length}件を整理しました`);});};
@@ -13032,13 +13041,14 @@ $('#sdOut').onclick=()=>{const rs=toExp();state.lastBackup=Date.now();save();
  dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');
  setTimeout(()=>{if(rs.length)$('#dlCsv').click();},700);setTimeout(()=>$('#invCsv').click(),1400);
  setTimeout(()=>{health();say('ok',`SDカード（ダウンロード先）に保存しました：バックアップ${rs.length?`・入出庫記録${rs.length}件`:''}・在庫一覧。`+(rs.length?'ExcelのA列に貼ったら「記録」→「渡し済みにする」。':''));toast('書き出しました');},1600);};
+$('#autoScan').checked=!!state.autoScan;$('#autoScan').onchange=e=>{state.autoScan=e.target.checked;save();disarm();camMsgUpd();};scanUi();
 $('#onePage').checked=state.onePage;$('#onePage').onchange=e=>{state.onePage=e.target.checked;save();renderPages();};
 /* ---------- confirm / toast ---------- */
 function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;white-space:pre-line">${esc(msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sub" id="cNo">やめる</button><button class="btn" id="cYes">はい</button></div></div>`;document.body.appendChild(d);
  d.querySelector('#cNo').onclick=()=>d.remove();d.querySelector('#cYes').onclick=()=>{d.remove();yes();};}
 function toast(m){const t=document.createElement('div');t.id='tip';t.style.left='50%';t.style.top='70px';t.style.transform='translateX(-50%)';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 /* ---------- long-press help ---------- */
-const HELP=[{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'完成品／未完（仕掛）',x:'そのパレットが完成品か、まだ途中（未完）かを記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで状態だけ変えられます。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
+const HELP=[{a:'qa',s:'#scanGo',t:'読む',x:'押してから6秒の間に、枠に入ったQR（バーコード）を1つだけ読みます。読んだら止まるので、何度も読みません。カメラの映像を押しても同じです。連続で読みたいときは 設定 →「表示・読み取り」。'},{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'未セット品／セット品／単品',x:'そのパレットの区分を記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで区分だけ変えられます（例：未セット品→セット品）。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
  {a:'scan',s:'#kOut',t:'回収',x:'パレットの製品がなくなったとき。押してからかんばんを読むと回収。1回ごとに入庫に戻ります。'},
  {a:'scan',s:'#goIn',t:'入庫する',x:'かんばんと置き場所がそろうと押せます。押したときに登録されます。'},
  {a:'layout',s:'#map',t:'置き場所の地図',x:'数字はその区画のパレット枚数。黄色は同じ品番がある区画、赤い点線はこのかんばんが今ある区画。'},
