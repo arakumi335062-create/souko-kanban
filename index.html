@@ -162,6 +162,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cAlias" data-tabs="set"><h2>現品表のバーコード</h2><p class="note">現品表のバーコードの中身と品番の対応です。品番と同じ中身なら登録はいりません。</p><div id="alInfo"></div></section>
  <section class="card" id="cMaster" data-tabs="set"><h2>品番マスタを入れる</h2>
   <p class="note">Excelの「品番マスタ」で4行目から最後の行まで、A列〜L列をコピーして貼り付けます（機械・金型・品番・品名・箱入数・月の需要・1日の需要・パレット1枚の箱数・パレット1枚の個数・ロット・発注点・総枚数）。</p>
+  <div class="row"><label class="btn" id="mFileLbl">ファイルから読み込む<input type="file" id="mFile" accept=".txt,.tsv,.csv,text/plain,text/csv,text/tab-separated-values" hidden></label><span class="note">PCの「かんばん発行」で保存した「タブレット用_品番マスタ.txt」か、ExcelのCSV</span></div>
+  <p class="note" style="margin:0">または、下に貼り付けて「取り込む」：</p>
   <textarea id="mPaste"></textarea><div class="row"><button class="btn" id="mApply">取り込む</button><button class="btn sub" id="demo">練習用のデータを入れる</button><span class="note" id="mInfo"></span></div></section>
  <section class="card" id="cPal" data-tabs="set"><h2>パレット1枚に載る箱の数</h2>
   <p class="note">箱の大きさで載る数が違うので、品番ごとに決めます。変えると「1枚の個数・発注点・かんばんの総枚数」が自動で計算し直されます。</p>
@@ -12648,7 +12650,7 @@ const TL={
  '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
  '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
  '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
- '#camRetry':['Mở lại camera','Buka ulang kamera'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
  '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
  '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
  '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
@@ -12913,6 +12915,9 @@ function dl(text,name,type){const a=document.createElement('a');a.href=URL.creat
 /* ---------- settings ---------- */
 $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.trim();save();whoUpd();toast('記入者を決めました');};
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
+function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
+$('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const rd=new FileReader();rd.onload=()=>{const buf=rd.result;let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}
+ t=t.replace(/^\ufeff/,'');if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);$('#mPaste').value=t;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();};rd.readAsArrayBuffer(f);};
 $('#mApply').onclick=()=>{const out=[],dup=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=norm(c[2]);if(!p||p==='品番')return;if(out.some(y=>y.p===p)){dup.push(p);return;}
  const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};
  const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total;calcItem(x);if(x.total==null&&xt!=null)x.total=xt;out.push(x);});
