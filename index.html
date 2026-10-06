@@ -12928,8 +12928,12 @@ $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.t
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
 function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
 $('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);$('#mPaste').value=t;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
-$('#mApply').onclick=()=>{const out=[],dup=[];$('#mPaste').value.split(/\r?\n/).forEach(l=>{const c=l.split('\t');if(c.length<12)return;const p=norm(c[2]);if(!p||p==='品番')return;if(out.some(y=>y.p===p)){dup.push(p);return;}
- const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};
+const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p);
+$('#mApply').onclick=()=>{const out=[],dup=[];const lines=$('#mPaste').value.split(/\r?\n/);
+ /* 台車の箱数の列：見出し行に「台車」があればその列。見出しがなければ13列目（PCのかんばん発行の形）。Excelの品番マスタのM列（生産指示が出る回収枚数）は読まない */
+ let cartCol=-1;const hd=lines.map(l=>l.split('\t')).find(c=>c.length>=12&&norm(c[2])==='品番');if(hd)cartCol=hd.findIndex(v=>/台車/.test(v));else cartCol=12;
+ lines.forEach(l=>{const c=l.replace(/\r$/,'').split('\t');if(c.length<5)return;while(c.length<13)c.push('');const p=norm(c[2]);if(!isPno(p))return;if(out.some(y=>y.p===p)){dup.push(p);return;}
+ const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:cartCol>=0&&c.length>cartCol?num(c[cartCol]):null};
  const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total;calcItem(x);if(x.total==null&&xt!=null)x.total=xt;out.push(x);});
  if(!out.length){$('#mInfo').textContent='取り込めませんでした（A〜L列をコピーしているか確認）';return;}
  if(dup.length){$('#mInfo').textContent='同じ品番が2行あります：'+[...new Set(dup)].join(', ')+'。Excelを直してから取り込んでください。';return;}
@@ -12966,9 +12970,9 @@ function restoreText(t){let o;try{o=JSON.parse(t);}catch(x){toast('読めない�
  ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件${last?`・最後の記録 ${last.date} ${last.time}`:''}）で今のデータを上書きします。`+(state.recs.length?`\n今のタブレットの記録（${state.recs.length}件）は、念のため先に書き出します。`:''),()=>{if(state.recs.length)dl(JSON.stringify(state),`倉庫かんばん_戻す前_${today()}.json`,'application/json');state=applyLoaded(o);save();setTimeout(()=>location.reload(),600);});}
 $('#bkIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;f.text().then(restoreText);};
 function readTextFile(f,cb){const rd=new FileReader();rd.onload=()=>{const buf=rd.result;let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}cb(t.replace(/^\ufeff/,''));};rd.readAsArrayBuffer(f);}
-$('#sdIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{const s=t.trim();
+$('#sdIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{const s=t.replace(/^\s+/,'');
  if(/\.json$/i.test(f.name)||s.startsWith('{')){restoreText(s);return;}
- const tsv=!s.includes('\t')&&s.includes(',')?csvToTsv(s):s;const n=tsv.split(/\r?\n/).filter(l=>{const c=l.split('\t');return c.length>=12&&c[2]&&norm(c[2])!=='品番';}).length;
+ const tsv=!s.includes('\t')&&s.includes(',')?csvToTsv(s):s;const n=tsv.split(/\r?\n/).filter(l=>{const c=l.split('\t');return c.length>=5&&isPno(norm(c[2]));}).length;
  if(!n){toast('品番マスタの形（A〜L列）ではありません');say('ng',`${f.name}：品番マスタ（A〜L列）でもバックアップでもないので取り込めません。`);return;}
  $('#mPaste').value=tsv;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
 $('#sdOut').onclick=()=>{const rs=toExp();state.lastBackup=Date.now();save();
