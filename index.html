@@ -12898,21 +12898,24 @@ async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks(
  try{stream=await navigator.mediaDevices.getUserMedia({video:vc,audio:false});}catch(e){if(!state.camId)throw e;state.camId='';save();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});}
  const v=$('#vid');v.srcObject=stream;await v.play();camT=v.currentTime;camAt=Date.now();camBusy=false;camMsgUpd();camListUpd();
  if('BarcodeDetector' in window){try{const want=['qr_code','code_128','code_39','code_93','codabar','ean_13','ean_8','itf','upc_a','upc_e','data_matrix'];let sup=want;try{sup=(await BarcodeDetector.getSupportedFormats()).filter(f=>want.includes(f));}catch(e){}if(!sup.includes('qr_code'))sup.unshift('qr_code');det=new BarcodeDetector({formats:sup});barFormats=sup;}catch(e){det=null;}}
- if(!scanning){scanning=true;loop();}}catch(e){camBusy=false;msg.textContent='カメラが使えません。「写真で読む」かスキャナーで入力してください。';}}
+ if(!scanning){scanning=true;loop();}}catch(e){camBusy=false;const n=e&&e.name;
+  msg.textContent=!window.isSecureContext?'このアドレス（http）ではカメラが使えません。https://〜のアドレスで開いてください。':n==='NotAllowedError'?'カメラが「許可されていません」。Chromeのアドレス欄の左のマーク →「権限」→ カメラを「許可」にして、ページを開き直してください。':n==='NotReadableError'?'ほかのアプリがカメラを使っています。カメラ・写真のアプリを閉じて「カメラ開き直す」。':n==='NotFoundError'?'カメラが見つかりません。':'カメラが使えません（'+(n||'不明')+'）。「カメラ開き直す」を押すか、タブレットを再起動してください。';}}
 let camBusy=false,camT=0,camAt=0,camList=[];
 function camMsgUpd(){try{const m=$('#camMsg');if(m&&stream&&stream.active)m.textContent=(state.autoScan?'':'「読む」を押す → ')+(mode==='移動'?'移動：箱を取り出すパレットのかんばんを枠に':mode==='積付'?'積付：かんばん（または現品表）を枠に入れてください':mode==='回収'?'回収：空になったパレットのかんばんを枠に':'入庫：かんばん → 区画のQRを枠に');}catch(e){}}
 async function camListUpd(){try{camList=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');}catch(e){camList=[];}const b=$('#camSw');if(b)b.hidden=camList.length<2;}
 /* カメラが止まった・固まった（映像が進まない）ときは自動で開き直す */
-function camDead(){if(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended'))return true;const v=$('#vid');return v.paused||Date.now()-camAt>2500;}
+let camRestarts=0,camLastRestart=0;
+function camDead(){if(!stream||!stream.active||stream.getVideoTracks().some(t=>t.readyState==='ended'))return true;const v=$('#vid');return v.paused||(v.readyState>=2&&Date.now()-camAt>2500);}
 function camEnsure(){if(camBusy)return;if(camDead())startCam();else camMsgUpd();}
-async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentTime;camAt=Date.now();}
- if(state.tab==='scan'&&!document.hidden&&!camBusy&&stream&&Date.now()-camAt>4000){camAt=Date.now();startCam();}
+async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentTime;camAt=Date.now();camRestarts=0;}
+ /* 映像が止まったら開き直す（ただし15秒に1回まで・3回続けて失敗したら止めて知らせる） */
+ if(state.tab==='scan'&&!document.hidden&&!camBusy&&stream&&v.readyState>=2&&Date.now()-camAt>4000&&Date.now()-camLastRestart>15000&&camRestarts<3){camAt=Date.now();camLastRestart=Date.now();camRestarts++;startCam();}
  if(state.tab==='scan'&&v.readyState>=2&&(state.autoScan||armedUntil>Date.now())){let code=null;
  try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const im=x.getImageData(0,0,w,h);const q=jsQR(im.data,w,h,{inversionAttempts:'dontInvert'});if(q)code=q.data;else if((zxTurn=(zxTurn+1)%2)===0){const c2=$('#cv2'),W=800,H=Math.round(800*v.videoHeight/v.videoWidth)||600;c2.width=W;c2.height=H;const x2=c2.getContext('2d',{willReadFrequently:true});x2.drawImage(v,0,0,W,H);code=zxDecode(x2.getImageData(0,0,W,H),W,H);}}}catch(e){}
  if(code){const now=Date.now();if(!state.autoScan){disarm();handle(code);}else{/* 連続読み取り：同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}}
  else if(!state.autoScan&&armedUntil&&armedUntil<=Date.now()){disarm();say('ng','読めませんでした。QRを枠の中に入れて、もう一度「読む」。');beep(false);}
  setTimeout(()=>requestAnimationFrame(loop),180);}
-$('#camRetry').onclick=startCam;
+$('#camRetry').onclick=()=>{camRestarts=0;startCam();};
 /* ボタンで読む：押してから6秒の間に見えた最初の1つだけ読む（連続で何度も読まない） */
 let armedUntil=0;function scanUi(){const b=$('#scanGo'),c=$('#camBox');const on=armedUntil>Date.now();if(b){b.classList.toggle('armed',on);b.firstChild.textContent=on?'読み取り中…（QRを枠に）':'📷 読む';}if(c){c.classList.toggle('armed',on&&!state.autoScan);c.classList.toggle('idle',!on&&!state.autoScan);}document.body.classList.toggle('autoscan',!!state.autoScan);}
 function arm(){if(document.getElementById('confirm'))return;camEnsure();armedUntil=Date.now()+6000;scanUi();}
