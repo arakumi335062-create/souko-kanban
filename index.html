@@ -12726,7 +12726,7 @@ let actx=null;function beep(ok){try{actx=actx||new (window.AudioContext||window.
 function checkKid(k,noMax){const m=M();const mm=/^(.+)-(\d+)$/.exec(k);if(!mm)return'かんばんのQRではありません（品番-番号の形ではない）';
  const x=m[mm[1]];if(!x)return'品番マスタにない品番です：'+mm[1];const n=parseInt(mm[2],10);if(n<1)return'かんばん番号がありません';if(!noMax&&x.total&&n>x.total)return`番号が総枚数（${x.total}枚）を超えています`;return null;}
 const isLoc=c=>state.locs.includes(c);
-const norm=c=>String(c||'').normalize('NFKC').replace(/[ー－―‐]/g,'-').trim().toUpperCase();
+const norm=c=>String(c||'').normalize('NFKC').replace(/[－―‐]/g,'-').replace(/(?<=[0-9A-Za-z])ー(?=[0-9A-Za-z])/g,'-').trim().toUpperCase();
 function pickLoc(code,byTap){if(mode==='移動'){if(!cur.kid){beep(false);say('ng','先に、箱を取り出すパレットのかんばんを読んでください。');return;}
   if(code===cur.loc){beep(false);say('ng',`${code} は今パレットがある区画です。別の区画を選ぶか「出荷・持ち出し」。`);return;}
   cur.to=code;cur.dest='区画';if(!byTap)beep(true);upd();say('info',`行き先：${code}（バラ箱として在庫に残ります）。箱数を確かめて「移動する」。`);return;}
@@ -12754,7 +12754,7 @@ function handleProduct(p,code){const tag=code===p?'':`（現品表 ${code}）`;
  if(mode==='回収'){const W=pallets(p,'入庫');if(!W.length){beep(false);say('ng',`${p} は倉庫にありません。`);return;}
   chooser(`${p}${tag}：どのパレットが空になりましたか？`,W,v=>`No.${esc(v.kid.slice(p.length+1))}　＠ <b>${esc(v.loc)}</b>　${esc(v.car||'')} ${v.boxes??''}箱・入庫 ${esc(v.r.date.slice(5))} ${esc(v.r.time)}`,v=>handle(v.kid));return;}}
 function learnAlias(code){if(!state.master.length)return;const head=code.slice(0,4);const cand=state.master.filter(x=>x.p.startsWith(head)).concat(state.master.filter(x=>!x.p.startsWith(head)));
- const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">知らないバーコードです：${esc(code)}</p><p class="note" style="margin:0">現品表のバーコードなら、どの品番か選んでください。次からは自動で分かります。</p><input id="alQ" placeholder="品番で絞る" value="${state.master.some(x=>x.p.startsWith(head))?esc(head):''}"><div id="alL" style="display:flex;flex-direction:column;gap:6px;max-height:32vh;overflow:auto"></div>
+ const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">登録していないコードです：${esc(code)}</p><p class="note" style="margin:0">現品表のバーコードなら、どの品番か選んでください（次からは自動で分かります）。関係ないQR・バーコードなら「登録しない」か、外側を押して閉じます。</p><input id="alQ" placeholder="品番で絞る" value="${state.master.some(x=>x.p.startsWith(head))?esc(head):''}"><div id="alL" style="display:flex;flex-direction:column;gap:6px;max-height:32vh;overflow:auto"></div>
  <details id="alNew"><summary><b>マスタにない → このコードのまま品番として登録</b></summary><div style="display:flex;flex-direction:column;gap:6px;margin-top:6px"><label class="note">機械 <select id="alM">${[...new Set(state.master.map(x=>x.m))].map(m=>`<option>${esc(m)}</option>`).join('')}<option>未設定</option></select></label>
  <div class="row"><label class="note">箱入数 <input id="alBox" type="number" inputmode="numeric" min="1" style="width:90px"></label><label class="note">パレット <input id="alBx" type="number" inputmode="numeric" min="1" style="width:70px">箱</label><label class="note">台車 <input id="alBc" type="number" inputmode="numeric" min="1" style="width:70px">箱</label></div>
  <button class="btn go" id="alAdd">このコードで登録</button><span class="note">月の数・発注点はあとで品番マスタ（Excel）に入れると正しく出ます。Excelから取り込み直しても、ここで登録した品番は残ります。</span></div></details>
@@ -12893,6 +12893,8 @@ let barFormats=['qr_code'],stream=null,det=null,lastCode='',lastAt=0,scanning=fa
 let zx=null;function zxReader(){if(zx!==null)return zx;try{const Z=window.ZXing;const h=new Map();h.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.CODE_39,Z.BarcodeFormat.CODE_93,Z.BarcodeFormat.CODABAR,Z.BarcodeFormat.EAN_13,Z.BarcodeFormat.EAN_8,Z.BarcodeFormat.ITF,Z.BarcodeFormat.UPC_A,Z.BarcodeFormat.UPC_E,Z.BarcodeFormat.DATA_MATRIX]);h.set(Z.DecodeHintType.TRY_HARDER,true);zx=new Z.MultiFormatReader();zx.setHints(h);}catch(e){zx=false;}return zx;}
 function zxDecode(img,w,h){const r=zxReader();if(!r)return null;try{const d=img.data,lum=new Uint8ClampedArray(w*h);for(let i=0,j=0;i<lum.length;i++,j+=4)lum[i]=(d[j]*299+d[j+1]*587+d[j+2]*114)/1000;const src=new ZXing.RGBLuminanceSource(lum,w,h);const res=r.decode(new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(src)));return res?res.getText():null;}catch(e){return null;}finally{try{r.reset();}catch(e){}}}
 let zxTurn=0;
+/* QRの中身を文字にする：UTF-8 → Shift_JIS の順に試す */
+function qrBytes(b){const u=new Uint8Array(b);try{return new TextDecoder('utf-8',{fatal:true}).decode(u);}catch(e){}try{return new TextDecoder('shift_jis').decode(u);}catch(e){}return String.fromCharCode(...u);}
 async function startCam(){const msg=$('#camMsg');try{if(stream)stream.getTracks().forEach(t=>t.stop());
  camBusy=true;const vc=state.camId?{deviceId:{exact:state.camId},width:{ideal:1280},height:{ideal:960}}:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:960}};
  try{stream=await navigator.mediaDevices.getUserMedia({video:vc,audio:false});}catch(e){if(!state.camId)throw e;state.camId='';save();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});}
@@ -12911,19 +12913,21 @@ async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentT
  /* 映像が止まったら開き直す（ただし15秒に1回まで・3回続けて失敗したら止めて知らせる） */
  if(state.tab==='scan'&&!document.hidden&&!camBusy&&stream&&v.readyState>=2&&Date.now()-camAt>4000&&Date.now()-camLastRestart>15000&&camRestarts<3){camAt=Date.now();camLastRestart=Date.now();camRestarts++;startCam();}
  if(state.tab==='scan'&&v.readyState>=2&&(state.autoScan||armedUntil>Date.now())){let code=null;
- try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const im=x.getImageData(0,0,w,h);const q=jsQR(im.data,w,h,{inversionAttempts:'dontInvert'});if(q)code=q.data;else if((zxTurn=(zxTurn+1)%2)===0){const c2=$('#cv2'),W=800,H=Math.round(800*v.videoHeight/v.videoWidth)||600;c2.width=W;c2.height=H;const x2=c2.getContext('2d',{willReadFrequently:true});x2.drawImage(v,0,0,W,H);code=zxDecode(x2.getImageData(0,0,W,H),W,H);}}}catch(e){}
+ try{if(det){const r=await det.detect(v);if(r[0])code=r[0].rawValue;}else{const c=$('#cv'),w=480,h=Math.round(480*v.videoHeight/v.videoWidth)||360;c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(v,0,0,w,h);const im=x.getImageData(0,0,w,h);const q=jsQR(im.data,w,h,{inversionAttempts:'dontInvert'});if(q&&q.data)code=q.data;else if(q&&q.binaryData&&q.binaryData.length)code=qrBytes(q.binaryData);else if((zxTurn=(zxTurn+1)%2)===0){const c2=$('#cv2'),W=800,H=Math.round(800*v.videoHeight/v.videoWidth)||600;c2.width=W;c2.height=H;const x2=c2.getContext('2d',{willReadFrequently:true});x2.drawImage(v,0,0,W,H);code=zxDecode(x2.getImageData(0,0,W,H),W,H);}}}catch(e){}
  if(code){const now=Date.now();if(!state.autoScan){disarm();handle(code);}else{/* 連続読み取り：同じQRは一度枠から外れる（1.5秒見えない）まで読み直さない */const t=seen[code];seen[code]=now;if(!t||now-t>1500)handle(code);}}}
  else if(!state.autoScan&&armedUntil&&armedUntil<=Date.now()){disarm();say('ng','読めませんでした。QRを枠の中に入れて、もう一度「読む」。');beep(false);}
  setTimeout(()=>requestAnimationFrame(loop),180);}
 $('#camRetry').onclick=()=>{camRestarts=0;startCam();};
 /* ボタンで読む：押してから6秒の間に見えた最初の1つだけ読む（連続で何度も読まない） */
 let armedUntil=0;function scanUi(){const b=$('#scanGo'),c=$('#camBox');const on=armedUntil>Date.now();if(b){b.classList.toggle('armed',on);b.firstChild.textContent=on?'読み取り中…（QRを枠に）':'📷 読む';}if(c){c.classList.toggle('armed',on&&!state.autoScan);c.classList.toggle('idle',!on&&!state.autoScan);}document.body.classList.toggle('autoscan',!!state.autoScan);}
-function arm(){if(document.getElementById('confirm'))return;camEnsure();armedUntil=Date.now()+6000;scanUi();}
+function arm(){if(document.getElementById('confirm')){toast('表示中の画面を閉じてから「読む」を押してください');const d=document.querySelector('#confirm .in');if(d){d.animate([{transform:'scale(1)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:300});}return;}camEnsure();armedUntil=Date.now()+6000;scanUi();}
 function disarm(){armedUntil=0;scanUi();}
+/* 画面の外（暗いところ）を押したら「やめる」と同じ */
+document.addEventListener('click',e=>{const d=document.getElementById('confirm');if(!d||e.target!==d)return;const no=d.querySelector('#cNo,#chNo,#alNo,#bxoNo');if(no)no.click();else d.remove();});
 $('#scanGo').onclick=()=>armedUntil>Date.now()?disarm():arm();$('#camBox').addEventListener('click',()=>{if(!state.autoScan)arm();});
 $('#camSw').onclick=async()=>{await camListUpd();if(camList.length<2)return;const curId=stream?.getVideoTracks()[0]?.getSettings?.().deviceId||state.camId;const i=camList.findIndex(d=>d.deviceId===curId);const nx=camList[(i+1)%camList.length];state.camId=nx.deviceId;save();await startCam();toast(`カメラ：${nx.label||((i+1)%camList.length+1)+'番目'}（次からもこのカメラ）`);};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){camAt=Date.now();setTimeout(camEnsure,800);}});window.addEventListener('focus',()=>setTimeout(camEnsure,800));
-$('#photo').onchange=e=>{setTimeout(camEnsure,800);const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height);const q=jsQR(im.data,c.width,c.height);const t=q?q.data:zxDecode(im,c.width,c.height);if(t)handle(t);else{beep(false);say('ng','写真からQR・バーコードが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
+$('#photo').onchange=e=>{setTimeout(camEnsure,800);const f=e.target.files[0];if(!f)return;const img=new Image();img.onload=()=>{const c=$('#cv'),s=Math.min(1,1200/Math.max(img.width,img.height));c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);const im=x.getImageData(0,0,c.width,c.height);const q=jsQR(im.data,c.width,c.height);const t=q&&q.data?q.data:q&&q.binaryData&&q.binaryData.length?qrBytes(q.binaryData):zxDecode(im,c.width,c.height);if(t)handle(t);else{beep(false);say('ng','写真からQR・バーコードが読めませんでした。近づけてもう一度。');}URL.revokeObjectURL(img.src);};img.src=URL.createObjectURL(f);e.target.value='';};
 /* ---------- pallet box count ---------- */
 function calcItem(x){const P=state.params;if(x.monthly!=null&&P.work)x.daily=x.monthly/P.work;if(x.box&&x.boxes){x.palQty=x.box*x.boxes;if(x.daily){x.rop=Math.ceil(x.daily*(P.lead+P.safe)/x.palQty);x.total=x.lot!=null?Math.ceil((x.lot+x.daily*P.safe)/x.palQty)+x.rop:x.total;}}else if(x.boxes===null&&x.box){x.palQty=null;x.rop=null;x.total=null;}return x;}
 function palRender(){fillMachines('#palM');const m=$('#palM').value,q=$('#palQ').value.trim().toUpperCase(),only=$('#palOnly').checked;
@@ -13004,7 +13008,7 @@ $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.t
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
 function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
 $('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readMasterFile(f,(t,label)=>{$('#mPaste').value=t;$('#mInfo').textContent=`${label} を読みました`;$('#mApply').click();});};
-const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p);
+const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p)||(/[0-9A-Z]{2,}/.test(p)&&/^[^\s（）()]{4,}$/.test(p)&&!/品番|マスタ|機械/.test(p));
 $('#mApply').onclick=()=>{const out=[],dup=[];const lines=$('#mPaste').value.split(/\r?\n/);
  /* 台車の箱数の列：見出し行に「台車」があればその列。見出しがなければ13列目（PCのかんばん発行の形）。Excelの品番マスタのM列（生産指示が出る回収枚数）は読まない */
  let cartCol=-1;const hd=lines.map(l=>l.split('\t')).find(c=>c.length>=12&&norm(c[2])==='品番');if(hd)cartCol=hd.findIndex(v=>/台車/.test(v));else cartCol=12;
@@ -13175,6 +13179,7 @@ $('#coachSkip').onclick=()=>{coach.s++;const L=LESSONS[coach.l];if(coach.s>=L.st
 $('#coachReset').onclick=()=>ask('練習を最初からやり直します。',()=>{practiceSetup();coach={l:0,s:0};setMode('入庫');refresh();upd();coachShow();});
 $$('.vq').forEach(b=>b.onclick=()=>{for(const k in seen)delete seen[k];handle(b.dataset.q);});
 if(PRACTICE){document.body.classList.add('prac');$('#pracBar').hidden=false;$('#cCoach').hidden=false;$('#cVirt').hidden=false;if(!state.master.length)practiceSetup();setInterval(coachTick,300);}
+if(window.qrcode&&qrcode.stringToBytesFuncs&&qrcode.stringToBytesFuncs['UTF-8'])qrcode.stringToBytes=qrcode.stringToBytesFuncs['UTF-8'];
 function shareQR(){const url=location.href.split('#')[0].split('?')[0].replace(/index\.html$/,'');const q=qrcode(0,'M');q.addData(url);q.make();
  const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in" style="align-items:center;text-align:center"><h2 style="margin:0">他の端末に入れる</h2><div style="background:#fff;padding:10px;border-radius:10px;width:min(70vw,260px)">${q.createSvgTag({cellSize:4,margin:2,scalable:true})}</div><p class="note" style="margin:0;word-break:break-all">${esc(url)}</p>
  <ol style="text-align:left;margin:0;padding-left:20px;font-size:14px;line-height:1.6"><li>入れたい端末のカメラ（またはGoogleレンズ）でこのQRを読む</li><li>出てきた住所を開く（Chrome・Safari）</li><li>カメラを「許可」</li><li>メニュー（︙ や 共有）→「ホーム画面に追加」</li></ol>

@@ -2435,6 +2435,8 @@ const int=v=>{const n=num(v);return n==null?null:Math.round(n);};
 const pad=n=>String(n).padStart(2,'0');
 const qty=x=>x.box&&x.boxes?x.box*x.boxes:null;
 const issued=p=>{let mx=0;st.log.forEach(l=>{if(l.p===p)mx=Math.max(mx,l.to);});return mx;};
+/* 日本語の入った品番・区画名も正しくQRにする（UTF-8） */
+if(qrcode.stringToBytesFuncs&&qrcode.stringToBytesFuncs['UTF-8'])qrcode.stringToBytes=qrcode.stringToBytesFuncs['UTF-8'];
 function svg(t){const q=qrcode(0,'M');q.addData(t);q.make();return q.createSvgTag({cellSize:4,margin:0,scalable:true});}
 function msg(sel,t,m){const e=$(sel);e.hidden=!m;e.className='msg '+t;e.textContent=m||'';}
 function now(){const d=new Date();return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
@@ -2466,7 +2468,7 @@ $('#regBody').addEventListener('change',e=>{const inp=e.target.closest('input');
 $('#regBody').addEventListener('click',e=>{const b=e.target.closest('[data-del]');if(!b)return;const x=st.items[+b.dataset.del];if(!confirm(`${x.p||'この行'} を消しますか？（発行の記録は残ります）`))return;st.items.splice(+b.dataset.del,1);save();renderReg();});
 $('#addRow').onclick=()=>{const m=$('#regM').value;st.items.push({m,p:'',n:'',box:null,boxes:null,total:null,rop:null});save();$('#regQ').value='';renderReg();const ins=$$('#regBody input.pn');ins.at(-1)?.focus();};
 ['#regM'].forEach(s=>$(s).addEventListener('change',renderReg));$('#regQ').addEventListener('input',renderReg);
-const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p);
+const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p)||(/[0-9A-Z]{2,}/.test(p)&&/^[^\s（）()]{4,}$/.test(p)&&!/品番|マスタ|機械/.test(p));
 /* 表（行×列）を品番データにする：見出しがあれば見出しの名前で列を探す。なければ列の数で判断（運用版12列・タブレット13列・6列） */
 function rowsToItems(rows){const out=[];const H=rows.findIndex(r=>r.some(c=>/品番/.test(c))&&r.some(c=>/機械/.test(c)));
  if(H>=0){const h=rows[H].map(c=>String(c||''));const f=t=>h.findIndex(t);
