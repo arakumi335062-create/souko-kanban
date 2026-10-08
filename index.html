@@ -172,7 +172,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cAlias" data-tabs="set"><h2>現品表のバーコード</h2><p class="note">現品表のバーコードの中身と品番の対応です。品番と同じ中身なら登録はいりません。</p><div id="alInfo"></div></section>
  <section class="card" id="cMaster" data-tabs="set"><h2>品番マスタを入れる</h2>
   <p class="note">Excelの「品番マスタ」で4行目から最後の行まで、A列〜L列をコピーして貼り付けます（機械・金型・品番・品名・箱入数・月の需要・1日の需要・パレット1枚の箱数・パレット1枚の個数・ロット・発注点・総枚数）。</p>
-  <div class="row"><label class="btn" id="mFileLbl">ファイルから読み込む<input type="file" id="mFile" accept=".txt,.tsv,.csv,text/plain,text/csv,text/tab-separated-values" hidden></label><span class="note">PCの「かんばん発行」で保存した「タブレット用_品番マスタ.txt」か、ExcelのCSV</span></div>
+  <div class="row"><label class="btn" id="mFileLbl">ファイルから読み込む<input type="file" id="mFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.txt,.tsv,.csv,text/plain,text/csv,text/tab-separated-values" hidden></label><span class="note">Excelのファイル（.xlsx）そのまま、PCの「かんばん発行」で保存した「タブレット用_品番マスタ.txt」、CSV のどれでも読めます</span></div>
   <p class="note" style="margin:0">または、下に貼り付けて「取り込む」：</p>
   <textarea id="mPaste"></textarea><div class="row"><button class="btn" id="mApply">取り込む</button><button class="btn sub" id="demo">練習用のデータを入れる</button><span class="note" id="mInfo"></span></div></section>
  <section class="card" id="cPal" data-tabs="set"><h2>パレット1枚に載る箱の数</h2>
@@ -186,12 +186,22 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cLoc" data-tabs="set"><h2>区画（倉庫のレイアウト）</h2>
   <p class="note">Excelのマス目に倉庫の形どおり区画名を書き、その範囲をコピーして貼り付けます。空のマスは通路になります。1列だけ貼れば、区画の一覧として使えます。</p><div class="row"><label class="note">倉庫 <select id="lWh"></select></label><button class="btn sub" id="lWhAdd">＋倉庫を追加</button></div><textarea id="lPaste" placeholder="A-1	A-2		B-1	B-2&#10;A-3	A-4		B-3	B-4"></textarea><div class="row"><button class="btn" id="lApply">取り込む</button><span class="note" id="lInfo"></span></div>
   <div id="lPrev" class="map off" style="margin-top:6px"></div></section>
+ <section class="card" id="cSrv" data-tabs="set"><h2>社内サーバー（全端末でデータを共有）</h2>
+  <div class="res info" id="srvSt">確認しています…</div>
+  <div class="row"><input id="srvUrl" placeholder="例：http://192.168.1.10:8080（空＝このアプリを開いた場所）" style="flex:1;min-width:220px"><button class="btn sub" id="srvSave">保存</button><button class="btn" id="srvNow">今すぐ同期</button></div>
+  <p class="note" id="srvInfo"></p>
+  <details><summary>しくみ・注意</summary><ul class="note" style="margin:6px 0;padding-left:20px">
+  <li>社内サーバーのアドレスで開くと、自動でつながります。積付・入庫・移動・回収の記録、品番マスタ、区画、現品表コードが、全部のタブレットとPCで同じになります。</li>
+  <li>つながらない間もタブレットだけで使えます。つながったときに、たまった分をまとめて送ります（「未送信◯件」）。</li>
+  <li>「Excel渡し済み」も共有されるので、どの端末からExcelに渡しても二重になりません。</li>
+  <li>練習モードの記録はサーバーに送りません。</li>
+  <li>GitHub（https）から開いたアプリは、社内サーバー（http）にはつながりません。社内サーバーのアドレスで開いてください。</li></ul></details></section>
  <section class="card" id="cBk" data-tabs="set"><h2>SDカード・ファイル（書き出し・取り込み）</h2>
   <b>書き出す（タブレット → SDカード）</b>
   <div class="row"><button class="btn" id="sdOut">まとめて書き出す</button><span class="note">バックアップ・Excel用の入出庫記録（まだ渡していない分）・在庫一覧を、日付つきで3つ保存します。毎日夕方に1回。</span></div>
   <div class="row"><button class="btn sub" id="bkOut">バックアップだけ書き出す</button></div>
   <b>取り込む（SDカード → タブレット）</b>
-  <div class="row"><label class="btn" id="sdInLbl">ファイルを取り込む<input type="file" id="sdIn" accept=".json,.txt,.tsv,.csv,application/json,text/plain,text/csv" hidden></label><span class="note">バックアップ（.json）なら全部を戻します。品番マスタ（.txt・.csv）なら品番マスタに取り込みます。種類は自動で見分けます。</span></div>
+  <div class="row"><label class="btn" id="sdInLbl">ファイルを取り込む<input type="file" id="sdIn" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json,.txt,.tsv,.csv,application/json,text/plain,text/csv" hidden></label><span class="note">バックアップ（.json）なら全部を戻します。品番マスタ（.txt・.csv）なら品番マスタに取り込みます。種類は自動で見分けます。</span></div>
   <input type="file" id="bkIn" accept=".json,application/json" hidden>
   <details id="sdHow"><summary>SDカードを使う設定（最初に1回）</summary>
   <ol class="note" style="margin:6px 0;padding-left:20px">
@@ -12614,19 +12624,20 @@ if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
 const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
+let DEV='';try{DEV=localStorage.getItem('souko-kanban-dev')||'';if(!DEV){DEV='T'+Math.random().toString(36).slice(2,7);localStorage.setItem('souko-kanban-dev',DEV);}}catch(e){DEV='T'+Math.random().toString(36).slice(2,7);}
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
 function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
 try{state=applyLoaded(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(e){state=applyLoaded(null);}
 if(!Array.isArray(state.recs))state.recs=[];if(!Array.isArray(state.master))state.master=[];if(!Array.isArray(state.locs))state.locs=[];
 if(state.mode==='回収')state.mode='入庫';
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true;}catch(e){saveFail();return false;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));if(typeof syncSoon==='function')syncSoon();return true;}catch(e){saveFail();return false;}}
 function saveFail(){const r=document.getElementById('result');if(r){r.className='res ng';r.textContent='保存できませんでした（タブレットの空きがない）。記録 →「渡し済みの古い記録を整理」をしてください。';}alert('保存できませんでした。今の登録は残りません。記録タブで古い記録を整理してください。');}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const num=s=>{const v=parseFloat(String(s??'').replace(/[,，\s]/g,''));return isNaN(v)?null:v;};
 /* ---------- pages ---------- */
 const PAGES={scan:[{n:'読み取り',s:['#cCoach','#cVirt','#cKind','#cCam','#cLoad','#cRun','#cMap','#cNow','#cMove']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
- rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster','#cAlias']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'SDカード',s:['#cBk']},{n:'表示',s:['#cView']}]};
+ rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster','#cAlias']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'サーバー',s:['#cSrv']},{n:'SDカード',s:['#cBk']},{n:'表示',s:['#cView']}]};
 let pgIdx={};
 function showTab(t){state.tab=t;save();$$('[data-tabs]').forEach(el=>el.classList.toggle('tab-off',!el.dataset.tabs.split(' ').includes(t)));
  $$('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderPages();refresh();}
@@ -12783,7 +12794,7 @@ function finOf(S,p){return S&&(S.st==='積付'||S.st==='入庫')?finN(S.fin):fin
 $$('.fin').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にかんばん（または現品表）を読んでください。');return;}const p=cur.kid.replace(/-\d+$/,'');cur.fin=b.dataset.fin;state.finDef=state.finDef||{};state.finDef[p]=cur.fin;save();
  if(mode==='入庫'){const S=kstate()[cur.kid];if(S?.st==='入庫'){const was=finN(S.fin);if(cur.fin!==was&&!cur.loc){cur.loc=S.loc;upd();say('info',`${cur.kid}（${S.loc}）を「${was}」→「${cur.fin}」に変えます。よければ「入庫する」。`);return;}if(cur.fin===was&&cur.loc===S.loc){cur.loc=null;upd();say('info','元の状態に戻しました。動かしたなら置き場所を選びます。');return;}}}
  upd();});
-function stamp(){const d=new Date();const p2=n=>String(n).padStart(2,'0');return{ts:d.getTime(),date:`${d.getFullYear()}/${p2(d.getMonth()+1)}/${p2(d.getDate())}`,time:`${p2(d.getHours())}:${p2(d.getMinutes())}`};}
+function stamp(){const d=new Date();const p2=n=>String(n).padStart(2,'0');return{id:`${DEV}-${d.getTime().toString(36)}-${Math.random().toString(36).slice(2,6)}`,ts:d.getTime(),date:`${d.getFullYear()}/${p2(d.getMonth()+1)}/${p2(d.getDate())}`,time:`${p2(d.getHours())}:${p2(d.getMinutes())}`};}
 function commit(){const S=kstate()[cur.kid];const x=M()[cur.kid.replace(/-\d+$/,'')];
  const r=Object.assign(stamp(),{kind:mode,kid:cur.kid,loc:mode==='入庫'?cur.loc:'',who:state.who||'',exp:false});
  if(mode==='入庫'){const keep=S&&(S.st==='積付'||S.st==='入庫');r.car=keep?S.car:'パレット';r.boxes=keep?S.boxes:(x?.boxes??null);r.qty=keep?S.qty:(x?.palQty??null);r.fin=cur.fin||finOf(S,x?.p);}
@@ -12839,7 +12850,7 @@ function goLoad(end){if(!cur.kid)return;if(!needWho())return;const x=M()[cur.kid
 $('#goLoad').onclick=()=>goLoad(false);$('#goLoadEnd').onclick=()=>goLoad(true);
 $('#clearLd').onclick=()=>$('#clearCur').click();$('#undoLd').onclick=()=>$('#undo').click();
 $('#clearCur').onclick=()=>{for(const k in seen)delete seen[k];cur={kid:null,loc:null,car:'パレット',boxes:null};upd();say('info','やり直します。かんばんのQRを読んでください。');};
-$('#undo').onclick=()=>{const r=state.recs[state.recs.length-1];if(!r)return;ask(`最後の登録（${r.kind} ${r.kid} ${r.loc||''}）を取り消しますか？`+(r.exp&&r.kind!=='積付'?'　この記録はExcelに渡し済みです。Excelの入出庫記録からも消してください。':''),()=>{if(state.recs[state.recs.length-1]!==r){say('ng','その間に別の登録がありました。もう一度押してください。');return;}state.recs.pop();save();say('info','取り消しました。');refresh();upd();});};
+$('#undo').onclick=()=>{let r=null;for(let i=state.recs.length-1;i>=0;i--){const x=state.recs[i];if(!x.id||x.id.startsWith(DEV+'-')){r=x;break;}}if(!r)r=state.recs[state.recs.length-1];if(!r)return;ask(`最後の登録（${r.kind} ${r.kid} ${r.loc||''}）を取り消しますか？`+(r.exp&&r.kind!=='積付'?'　この記録はExcelに渡し済みです。Excelの入出庫記録からも消してください。':''),()=>{const i=state.recs.indexOf(r);if(i<0){say('ng','その間に記録が変わりました。もう一度押してください。');return;}state.recs.splice(i,1);if(r.id&&srvUrl())(state._dels=state._dels||[]).push(r.id);save();say('info','取り消しました。');refresh();upd();});};
 /* ---------- layout map ---------- */
 function whs(){if(!Array.isArray(state.whs)){const L=state.layout&&state.layout.length?state.layout:null;state.whs=L?[{name:'倉庫1',layout:L}]:state.locs.length?[{name:'倉庫1',layout:Array.from({length:Math.ceil(state.locs.length/8)},(_,i)=>state.locs.slice(i*8,i*8+8))}]:[];}return state.whs;}
 function syncLocs(){const n=[];whs().forEach(w=>w.layout.forEach(r=>r.forEach(c=>{if(c&&!n.includes(c))n.push(c);})));state.locs=n;state.layout=whs()[0]?.layout||null;}
@@ -12959,7 +12970,7 @@ function findUpd(){const q=$('#findQ').value.trim().toUpperCase();if(!q){$('#fin
 ['#invQ','#invM','#ordM'].forEach(s=>$(s).addEventListener('input',refresh));$('#findQ').addEventListener('input',findUpd);
 function health(){const h=$('#health');if(!h)return;let pct=0;try{pct=Math.round((localStorage.getItem(KEY)||'').length/5e6*100);}catch(e){}const ne=toExp().length;const lb=state.lastBackup?Math.floor((Date.now()-state.lastBackup)/864e5):null;
  const S=kstate();const tr=Object.values(S).filter(v=>v.st==='積付');const old=tr.filter(v=>Date.now()-v.r.ts>12*36e5).length;
- h.innerHTML=`<span>Excel未渡し <b class="${ne>200?'ng':''}">${ne}件</b></span><span>バックアップ <b class="${lb==null||lb>=2?'ng':''}">${lb==null?'まだ':lb===0?'今日':lb+'日前'}</b></span><span>運ぶ途中 <b class="${old?'ng':''}">${tr.length}枚${old?`（12時間以上 ${old}枚）`:''}</b></span>`+(pct>=50?`<span>保存容量 <b class="${pct>=80?'ng':''}">${pct}%</b>${pct>=80?'（記録 →「渡し済みの古い記録を整理」）':''}</span>`:'');}
+ h.innerHTML=srvBadge()+`<span>Excel未渡し <b class="${ne>200?'ng':''}">${ne}件</b></span><span>バックアップ <b class="${lb==null||lb>=2?'ng':''}">${lb==null?'まだ':lb===0?'今日':lb+'日前'}</b></span><span>運ぶ途中 <b class="${old?'ng':''}">${tr.length}枚${old?`（12時間以上 ${old}枚）`:''}</b></span>`+(pct>=50?`<span>保存容量 <b class="${pct>=80?'ng':''}">${pct}%</b>${pct>=80?'（記録 →「渡し済みの古い記録を整理」）':''}</span>`:'');}
 function stripUpd(){health();const R=rows();const k=R.filter(r=>r.st==='欠品').length,s=R.filter(r=>r.st==='生産指示').length;const st=$('#strip');
  if(state.tab==='ord'||state.tab==='scan'||(!k&&!s)){st.hidden=true;return;}st.hidden=false;$('#stripTxt').textContent=`欠品 ${k}品番 ／ 生産指示 ${s}品番`;}
 $('#strip').onclick=()=>showTab('ord');
@@ -12989,7 +13000,7 @@ function dl(text,name,type){const a=document.createElement('a');a.href=URL.creat
 $('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.trim();save();whoUpd();toast('記入者を決めました');};
 function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
 function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
-$('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);$('#mPaste').value=t;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
+$('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readMasterFile(f,(t,label)=>{$('#mPaste').value=t;$('#mInfo').textContent=`${label} を読みました`;$('#mApply').click();});};
 const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p);
 $('#mApply').onclick=()=>{const out=[],dup=[];const lines=$('#mPaste').value.split(/\r?\n/);
  /* 台車の箱数の列：見出し行に「台車」があればその列。見出しがなければ13列目（PCのかんばん発行の形）。Excelの品番マスタのM列（生産指示が出る回収枚数）は読まない */
@@ -13023,20 +13034,46 @@ function loadDemo(){state.master=[
  {m:'8号機',mold:'23JA-0',p:'23JA',n:'練習品（架空）',box:50,daily:500,boxes:20,boxesCart:8,palQty:1000,rop:3,total:9},{m:'8号機',mold:'練習A-0',p:'RENSHU-A1',n:'練習品',box:50,daily:509,boxes:20,boxesCart:8,palQty:1000,rop:3,total:9},{m:'8号機',mold:'練習B-0',p:'RENSHU-B2',n:'練習品',box:100,daily:235,boxes:10,palQty:1000,rop:2,total:6},
  {m:'9号機',mold:'練習C-0',p:'RENSHU-C3',n:'',box:96,daily:617,boxes:10,palQty:960,rop:5,total:12},{m:'10号機',mold:'練習D-0',p:'RENSHU-D4',n:'',box:500,daily:1752,boxes:10,palQty:5000,rop:3,total:7},{m:'11号機',mold:'練習E-0',p:'RENSHU-E5',n:'',box:56,daily:431,boxes:10,palQty:560,rop:7,total:15}];
  state.whs=[{name:'第1倉庫',layout:[['A-1','A-2','','B-1','B-2','','C-1','C-2'],['A-3','A-4','','B-3','B-4','','C-3','C-4'],['','','','','','','',''],['D-1','D-2','D-3','D-4','','E-1','E-2','E-3']]},{name:'第2倉庫',layout:[['2A-1','2A-2','2A-3'],['2B-1','2B-2','2B-3']]}];syncLocs();save();lWhFill();upd();refresh();$('#mInfo').textContent='練習用のデータを入れました';}
-$('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。',loadDemo);
+$('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。'+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の品番マスタが置き換わります（練習なら「バーチャル練習」を使ってください）。':''),loadDemo);
 $('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
-$('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。消す前に、バックアップを自動で書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');state.recs=[];save();refresh();upd();toast('記録を消しました');});
+$('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。消す前に、バックアップを自動で書き出します。`+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の記録も消えます。':''),()=>{dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');if(srvUrl())state._dels=(state._dels||[]).concat(state.recs.filter(r=>r.id).map(r=>r.id));state.recs=[];save();refresh();upd();toast('記録を消しました');});
 function restoreText(t){let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
  if(!o||typeof o!=='object'||!Array.isArray(o.recs)||!Array.isArray(o.master)){toast('倉庫かんばんのバックアップではありません');return;}
  const last=o.recs.length?o.recs[o.recs.length-1]:null;
- ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件${last?`・最後の記録 ${last.date} ${last.time}`:''}）で今のデータを上書きします。`+(state.recs.length?`\n今のタブレットの記録（${state.recs.length}件）は、念のため先に書き出します。`:''),()=>{if(state.recs.length)dl(JSON.stringify(state),`倉庫かんばん_戻す前_${today()}.json`,'application/json');state=applyLoaded(o);save();setTimeout(()=>location.reload(),600);});}
+ ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件${last?`・最後の記録 ${last.date} ${last.time}`:''}）で今のデータを上書きします。`+(state.recs.length?`\n今のタブレットの記録（${state.recs.length}件）は、念のため先に書き出します。`:''),()=>{if(state.recs.length)dl(JSON.stringify(state),`倉庫かんばん_戻す前_${today()}.json`,'application/json');state=applyLoaded(o);state._seq=0;state._sv=null;state.recs.forEach(r=>delete r._sy);save();setTimeout(()=>location.reload(),600);});}
 $('#bkIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;f.text().then(restoreText);};
+/* ---------- Excel（.xlsx）をそのまま読む：zipを開いて「品番マスタ」シートをタブ区切りにする ---------- */
+async function inflateRaw(u8){const ds=new DecompressionStream('deflate-raw');const st=new Blob([u8]).stream().pipeThrough(ds);return new Uint8Array(await new Response(st).arrayBuffer());}
+async function unzip(buf){const u=new Uint8Array(buf),dv=new DataView(buf);let e=-1;for(let i=u.length-22;i>=Math.max(0,u.length-70000);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break;}if(e<0)throw new Error('zipではありません');
+ const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const files={};const td=new TextDecoder();
+ for(let k=0;k<n;k++){const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);const name=td.decode(u.subarray(p+46,p+46+nl));
+  files[name]={method,csize,lo};p+=46+nl+xl+cl;}
+ return async name=>{const f=files[name];if(!f)return null;const lnl=dv.getUint16(f.lo+26,true),lxl=dv.getUint16(f.lo+28,true);const data=u.subarray(f.lo+30+lnl+lxl,f.lo+30+lnl+lxl+f.csize);return td.decode(f.method===8?await inflateRaw(data):data);};}
+async function xlsxToTsv(buf){const get=await unzip(buf);const P=new DOMParser();const xml=t=>P.parseFromString(t,'application/xml');
+ const ss=[];const sst=await get('xl/sharedStrings.xml');if(sst)[...xml(sst).getElementsByTagName('si')].forEach(si=>ss.push([...si.getElementsByTagName('t')].map(t=>t.textContent).join('')));
+ const wb=xml(await get('xl/workbook.xml'));const rels=xml(await get('xl/_rels/workbook.xml.rels')||'<x/>');const rmap={};[...rels.getElementsByTagName('Relationship')].forEach(r=>rmap[r.getAttribute('Id')]=r.getAttribute('Target'));
+ const sheets=[...wb.getElementsByTagName('sheet')].map(sh=>{const id=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');let t=rmap[id]||'';t=t.replace(/^\/?(xl\/)?/,'');return{name:sh.getAttribute('name'),path:'xl/'+t};});
+ const col=r=>{let n=0;for(const ch of r.replace(/\d+$/,''))n=n*26+ch.charCodeAt(0)-64;return n-1;};
+ const toRows=async path=>{const d=await get(path);if(!d)return[];const rows=[];[...xml(d).getElementsByTagName('row')].forEach(row=>{const out=[];[...row.getElementsByTagName('c')].forEach(c=>{const t=c.getAttribute('t');const v=c.getElementsByTagName('v')[0];let val='';
+   if(t==='s')val=v?ss[+v.textContent]??'':'';else if(t==='inlineStr')val=[...c.getElementsByTagName('t')].map(x=>x.textContent).join('');else if(t==='b')val=v&&v.textContent==='1'?'TRUE':'FALSE';else if(t==='e')val='';else val=v?v.textContent:'';
+   const ci=col(c.getAttribute('r')||'A');while(out.length<ci)out.push('');out[ci]=String(val).replace(/[\t\r\n]+/g,' ');});rows.push(out.join('\t'));});return rows;};
+ const order=sheets.filter(s=>/品番マスタ/.test(s.name)).concat(sheets.filter(s=>!/品番マスタ/.test(s.name)));
+ for(const sh of order){const rows=await toRows(sh.path);if(rows.some(l=>{const c=l.split('\t');return c.length>=5&&isPno(norm(c[2]));}))return{tsv:rows.join('\n'),sheet:sh.name};}
+ return{tsv:'',sheet:''};}
+/* ファイルの種類を見分けて、品番マスタならテキスト（タブ区切り）にして返す */
+function readMasterFile(f,cb){const rd=new FileReader();rd.onload=async()=>{const buf=rd.result;const u=new Uint8Array(buf);
+  if(u[0]===0x50&&u[1]===0x4b){try{const r=await xlsxToTsv(buf);if(!r.tsv){toast('このExcelに品番マスタ（C列に品番）が見つかりません');say('ng',`${f.name}：品番マスタのシートが見つかりません。`);return;}cb(r.tsv,`${f.name}（シート「${r.sheet}」）`);}catch(e){toast('Excelを開けませんでした');say('ng',`${f.name} を開けませんでした。Excelで「CSV UTF-8」で保存して読み込んでください。`);}return;}
+  if(u[0]===0xD0&&u[1]===0xCF){toast('古い形式のExcel（.xls）は読めません');say('ng',`${f.name} は古い形式（.xls）です。Excelで「.xlsx」か「CSV UTF-8」で保存し直してください。`);return;}
+  let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}t=t.replace(/^\ufeff/,'');
+  if(/[\x00-\x08\x0e-\x1f]/.test(t.slice(0,2000))){toast('読めないファイルです');say('ng',`${f.name} は文字のファイルではありません。.xlsx・.csv・.txt を選んでください。`);return;}
+  if(!t.includes('\t')&&t.includes(','))t=csvToTsv(t);cb(t,f.name);};rd.readAsArrayBuffer(f);}
 function readTextFile(f,cb){const rd=new FileReader();rd.onload=()=>{const buf=rd.result;let t;try{t=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch(er){try{t=new TextDecoder('shift_jis').decode(buf);}catch(er2){t=new TextDecoder().decode(buf);}}cb(t.replace(/^\ufeff/,''));};rd.readAsArrayBuffer(f);}
-$('#sdIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readTextFile(f,t=>{const s=t.replace(/^\s+/,'');
- if(/\.json$/i.test(f.name)||s.startsWith('{')){restoreText(s);return;}
- const tsv=!s.includes('\t')&&s.includes(',')?csvToTsv(s):s;const n=tsv.split(/\r?\n/).filter(l=>{const c=l.split('\t');return c.length>=5&&isPno(norm(c[2]));}).length;
+$('#sdIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+ if(/\.json$/i.test(f.name)){readTextFile(f,t=>restoreText(t.replace(/^\s+/,'')));return;}
+ readMasterFile(f,(t,label)=>{const s=t.replace(/^\s+/,'');if(s.startsWith('{')){restoreText(s);return;}
+ const n=s.split(/\r?\n/).filter(l=>{const c=l.split('\t');return c.length>=5&&isPno(norm(c[2]));}).length;
  if(!n){toast('品番マスタの形（A〜L列）ではありません');say('ng',`${f.name}：品番マスタ（A〜L列）でもバックアップでもないので取り込めません。`);return;}
- $('#mPaste').value=tsv;$('#mInfo').textContent=`${f.name} を読みました`;$('#mApply').click();});};
+ $('#mPaste').value=s;$('#mInfo').textContent=`${label} を読みました`;$('#mApply').click();});};
 $('#sdOut').onclick=()=>{const rs=toExp();state.lastBackup=Date.now();save();
  dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');
  setTimeout(()=>{if(rs.length)$('#dlCsv').click();},700);setTimeout(()=>$('#invCsv').click(),1400);
@@ -13141,6 +13178,53 @@ function shareQR(){const url=location.href.split('#')[0].split('?')[0].replace(/
  <p class="note" style="margin:0">記録はそれぞれの端末に別々に残ります。在庫を記録する端末は1台に決めてください。</p><button class="btn" id="shqClose">閉じる</button></div>`;document.body.appendChild(d);d.querySelector('#shqClose').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove();};}
 /* ---------- init ---------- */
 window.addEventListener('storage',e=>{if(e.key!==KEY||!e.newValue)return;try{state=applyLoaded(JSON.parse(e.newValue));refresh();upd();toast('別の画面で変わった内容を読み込みました');}catch(x){}});
+/* ---------- 社内サーバーと同期（記録は1件ずつID付きで送受信。品番マスタ・区画・現品表コードは「共有の設定」としてまとめて） ---------- */
+let srvOk=null,srvMsg='',srvLast=0,syncBusy=false,syncT=null,srvAuto=null;
+function srvUrl(){if(PRACTICE)return'';const u=(state.srv||'').trim();if(u)return u.replace(/\/+$/,'');return srvAuto||'';}
+const sig=r=>r.exp?'1':'0';
+function ensureIds(){state.recs.forEach((r,i)=>{if(!r.id)r.id=`${DEV}-${(r.ts||0).toString(36)}-o${i}`;});}
+function sharedDoc(){return{master:state.master,whs:whs(),alias:state.alias||{},params:state.params};}
+function hashStr(t){let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return(h>>>0).toString(36)+t.length;}
+const sharedHash=()=>hashStr(JSON.stringify(sharedDoc()));
+function unsent(){return state.recs.filter(r=>r._sy!==sig(r)).length+(state._dels||[]).length;}
+function syncSoon(){if(!srvUrl())return;clearTimeout(syncT);syncT=setTimeout(()=>syncNow(),700);}
+function applyShared(doc){if(!doc)return;state.master=Array.isArray(doc.master)?doc.master:state.master;if(Array.isArray(doc.whs)){state.whs=doc.whs;syncLocs();}state.alias=doc.alias||{};if(doc.params)state.params=Object.assign({work:21,safe:2,lead:7},doc.params);try{lWhFill();aliasInfo();}catch(e){}}
+async function syncNow(manual){const base=srvUrl();if(!base){srvOk=null;srvUi();return;}if(syncBusy){if(manual)toast('同期中です');return;}syncBusy=true;let rounds=0,got=0;
+ try{ensureIds();
+  while(rounds++<20){const out=state.recs.filter(r=>r._sy!==sig(r)).slice(0,1500);const dels=(state._dels||[]).slice();
+   const body={dev:DEV,who:state.who||'',since:state._seq||0,sv:state._sv??null,recs:out.map(r=>{const c=Object.assign({},r);delete c._sy;return c;}),dels};
+   const sh=sharedHash();if(state._sv!=null&&sh!==state._sh&&(state.master.length||whs().length))body.shared={base:state._sv,doc:sharedDoc()};
+   const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),15000);
+   const res=await fetch(base+'/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',signal:ctl.signal});clearTimeout(tm);
+   if(!res.ok)throw new Error('サーバーの返事がおかしい（'+res.status+'）');const j=await res.json();if(!j.ok)throw new Error(j.error||'サーバーのエラー');
+   const sent=new Map(out.map(r=>[r.id,sig(r)]));state.recs.forEach(r=>{if(sent.has(r.id)&&sent.get(r.id)===sig(r))r._sy=sig(r);});
+   state._dels=(state._dels||[]).filter(id=>!dels.includes(id));
+   let changed=false;const idx=new Map(state.recs.map((r,i)=>[r.id,r]));const gone=new Set();
+   (j.recs||[]).forEach(x=>{if(x.del){if(idx.has(x.id)){gone.add(x.id);changed=true;}return;}const r=x.rec;if(!r||!r.id)return;const o=idx.get(r.id);
+    if(o){if(r.exp&&!o.exp){o.exp=true;changed=true;}if(sig(o)===sig(r))o._sy=sig(o);}else{r._sy=sig(r);state.recs.push(r);idx.set(r.id,r);changed=true;got++;}});
+   if(gone.size)state.recs=state.recs.filter(r=>!gone.has(r.id));
+   if(changed)state.recs.sort((a,b)=>(a.ts-b.ts)||(a.id<b.id?-1:a.id>b.id?1:0));
+   state._seq=j.seq;
+   if(j.shared){if(body.shared){state._sh=sh;}
+    if('doc' in j.shared){if(j.shared.doc){applyShared(j.shared.doc);state._sh=sharedHash();changed=true;}else{state._sh=null;}}
+    state._sv=j.shared.v;}
+   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){saveFail();}
+   if(changed){refresh();upd();}
+   if(!j.more&&!state.recs.some(r=>r._sy!==sig(r))&&!(state._dels||[]).length&&!(state._sv!=null&&sharedHash()!==state._sh&&(state.master.length||whs().length)))break;}
+  srvOk=true;srvMsg='';srvLast=Date.now();if(manual)toast(got?`同期しました（受け取り${got}件）`:'同期しました');}
+ catch(e){srvOk=false;srvMsg=e.name==='AbortError'?'時間切れ（サーバーが返事をしない）':location.protocol==='https:'&&base.startsWith('http:')?'httpsで開いたアプリからhttpのサーバーにはつながりません。社内サーバーのアドレスで開いてください':(e.message||String(e));if(manual)toast('サーバーにつながりません');}
+ finally{syncBusy=false;srvUi();}}
+function srvBadge(){const b=srvUrl();if(!b)return'';const n=unsent();return `<span>サーバー <b class="${srvOk===false?'ng':''}">${srvOk===false?'✕ つながらない':srvOk?'✓':'…'}${n?` 未送信${n}件`:''}</b></span>`;}
+function srvUi(){const e=$('#srvSt');if(e){const b=srvUrl();const n=unsent();
+  e.className='res '+(!b?'info':srvOk?'ok':srvOk===false?'ng':'info');
+  e.textContent=PRACTICE?'練習モード中はサーバーに送りません。':!b?'社内サーバーは使っていません（この端末だけで記録）。社内サーバーのアドレスで開くか、下に入れて「保存」。':srvOk?`つながっています：${b}　最終同期 ${new Date(srvLast).toLocaleTimeString('ja-JP')}${n?`　未送信 ${n}件`:''}`:srvOk===false?`つながりません：${b}（${srvMsg}）${n?`　未送信 ${n}件（つながったら送ります）`:''}`:`確認中：${b}`;
+  const i=$('#srvInfo');if(i)i.textContent=`この端末の番号：${DEV}`;if(document.activeElement!==$('#srvUrl'))$('#srvUrl').value=state.srv||'';}
+ try{health();}catch(e){}}
+$('#srvSave').onclick=()=>{const v=$('#srvUrl').value.trim();if(v&&!/^https?:\/\/[^\s]+$/i.test(v)){toast('http:// から入れてください');return;}state.srv=v;state._seq=state._seq||0;save();srvOk=null;srvUi();syncNow(true);};
+$('#srvNow').onclick=()=>syncNow(true);
+async function srvDetect(){if(PRACTICE||!/^https?:$/.test(location.protocol)||/github\.io$/i.test(location.hostname))return;try{const r=await fetch(location.origin+'/api/ping',{cache:'no-store'});const j=await r.json();if(j&&j.ok&&/倉庫かんばん/.test(j.name||'')){srvAuto=location.origin;}}catch(e){}srvUi();if(srvUrl())syncNow();}
+setInterval(()=>{if(!document.hidden&&srvUrl())syncNow();},15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&srvUrl())syncNow();});window.addEventListener('online',()=>{if(srvUrl())syncNow();});
+srvDetect();
 whoUpd();applyLang();aliasInfo();showTab(PRACTICE?'scan':(state.tab||'scan'));upd();if(PRACTICE)setTimeout(coachShow,300);whs();syncLocs();lWhFill();startCam();
 if(!state.master.length&&!tourDone().prep){setTimeout(()=>{const t=document.createElement('div');t.id='tip';t.style.left='12px';t.style.right='12px';t.style.bottom='130px';t.innerHTML='はじめに「？」→「準備」のガイドで品番マスタを入れてください。';document.body.appendChild(t);setTimeout(()=>t.remove(),15000);},800);}
 </script></body></html>
