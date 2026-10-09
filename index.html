@@ -69,7 +69,7 @@ body[data-mode='積付'] #modeTtl{color:#7a5a00}body[data-mode='回収'] #modeTt
 .slot3{display:grid;grid-template-columns:.7fr 1.6fr 1fr;gap:6px}.slot3>div{background:var(--bg);border-radius:8px;padding:4px 8px;display:flex;flex-direction:column}.slot3 small{color:var(--sub);font-size:11px}.slot3 .v{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:15px;word-break:break-all}
 #cKind,#cNow,#cCam{padding:10px 12px;gap:8px}
 .cam video{width:100%;height:100%;object-fit:cover}
-.cam .frame{position:absolute;inset:18%;border:4px dashed var(--accent);border-radius:12px;pointer-events:none}.cam.idle .frame{border-color:rgba(255,255,255,.35)}.cam.armed .frame{border:5px solid #35d07f;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}.scanbtn{font-size:24px;padding:16px}.scanbtn.armed{background:#1f9d5c}body.autoscan .scanbtn{display:none}
+.cam .frame{position:absolute;inset:18%;border:4px dashed var(--accent);border-radius:12px;pointer-events:none}.cam.idle .frame{border-color:rgba(255,255,255,.35)}.cam.armed .frame{border:5px solid #35d07f;box-shadow:0 0 0 9999px rgba(0,0,0,.25)}.scanbtn{font-size:24px;padding:16px}.scanbtn.armed{background:#1f9d5c}body.autoscan .scanbtn{display:none}.scanrow{display:flex;gap:8px}.ck{display:flex;gap:10px;align-items:flex-start;line-height:1.4}.ck input{margin-top:4px;width:18px;height:18px;flex:none}.scanrow .scanbtn{flex:1}#scanAuto{white-space:nowrap;font-weight:700}body.autoscan #scanAuto{flex:1;background:#1f9d5c;color:#fff;border-color:#1f9d5c;font-size:20px;padding:14px}
 .cam .msg{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.55);color:#fff;font-size:14px;padding:6px 10px;text-align:center}
 .slot{display:grid;grid-template-columns:90px 1fr;gap:6px 10px;font-size:15px;align-items:center}
 .slot .v{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:17px;word-break:break-all}
@@ -114,7 +114,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="health" id="health"></div></section>
  <section class="card" id="cCam" data-tabs="scan"><h2>② QRを枠に入れて「読む」（かんばん・レイアウトのQR）</h2>
   <div class="cam" id="camBox"><video id="vid" playsinline muted></video><div class="frame"></div><div class="msg" id="camMsg">カメラを準備しています…</div></div>
-  <button class="btn go scanbtn" id="scanGo">📷 読む</button>
+  <div class="scanrow"><button class="btn go scanbtn" id="scanGo">📷 読む</button><button class="btn sub" id="scanAuto">🔁 連続で読む：切</button></div>
   <div class="row"><button class="btn sub" id="camRetry">カメラ開き直す</button><button class="btn sub" id="camSw" hidden>カメラ切替（前/後）</button><label class="btn sub" id="photoLbl" style="display:inline-block">写真で読む<input type="file" id="photo" accept="image/*" capture="environment" hidden></label><input id="manual" placeholder="スキャナー・手入力（Enter）" style="flex:1;min-width:160px"><button class="btn sub" id="manualGo">確定</button></div></section>
  <section class="card" id="cVirt" data-tabs="scan" hidden><h2>仮のQR（押すと「読んだ」ことになります）</h2>
   <div class="vrow"><span class="note">かんばん</span><button class="vq kb" data-q="23JA-01">23JA-01</button><button class="vq kb" data-q="23JA-02">23JA-02</button><button class="vq kb" data-q="23JA-03">23JA-03</button></div>
@@ -209,7 +209,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <li><b>SDカードから取り込む：</b>「ファイルを取り込む」を押す → 左上の「≡」→「SDカード」（またはSDカードの名前）→ ファイルを選びます。</li>
   <li><b>PCとのやりとり：</b>SDカードをPCに差し、Download フォルダのCSVをExcelで開く／PCの「かんばん発行」で保存した「タブレット用_品番マスタ.txt」をSDカードに入れてタブレットへ。</li>
   <li>「複数のファイルをダウンロードしますか？」と出たら「許可」を押します。</li></ol></details>
-  <div class="row"><button class="btn sub" id="clrRec">記録を全部消す（練習の後に）</button></div>
+  <div class="row"><button class="btn sub" id="clrRec">テストデータを消す（試験運用を始める前に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
  <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
@@ -12683,7 +12683,7 @@ const TL={
  '#clearCur':['Làm lại','Ulangi'],'#clearLd':['Làm lại','Ulangi'],
  '#undo':['Hủy lần đăng ký trước','Batalkan input terakhir'],'#undoLd':['Hủy lần đăng ký trước','Batalkan input terakhir'],
  '#quickOut':['Thu hồi kanban này','Ambil kanban ini'],
- '#camRetry':['Mở lại camera','Buka ulang kamera'],'#scanGo':['Quét','Pindai'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#sdOut':['Xuất tất cả (thẻ SD)','Ekspor semua (kartu SD)'],'#sdInLbl':['Nhập tệp (thẻ SD)','Impor file (kartu SD)'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
+ '#camRetry':['Mở lại camera','Buka ulang kamera'],'#scanGo':['Quét','Pindai'],'#scanAuto':['Quét liên tục','Pindai terus'],'#mFileLbl':['Đọc từ tệp','Baca dari file'],'#sdOut':['Xuất tất cả (thẻ SD)','Ekspor semua (kartu SD)'],'#sdInLbl':['Nhập tệp (thẻ SD)','Impor file (kartu SD)'],'#camSw':['Đổi camera','Ganti kamera'],'#photoLbl':['Đọc bằng ảnh','Baca dari foto'],
  '#pracEnd':['Kết thúc luyện tập','Selesai latihan'],'#coachSkip':['Bỏ qua bài này','Lewati soal ini'],'#coachReset':['Làm lại từ đầu','Ulangi dari awal'],
  '#tabbar [data-t="scan"]':['Quét','Pindai'],'#tabbar [data-t="inv"]':['Tồn kho','Stok'],'#tabbar [data-t="ord"]':['Chỉ thị','Instruksi'],'#tabbar [data-t="rec"]':['Lịch sử','Catatan'],'#tabbar [data-t="set"]':['Cài đặt','Pengaturan'],
  '#cCam h2':['Đưa mã QR vào khung','Masukkan QR ke dalam bingkai'],
@@ -12919,11 +12919,12 @@ async function loop(){const v=$('#vid');if(v.currentTime!==camT){camT=v.currentT
  setTimeout(()=>requestAnimationFrame(loop),180);}
 $('#camRetry').onclick=()=>{camRestarts=0;startCam();};
 /* ボタンで読む：押してから6秒の間に見えた最初の1つだけ読む（連続で何度も読まない） */
-let armedUntil=0;function scanUi(){const b=$('#scanGo'),c=$('#camBox');const on=armedUntil>Date.now();if(b){b.classList.toggle('armed',on);b.firstChild.textContent=on?'読み取り中…（QRを枠に）':'📷 読む';}if(c){c.classList.toggle('armed',on&&!state.autoScan);c.classList.toggle('idle',!on&&!state.autoScan);}document.body.classList.toggle('autoscan',!!state.autoScan);}
+let armedUntil=0;function scanUi(){const sa=$('#scanAuto');if(sa)sa.firstChild.textContent=state.autoScan?'🔁 連続で読む：入（押すと切）':'🔁 連続で読む：切';const b=$('#scanGo'),c=$('#camBox');const on=armedUntil>Date.now();if(b){b.classList.toggle('armed',on);b.firstChild.textContent=on?'読み取り中…（QRを枠に）':'📷 読む';}if(c){c.classList.toggle('armed',on&&!state.autoScan);c.classList.toggle('idle',!on&&!state.autoScan);}document.body.classList.toggle('autoscan',!!state.autoScan);}
 function arm(){if(document.getElementById('confirm')){toast('表示中の画面を閉じてから「読む」を押してください');const d=document.querySelector('#confirm .in');if(d){d.animate([{transform:'scale(1)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],{duration:300});}return;}camEnsure();armedUntil=Date.now()+6000;scanUi();}
 function disarm(){armedUntil=0;scanUi();}
 /* 画面の外（暗いところ）を押したら「やめる」と同じ */
 document.addEventListener('click',e=>{const d=document.getElementById('confirm');if(!d||e.target!==d)return;const no=d.querySelector('#cNo,#chNo,#alNo,#bxoNo');if(no)no.click();else d.remove();});
+$('#scanAuto').onclick=()=>{state.autoScan=!state.autoScan;save();const c=$('#autoScan');if(c)c.checked=state.autoScan;for(const k in seen)delete seen[k];disarm();camMsgUpd();camEnsure();toast(state.autoScan?'連続で読みます（同じQRは一度枠から外すまで読みません）':'「読む」を押したときだけ読みます');};
 $('#scanGo').onclick=()=>armedUntil>Date.now()?disarm():arm();$('#camBox').addEventListener('click',()=>{if(!state.autoScan)arm();});
 $('#camSw').onclick=async()=>{await camListUpd();if(camList.length<2)return;const curId=stream?.getVideoTracks()[0]?.getSettings?.().deviceId||state.camId;const i=camList.findIndex(d=>d.deviceId===curId);const nx=camList[(i+1)%camList.length];state.camId=nx.deviceId;save();await startCam();toast(`カメラ：${nx.label||((i+1)%camList.length+1)+'番目'}（次からもこのカメラ）`);};
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){camAt=Date.now();setTimeout(camEnsure,800);}});window.addEventListener('focus',()=>setTimeout(camEnsure,800));
@@ -13010,18 +13011,24 @@ function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length
 $('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readMasterFile(f,(t,label)=>{$('#mPaste').value=t;$('#mInfo').textContent=`${label} を読みました`;$('#mApply').click();});};
 const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p)||(/[0-9A-Z]{2,}/.test(p)&&/^[^\s（）()]{4,}$/.test(p)&&!/品番|マスタ|機械/.test(p));
 $('#mApply').onclick=()=>{const out=[],dup=[];const lines=$('#mPaste').value.split(/\r?\n/);
- /* 台車の箱数の列：見出し行に「台車」があればその列。見出しがなければ13列目（PCのかんばん発行の形）。Excelの品番マスタのM列（生産指示が出る回収枚数）は読まない */
- let cartCol=-1;const hd=lines.map(l=>l.split('\t')).find(c=>c.length>=12&&norm(c[2])==='品番');if(hd)cartCol=hd.findIndex(v=>/台車/.test(v));else cartCol=12;
- lines.forEach(l=>{const c=l.replace(/\r$/,'').split('\t');if(c.length<5)return;while(c.length<13)c.push('');const p=norm(c[2]);if(!isPno(p))return;if(out.some(y=>y.p===p)){dup.push(p);return;}
- const x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:cartCol>=0&&c.length>cartCol?num(c[cartCol]):null};
- const old=M()[p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total;calcItem(x);if(x.total==null&&xt!=null)x.total=xt;out.push(x);});
+ /* 共通フォーマット：見出し行（「機械」と「品番」がある行）があれば、見出しの名前で列を探す。見出しがなければ今までの並び（A〜L列・13列目＝台車） */
+ const rows=lines.map(l=>l.replace(/\r$/,'').split('\t'));const hi=rows.findIndex(c=>c.some(v=>/品番/.test(v))&&c.some(v=>/機械/.test(v)));let IX=null;const aliasAdd={};
+ if(hi>=0){const h=rows[hi].map(v=>String(v||'').trim());const f=t=>h.findIndex(t);
+  IX={m:f(v=>/機械/.test(v)),mold:f(v=>/金型/.test(v)),p:f(v=>/品番/.test(v)&&!/相手|現品表/.test(v)),n:f(v=>/品名/.test(v)),box:f(v=>/箱入数/.test(v)),monthly:f(v=>/月の需要/.test(v)),daily:f(v=>/日の需要/.test(v)&&!/月/.test(v)),boxes:f(v=>/パレット/.test(v)&&/箱数/.test(v)),lot:f(v=>/ロット/.test(v)),rop:f(v=>/発注点/.test(v)),total:f(v=>/総枚数/.test(v)),boxesCart:f(v=>/台車/.test(v)),grp:f(v=>/成形グループ/.test(v)),pair:f(v=>/同時にできる相手/.test(v)),cav:f(v=>/取り数/.test(v)),gcode:f(v=>/現品表/.test(v))};}
+ (hi>=0?rows.slice(hi+1):rows).forEach(c=>{let x;
+  if(IX){const g=k=>IX[k]>=0?String(c[IX[k]]??'').trim():'';const p=norm(g('p'));if(!isPno(p))return;if(out.some(y=>y.p===p)){dup.push(p);return;}
+   x={m:g('m'),mold:g('mold'),p,n:g('n'),box:num(g('box')),monthly:num(g('monthly')),daily:num(g('daily')),boxes:num(g('boxes')),palQty:null,lot:num(g('lot')),rop:num(g('rop')),total:num(g('total')),boxesCart:num(g('boxesCart'))};
+   if(g('grp'))x.grp=g('grp');if(g('pair'))x.pair=g('pair');const cv=num(g('cav'));if(cv)x.cav=cv;const gc=norm(g('gcode'));if(gc&&gc!==p)aliasAdd[gc]=p;}
+  else{if(c.length<5)return;while(c.length<13)c.push('');const p=norm(c[2]);if(!isPno(p))return;if(out.some(y=>y.p===p)){dup.push(p);return;}
+   x={m:c[0].trim(),mold:c[1].trim(),p,n:c[3].trim(),box:num(c[4]),monthly:num(c[5]),daily:num(c[6]),boxes:num(c[7]),palQty:num(c[8]),lot:num(c[9]),rop:num(c[10]),total:num(c[11]),boxesCart:c.length>12?num(c[12]):null};}
+  const old=M()[x.p];if(x.boxesCart==null&&old&&old.boxesCart!=null)x.boxesCart=old.boxesCart;if(x.boxes==null&&old&&old.boxes!=null)x.boxes=old.boxes;x._diff=old&&old.boxes!=null&&x.boxes!=null&&old.boxes!==x.boxes?old.boxes:null;const xt=x.total,xr=x.rop;calcItem(x);if(xt!=null)x.total=xt;if(xr!=null)x.rop=xr;out.push(x);});
  if(!out.length){$('#mInfo').textContent='取り込めませんでした（A〜L列をコピーしているか確認）';return;}
  if(dup.length){$('#mInfo').textContent='同じ品番が2行あります：'+[...new Set(dup)].join(', ')+'。Excelを直してから取り込んでください。';return;}
  const keepG=state.master.filter(y=>y.src==='現品表'&&!out.some(z=>z.p===y.p));const inv=inventory(),tr=transit(),lost=[...new Set([...Object.keys(inv),...Object.keys(tr)])].filter(p=>!out.some(y=>y.p===p)&&!keepG.some(y=>y.p===p));const diff=out.filter(y=>y._diff!=null);
  let msg=`${out.length}品番を取り込みます。今の品番マスタは置き換わります（記録は消えません）。`+(keepG.length?`\n現品表のコードで登録した${keepG.length}品番はそのまま残します。`:'');
  if(diff.length)msg+=`\n\n箱数がタブレットと違う品番が${diff.length}あり、Excelの値になります：`+diff.slice(0,5).map(y=>`${y.p}（${y._diff}→${y.boxes}箱）`).join('、')+(diff.length>5?' ほか':'');
  if(lost.length)msg+=`\n\n注意：倉庫や運ぶ途中にあるのにマスタから消える品番：`+lost.slice(0,5).join('、')+(lost.length>5?' ほか':'')+'（回収はできます）';
- ask(msg,()=>{out.forEach(y=>delete y._diff);state.master=out.concat(keepG);save();$('#mInfo').textContent=`${out.length}品番を取り込みました`+(keepG.length?`（＋現品表で登録した${keepG.length}品番）`:'');refresh();});};
+ ask(msg,()=>{out.forEach(y=>delete y._diff);state.master=out.concat(keepG);if(Object.keys(aliasAdd).length){state.alias=Object.assign(state.alias||{},aliasAdd);try{aliasInfo();}catch(e){}}save();$('#mInfo').textContent=`${out.length}品番を取り込みました`+(keepG.length?`（＋現品表で登録した${keepG.length}品番）`:'');refresh();});};
 function lWhFill(){const W=whs(),sel=$('#lWh');const v=+sel.value||0;sel.innerHTML=W.map((w,i)=>`<option value="${i}">${esc(w.name)}</option>`).join('')||'<option value="0">倉庫1（新しく作る）</option>';sel.value=Math.min(v,Math.max(0,W.length-1));const w=W[+sel.value];$('#lPaste').value=w?w.layout.map(r=>r.join('\t')).join('\n'):'';lPrev();}
 $('#lWh').onchange=lWhFill;$('#lWhAdd').onclick=()=>{const n=prompt('新しい倉庫の名前',`倉庫${whs().length+1}`);if(!n)return;whs().push({name:n.trim(),layout:[]});save();lWhFill();$('#lWh').value=whs().length-1;lWhFill();};
 $('#lApply').onclick=()=>{const rows=$('#lPaste').value.replace(/\r/g,'').split('\n').map(l=>l.split('\t').map(c=>norm(c))).reduce((a,r,i,all)=>{const f=all.findIndex(x=>x.some(Boolean)),l=all.findLastIndex(x=>x.some(Boolean));if(i>=f&&i<=l&&f>=0)a.push(r);return a;},[]).map(r=>r.map(c=>c==='区画'?'':c));
@@ -13043,7 +13050,26 @@ function loadDemo(){state.master=[
  state.whs=[{name:'第1倉庫',layout:[['A-1','A-2','','B-1','B-2','','C-1','C-2'],['A-3','A-4','','B-3','B-4','','C-3','C-4'],['','','','','','','',''],['D-1','D-2','D-3','D-4','','E-1','E-2','E-3']]},{name:'第2倉庫',layout:[['2A-1','2A-2','2A-3'],['2B-1','2B-2','2B-3']]}];syncLocs();save();lWhFill();upd();refresh();$('#mInfo').textContent='練習用のデータを入れました';}
 $('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。'+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の品番マスタが置き換わります（練習なら「バーチャル練習」を使ってください）。':''),loadDemo);
 $('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
-$('#clrRec').onclick=()=>ask(`記録${state.recs.length}件を全部消します。消す前に、バックアップを自動で書き出します。`+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の記録も消えます。':''),()=>{dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');if(srvUrl())state._dels=(state._dels||[]).concat(state.recs.filter(r=>r.id).map(r=>r.id));state.recs=[];save();refresh();upd();toast('記録を消しました');});
+$('#clrRec').onclick=()=>{const n=state.recs.length,ba=bara().length;const d=document.createElement('div');d.id='confirm';
+ d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">テストデータを消す</p><p class="note" style="margin:0">消すものにチェックを入れて「消す」。消す前に、今のデータを自動でバックアップ（ファイル）に書き出します。</p>
+ <label class="ck"><input type="checkbox" id="rsRec" checked><span>記録（積付・入庫・移動・回収・バラ箱）${n}件 → 在庫は0になります</span></label>
+ <label class="ck"><input type="checkbox" id="rsMaster"><span>品番マスタ（${state.master.length}品番）</span></label>
+ <label class="ck"><input type="checkbox" id="rsLoc"><span>区画・倉庫のレイアウト（${state.locs.length}区画）</span></label>
+ <label class="ck"><input type="checkbox" id="rsAlias"><span>現品表コードの登録（${Object.keys(state.alias||{}).length}件）</span></label>
+ <label class="ck"><input type="checkbox" id="rsWho"><span>記入者の名前・区分の覚え（前回の未セット／セット／単品）</span></label>
+ ${srvUrl()?'<p class="note" style="margin:0;color:var(--ng)">社内サーバーにつながっています。記録は全部の端末から消えます。品番マスタ・区画はサーバーから戻ってくるので、PCで入れ直してください。</p>':''}
+ <input id="rsOk" placeholder="確認のため「けす」と入力"><div class="row" style="justify-content:flex-end"><button class="btn sub" id="rsNo">やめる</button><button class="btn" id="rsGo" style="background:var(--ng)">消す</button></div></div>`;document.body.appendChild(d);
+ d.querySelector('#rsNo').onclick=()=>d.remove();
+ d.querySelector('#rsGo').onclick=()=>{const v=k=>d.querySelector(k).checked;if(!['#rsRec','#rsMaster','#rsLoc','#rsAlias','#rsWho'].some(v)){toast('消すものにチェックを入れてください');return;}
+  if(!/^(けす|消す|ケス)$/.test(d.querySelector('#rsOk').value.trim())){toast('確認のため「けす」と入力してください');d.querySelector('#rsOk').focus();return;}
+  dl(JSON.stringify(state),`倉庫かんばん_消す前_${today()}.json`,'application/json');const done=[];
+  if(v('#rsRec')){if(srvUrl())state._dels=(state._dels||[]).concat(state.recs.filter(r=>r.id).map(r=>r.id));state.recs=[];done.push(`記録${n}件`);}
+  if(v('#rsMaster')){state.master=[];done.push('品番マスタ');}
+  if(v('#rsLoc')){state.whs=[];state.locs=[];state.layout=null;syncLocs();done.push('区画');}
+  if(v('#rsAlias')){state.alias={};done.push('現品表コード');}
+  if(v('#rsWho')){state.who='';state.finDef={};done.push('記入者');}
+  copied=null;cur={kid:null,loc:null,car:'パレット',boxes:null};save();d.remove();whoUpd();try{lWhFill();aliasInfo();}catch(e){}refresh();upd();
+  say('ok',`消しました：${done.join('・')}。消す前のデータはバックアップ（倉庫かんばん_消す前_日付.json）に残っています。`);toast('テストデータを消しました');};};
 function restoreText(t){let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
  if(!o||typeof o!=='object'||!Array.isArray(o.recs)||!Array.isArray(o.master)){toast('倉庫かんばんのバックアップではありません');return;}
  const last=o.recs.length?o.recs[o.recs.length-1]:null;

@@ -123,6 +123,9 @@ td.n,th.n{text-align:right}
  <h3>バックアップ</h3>
  <p class="note">登録した品番と発行の記録を1つのファイルに保存します。別のパソコンでは「読み込む」で戻せます。</p>
  <div class="row"><button class="btn" id="bkOut">ファイルに書き出す</button><label class="btn s">読み込む<input type="file" id="bkIn" accept=".json" hidden></label></div>
+ <h3>テストデータを消す（試験運用を始める前に）</h3>
+ <p class="note">消す前に、今のデータを自動でバックアップ（ファイル）に書き出します。</p>
+ <div class="row"><label><input type="checkbox" id="rsLog" checked> 発行の記録（かんばん番号は1番からやり直し）</label><label><input type="checkbox" id="rsItems"> 登録した品番</label><button class="btn s" id="rsGo" style="background:#b3261e;color:#fff">テストデータを消す</button></div>
  <div class="msg" id="bkMsg" hidden></div>
 </section>
 
@@ -2577,6 +2580,12 @@ $('#mkMap').onclick=()=>{const rows=$('#lay').value.replace(/\r/g,'').split('\n'
 function tabTsv(){return st.items.filter(x=>x.p&&!problems(x).length).map(x=>[x.m,'',x.p,x.n,x.box??'','','',x.boxes??'',qty(x)??'','',x.rop??'',x.total??'',x.boxesCart??''].join('\t')).join('\n');}
 $('#toTab').onclick=async()=>{const t=tabTsv();if(!t){msg('#bkMsg','ng','渡せる品番がありません。');return;}try{await navigator.clipboard.writeText(t);msg('#bkMsg','ok',`${t.split('\n').length}品番をコピーしました。タブレットの「設定 → 品番マスタ」に貼り付けて「取り込む」。`);}catch(e){dl('﻿'+t,'タブレット用_品番マスタ.txt','text/plain');msg('#bkMsg','info','コピーできなかったのでファイルに保存しました。');}};
 $('#toTabFile').onclick=()=>{dl('﻿'+tabTsv(),'タブレット用_品番マスタ.txt','text/plain');};
+$('#rsGo').onclick=()=>{const L=$('#rsLog').checked,I=$('#rsItems').checked;if(!L&&!I){msg('#bkMsg','ng','消すものにチェックを入れてください。');return;}
+ const what=[L?`発行の記録${st.log.length}件`:'',I?`登録した品番${st.items.length}件`:''].filter(Boolean).join('と');
+ if(prompt(`${what}を消します。確認のため「けす」と入力してください。`)?.trim()!=='けす'){msg('#bkMsg','info','やめました。');return;}
+ dl(JSON.stringify(st),`かんばん発行_消す前_${now().slice(0,10).replace(/\//g,'')}.json`,'application/json');
+ if(L)st.log=[];if(I)st.items=[];Object.keys(sel).forEach(k=>delete sel[k]);save();renderReg();renderIss();try{renderLog();}catch(e){}
+ msg('#bkMsg','ok',`${what}を消しました。消す前のデータはバックアップ（かんばん発行_消す前_日付.json）に残っています。`);};
 $('#bkOut').onclick=()=>dl(JSON.stringify(st),`かんばん発行_バックアップ_${now().slice(0,10).replace(/\//g,'')}.json`,'application/json');
 $('#bkIn').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{let o;try{o=JSON.parse(t);}catch(x){msg('#bkMsg','ng','読めないファイルです');return;}if(!o||!Array.isArray(o.items)){msg('#bkMsg','ng','かんばん発行のバックアップではありません');return;}
  if(!confirm(`品番${o.items.length}・記録${(o.log||[]).length}件で、今のデータを置き換えます。`))return;st=Object.assign({items:[],log:[],locs:''},o);save();$('#locs').value=st.locs;render();msg('#bkMsg','ok','読み込みました。');});e.target.value='';};
