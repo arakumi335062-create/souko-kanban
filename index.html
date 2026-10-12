@@ -74,6 +74,7 @@ body[data-mode='積付'] #modeTtl{color:#7a5a00}body[data-mode='回収'] #modeTt
 .slot{display:grid;grid-template-columns:90px 1fr;gap:6px 10px;font-size:15px;align-items:center}
 .slot .v{font-family:ui-monospace,Consolas,monospace;font-weight:700;font-size:17px;word-break:break-all}
 .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 10px;margin:8px 0}.ogrid label{display:flex;flex-direction:column;gap:2px;font-size:13px}.ogrid input{width:100%;box-sizing:border-box}
+.pdRow{display:flex;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line,#ddd);border-radius:10px;padding:8px 10px;margin:6px 0}.pdRow.old{border-color:var(--ng);background:var(--ngsoft)}.pdMain{min-width:0;flex:1;word-break:break-all}.pdBtns{display:flex;gap:6px;flex-shrink:0}.pdBtns .btn{padding:8px 12px}.pdTag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 6px;margin-right:6px}.pdTag.rd{background:var(--accentsoft);color:var(--ink);border:1px solid var(--accent)}.pdTag.tr{background:var(--tealsoft);color:var(--teal);border:1px solid var(--teal)}
 .res{border-radius:10px;padding:10px 12px;font-weight:700;font-size:16px}
 .res.ok{background:var(--oksoft);color:var(--ok)}.res.ng{background:var(--ngsoft);color:var(--ng)}.res.info{background:var(--accentsoft);color:var(--ink)}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -128,6 +129,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <p class="note" id="lHint"></p>
   <div class="ldbtns"><button class="btn go" id="goLoad" disabled>決定（成形中・続く）</button><button class="btn go end" id="goLoadEnd" disabled>決定して成形終了<small>この型の最後のパレット</small></button></div>
   <div class="row"><button class="btn sub" id="clearLd">やり直す</button><button class="btn sub" id="undoLd">1つ前の登録を取り消す</button></div></section>
+ <section class="card" id="cPend" data-tabs="scan inv"><h2>途中のもの<span id="pendCnt"></span></h2>
+  <p class="note" style="margin:0">読んだけれど「決定」していないかんばんと、積付したけれどまだ入庫していないパレットです。古い順に並びます（12時間より前は赤）。押すと、その続きから処理できます。</p>
+  <div class="row"><select id="pendF"><option value="">すべて</option><option value="read">読んだだけ（決定していない）</option><option value="tr">積付済み・未入庫（運ぶ途中）</option></select><span class="note" id="pendSum"></span></div>
+  <div id="pendBody"></div></section>
  <section class="card" id="cRun" data-tabs="scan"><h2>成形中の品番（読んだ順）</h2><div id="runList"></div></section>
  <section class="card" id="cMove" data-tabs="scan"><h2>③ 取り出す箱数と行き先（区画は下の地図をタップ）</h2>
   <div class="slot3"><div><small>かんばん</small><span class="v" id="mvKid">－</span></div><div><small>今の場所</small><span class="v" id="mvFrom">－</span></div><div><small>パレットの残り</small><span class="v" id="mvLeft">－</span></div></div>
@@ -12657,7 +12662,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const num=s=>{const v=parseFloat(String(s??'').replace(/[,，\s]/g,''));return isNaN(v)?null:v;};
 /* ---------- pages ---------- */
-const PAGES={scan:[{n:'読み取り',s:['#cCoach','#cVirt','#cKind','#cCam','#cLoad','#cRun','#cMap','#cNow','#cMove']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
+const PAGES={scan:[{n:'読み取り',s:['#cCoach','#cVirt','#cKind','#cCam','#cLoad','#cPend','#cRun','#cMap','#cNow','#cMove']}],inv:[{n:'在庫一覧',s:['#cInv']},{n:'途中のもの',s:['#cPend']},{n:'どこにある？',s:['#cFind']}],ord:[{n:'生産指示',s:['#cOrd']}],
  rec:[{n:'最近の記録',s:['#cRecs']},{n:'Excelへ渡す',s:['#cExp']}],set:[{n:'記入者',s:['#cWho']},{n:'品番マスタ',s:['#cMaster','#cOne','#cAlias']},{n:'箱数',s:['#cPal']},{n:'区画',s:['#cLoc']},{n:'サーバー',s:['#cSrv']},{n:'SDカード',s:['#cBk']},{n:'表示',s:['#cView']}]};
 let pgIdx={};
 function showTab(t){state.tab=t;save();$$('[data-tabs]').forEach(el=>el.classList.toggle('tab-off',!el.dataset.tabs.split(' ').includes(t)));
@@ -13141,7 +13146,7 @@ function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.inn
  d.querySelector('#cNo').onclick=()=>d.remove();d.querySelector('#cYes').onclick=()=>{d.remove();yes();};}
 function toast(m){const t=document.createElement('div');t.id='tip';t.style.left='50%';t.style.top='70px';t.style.transform='translateX(-50%)';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 /* ---------- long-press help ---------- */
-const HELP=[{a:'qa',s:'#boxEdit',t:'入数を変える',x:'この品番の1箱の入数（倉庫に行く仮箱の入数）を変えます。品番マスタが変わり、これからの個数の計算に使います。前の記録は変わりません。'},{a:'qa',s:'#oP',t:'品番を1つ登録・直す',x:'品番を入れると、登録済みなら今の内容が出ます。新しい品番は箱入数を入れて「登録する」。ここで登録した品番は、品番マスタを取り込み直しても残ります。'},{a:'qa',s:'#oDel',t:'この品番を消す',x:'品番マスタから消します。入出庫の記録は消えません。倉庫にパレットがあるときは確認が出ます。'},{a:'qa',s:'#scanGo',t:'読む',x:'押してから6秒の間に、枠に入ったQR（バーコード）を1つだけ読みます。読んだら止まるので、何度も読みません。カメラの映像を押しても同じです。連続で読みたいときは 設定 →「表示・読み取り」。'},{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'未セット品／セット品／単品',x:'そのパレットの区分を記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで区分だけ変えられます（例：未セット品→セット品）。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
+const HELP=[{a:'qa',s:'#pendF',t:'途中のもの',x:'読んだけれど決定していないかんばんと、積付済みでまだ入庫していないパレットの一覧です。「続ける」「入庫する」で、その続きから処理できます。'},{a:'qa',s:'#boxEdit',t:'入数を変える',x:'この品番の1箱の入数（倉庫に行く仮箱の入数）を変えます。品番マスタが変わり、これからの個数の計算に使います。前の記録は変わりません。'},{a:'qa',s:'#oP',t:'品番を1つ登録・直す',x:'品番を入れると、登録済みなら今の内容が出ます。新しい品番は箱入数を入れて「登録する」。ここで登録した品番は、品番マスタを取り込み直しても残ります。'},{a:'qa',s:'#oDel',t:'この品番を消す',x:'品番マスタから消します。入出庫の記録は消えません。倉庫にパレットがあるときは確認が出ます。'},{a:'qa',s:'#scanGo',t:'読む',x:'押してから6秒の間に、枠に入ったQR（バーコード）を1つだけ読みます。読んだら止まるので、何度も読みません。カメラの映像を押しても同じです。連続で読みたいときは 設定 →「表示・読み取り」。'},{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'未セット品／セット品／単品',x:'そのパレットの区分を記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで区分だけ変えられます（例：未セット品→セット品）。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
  {a:'scan',s:'#kOut',t:'回収',x:'パレットの製品がなくなったとき。押してからかんばんを読むと回収。1回ごとに入庫に戻ります。'},
  {a:'scan',s:'#goIn',t:'入庫する',x:'かんばんと置き場所がそろうと押せます。押したときに登録されます。'},
  {a:'layout',s:'#map',t:'置き場所の地図',x:'数字はその区画のパレット枚数。黄色は同じ品番がある区画、赤い点線はこのかんばんが今ある区画。'},
@@ -13233,7 +13238,40 @@ function shareQR(){const url=location.href.split('#')[0].split('?')[0].replace(/
  const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in" style="align-items:center;text-align:center"><h2 style="margin:0">他の端末に入れる</h2><div style="background:#fff;padding:10px;border-radius:10px;width:min(70vw,260px)">${q.createSvgTag({cellSize:4,margin:2,scalable:true})}</div><p class="note" style="margin:0;word-break:break-all">${esc(url)}</p>
  <ol style="text-align:left;margin:0;padding-left:20px;font-size:14px;line-height:1.6"><li>入れたい端末のカメラ（またはGoogleレンズ）でこのQRを読む</li><li>出てきた住所を開く（Chrome・Safari）</li><li>カメラを「許可」</li><li>メニュー（︙ や 共有）→「ホーム画面に追加」</li></ol>
  <p class="note" style="margin:0">記録はそれぞれの端末に別々に残ります。在庫を記録する端末は1台に決めてください。</p><button class="btn" id="shqClose">閉じる</button></div>`;document.body.appendChild(d);d.querySelector('#shqClose').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove();};}
+/* ---------- 途中のもの（読んだだけ・運ぶ途中） ---------- */
+let curReadAt=0;
+function pendList(all){const P=Array.isArray(state.pend)?state.pend:[];const recs=state.recs;
+ return P.filter(e=>!recs.some(r=>r.kid===e.kid&&r.ts>=e.ts)&&(all||!(cur.kid===e.kid&&mode===e.mode)));}
+function pendAdd(m,kid,ts){if(!kid||(m!=='積付'&&m!=='入庫'))return;if(!/^.+-\d+$/.test(kid))return;state.pend=(Array.isArray(state.pend)?state.pend:[]).filter(e=>!(e.kid===kid&&e.mode===m));
+ state.pend.push({kid,mode:m,ts:ts||curReadAt||Date.now(),who:state.who||''});state.pend=pendList(true).slice(-50);save();try{pendRender();}catch(e){}}
+function agoTxt(ts){const m=Math.floor((Date.now()-ts)/60000);if(m<1)return'今';if(m<60)return m+'分前';const h=Math.floor(m/60);if(h<24)return h+'時間前';return Math.floor(h/24)+'日前';}
+function hhmm(ts){const d=new Date(ts);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function pendRender(){const box=$('#pendBody');if(!box)return;const f=$('#pendF').value;const m=M();
+ const A=pendList().map(e=>({t:'read',kid:e.kid,mode:e.mode,ts:e.ts,e}));
+ const tr=transit();const B=Object.values(tr).flat().map(v=>({t:'tr',kid:v.kid,ts:v.r.ts,v}));
+ const L=(f==='read'?A:f==='tr'?B:A.concat(B)).sort((a,b)=>a.ts-b.ts);
+ $('#pendCnt').textContent=A.length+B.length?`（${A.length+B.length}件）`:'';$('#pendSum').textContent=`読んだだけ ${A.length}件・運ぶ途中 ${B.length}件`;
+ box.innerHTML=L.length?L.map((o,i)=>{const p=o.kid.replace(/-\d+$/,''),x=m[p];const old=Date.now()-o.ts>12*3600e3;
+  const what=o.t==='read'?`<span class="pdTag rd">${esc(o.mode)}で読んだだけ</span>`:`<span class="pdTag tr">積付済み・未入庫</span>`;
+  const det=o.t==='tr'?`${esc(o.v.car||'')} ${o.v.boxes??'－'}箱（${(o.v.qty||0).toLocaleString()}個）・${esc(finN(o.v.fin)||'')}${o.v.r.who?'・'+esc(o.v.r.who):''}`:(o.e.who?esc(o.e.who):'');
+  const btn=o.t==='read'?`<button class="btn" data-go="${i}">続ける</button><button class="btn sub" data-del="${i}">消す</button>`:`<button class="btn" data-go="${i}">入庫する</button>`;
+  return `<div class="pdRow${old?' old':''}"><div class="pdMain">${what}<b>${esc(o.kid)}</b> <span class="note">${esc(x?.n||'')}</span><br><span class="note">${hhmm(o.ts)}（${agoTxt(o.ts)}）　${det}</span></div><div class="pdBtns">${btn}</div></div>`;}).join(''):'<p class="note">途中のものはありません。</p>';
+ box.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>pendGo(L[+b.dataset.go]));
+ box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const o=L[+b.dataset.del];state.pend=(state.pend||[]).filter(e=>e!==o.e);save();pendRender();toast(`${o.kid} を一覧から消しました`);});}
+function pendGo(o){const m2=o.t==='read'?o.mode:'入庫';if(state.tab!=='scan')showTab('scan');
+ if(o.t==='read')state.pend=(state.pend||[]).filter(e=>e!==o.e);
+ setMode(m2,true);handle(o.kid);curReadAt=o.ts;
+ if(cur.kid===o.kid){say('info',m2==='積付'?`${o.kid} の続きです。区分・荷姿・箱数を確かめて「決定」。`:`${o.kid} を入庫します。置き場所（下の地図）を選んで「入庫する」。`);
+  pager.reveal('scan',m2==='積付'?'#cLoad':'#cNow');const t=$(m2==='積付'?'#cLoad':'#cMap');if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
+ save();pendRender();}
+$('#pendF').onchange=pendRender;
+{const _h=handle;handle=function(code){const prev=cur.kid,pm=mode,pa=curReadAt;const r=_h.apply(this,arguments);if(cur.kid&&cur.kid!==prev)curReadAt=Date.now();if(prev&&cur.kid&&cur.kid!==prev)pendAdd(pm,prev,pa);return r;};}
+{const _sm=setMode;setMode=function(k){if(cur.kid&&k!==mode)pendAdd(mode,cur.kid,curReadAt);const r=_sm.apply(this,arguments);try{pendRender();}catch(e){}return r;};}
+addEventListener('pagehide',()=>{if(cur.kid)pendAdd(mode,cur.kid,curReadAt);});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&cur.kid)pendAdd(mode,cur.kid,curReadAt);});
+{const _rf2=refresh;refresh=function(){_rf2.apply(this,arguments);try{pendRender();}catch(e){}};}
 /* ---------- 入数（倉庫の箱入数）を変える ---------- */
+
 function setBox(p,v){const x=M()[p];const before=x.total,old=x.box;x.box=v;calcItem(x);save();try{palLock=true;refresh();palLock=false;}catch(e){palLock=false;}
  let m=`${p}：箱入数 ${old??'－'}→${v}個。パレット1枚 ${x.palQty??'－'}個・発注点 ${x.rop??'－'}枚・総枚数 ${x.total??'－'}枚`;
  if(before!=null&&x.total!=null&&x.total!==before)m+=x.total>before?`。かんばんを ${rng(before+1,x.total)} 追加で印刷してください`:`。${rng(x.total+1,before)}のかんばんは、回収したら使わずに外してください`;
