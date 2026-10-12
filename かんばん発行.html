@@ -67,7 +67,7 @@ td.n,th.n{text-align:right}
 @media print{header,.tabs,.panel,.noprint{display:none!important}body{background:#fff}.preview{background:#fff;border:0;margin:0}.sheet{padding:0}@page{size:A4;margin:8mm}}
 .warn{color:#b3261e;font-size:12px;font-weight:700}#issBody tr.on{background:#fff8e1}.yobi{background:#eef6ff;padding:8px;border-radius:8px}
 </style></head><body>
-<header><h1>かんばん発行</h1><p>パソコンのEdge・Chromeで開いて使います。データはこのパソコンのブラウザに保存されます。</p></header>
+<header><h1>かんばん発行 <small style="font-size:12px;font-weight:400;opacity:.75;border:1px solid currentColor;border-radius:6px;padding:1px 6px">Ver 2026.10.13-0814</small></h1><p>パソコンのEdge・Chromeで開いて使います。データはこのパソコンのブラウザに保存されます。</p></header>
 <div class="tabs noprint" id="tabs"><button class="on" data-t="reg">① 品番を登録</button><button data-t="iss">② かんばんを発行</button><button data-t="log">③ 発行の記録</button><button data-t="etc">④ 区画の札・操作カード</button><button data-t="bk">⑤ 保存・タブレットへ</button></div>
 
 <section class="panel" id="p-reg">
@@ -2473,11 +2473,11 @@ $('#addRow').onclick=()=>{const m=$('#regM').value;st.items.push({m,p:'',n:'',bo
 ['#regM'].forEach(s=>$(s).addEventListener('change',renderReg));$('#regQ').addEventListener('input',renderReg);
 const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p)||(/[0-9A-Z]{2,}/.test(p)&&/^[^\s（）()]{4,}$/.test(p)&&!/品番|マスタ|機械/.test(p));
 /* 表（行×列）を品番データにする：見出しがあれば見出しの名前で列を探す。なければ列の数で判断（運用版12列・タブレット13列・6列） */
-function rowsToItems(rows){const out=[];const H=rows.findIndex(r=>r.some(c=>/品番/.test(c))&&r.some(c=>/機械|成形機/.test(c)));
+function rowsToItems(rows){const out=[];const H=rows.findIndex(r=>r.some(c=>/品番/.test(c))&&r.some(c=>/機械/.test(c)));
  if(H>=0){const h=rows[H].map(c=>String(c||''));const f=t=>h.findIndex(t);
-  const ix={m:f(c=>/機械|成形機/.test(c)&&!/代替/.test(c)),p:f(c=>/品番/.test(c)&&!/相手|現品表|親|照合/.test(c)),n:f(c=>/品名/.test(c)),box:(()=>{const i=f(c=>/倉庫|仮箱/.test(c)&&/入数|入り数/.test(c));return i>=0?i:f(c=>/箱入数|収容数/.test(c)&&!/未完成|完成品/.test(c));})(),tgt:f(c=>/かんばん対象/.test(c)),boxes:f(c=>/パレット/.test(c)&&/箱数/.test(c)),boxesCart:f(c=>/台車/.test(c)),total:f(c=>/総枚数|発行枚数/.test(c)),rop:f(c=>/発注点/.test(c)),pair:f(c=>/同時にできる相手|共取り相手/.test(c))};
-  rows.slice(H+1).forEach(r=>{const g=k=>ix[k]>=0?String(r[ix[k]]??'').trim():'';const p=g('p').toUpperCase().replace(/\s/g,'');if(!isPno(p))return;if(/^[×xX✕]$|^対象外$/.test(g('tgt')))return;
-   out.push({m:g('m').normalize('NFKC').split('/')[0].trim().replace(/^0+(?=\d)/,''),p,n:g('n'),box:int(g('box')),boxes:int(g('boxes')),boxesCart:int(g('boxesCart')),total:int(g('total')),rop:int(g('rop')),pair:g('pair')||null});});return out;}
+  const ix={m:f(c=>/機械/.test(c)),p:f(c=>/品番/.test(c)),n:f(c=>/品名/.test(c)),box:f(c=>/箱入数/.test(c)),boxes:f(c=>/パレット/.test(c)&&/箱数/.test(c)),boxesCart:f(c=>/台車/.test(c)),total:f(c=>/総枚数|発行枚数/.test(c)),rop:f(c=>/発注点/.test(c)),pair:f(c=>/同時にできる相手/.test(c))};
+  rows.slice(H+1).forEach(r=>{const g=k=>ix[k]>=0?String(r[ix[k]]??'').trim():'';const p=g('p').toUpperCase().replace(/\s/g,'');if(!isPno(p))return;
+   out.push({m:g('m'),p,n:g('n'),box:int(g('box')),boxes:int(g('boxes')),boxesCart:int(g('boxesCart')),total:int(g('total')),rop:int(g('rop')),pair:g('pair')||null});});return out;}
  rows.forEach(c=>{c=c.map(v=>String(v??'').trim());let x=null;
   if(c.length>=12){x={m:c[0],p:c[2],n:c[3],box:int(c[4]),boxes:int(c[7]),total:int(c[11]),rop:int(c[10]),boxesCart:c.length>12?int(c[12]):null};}
   else if(c.length>=6){x={m:c[0],p:c[1],n:c[2],box:int(c[3]),boxes:int(c[4]),total:int(c[5]),rop:null};}

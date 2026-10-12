@@ -101,9 +101,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 #confirm{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #confirm .in{background:var(--surface);border-radius:14px;padding:18px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
 .onepage-off .pnav{display:none}
+.ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
 </style></head><body>
 <div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
-<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
+<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-0814</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
  <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
@@ -212,7 +213,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="clrRec">テストデータを消す（試験運用を始める前に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
- <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
+ <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-0814</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
 <div class="pnav"><button id="prevPg">◀ 前</button><button id="nextPg">次 ▶</button></div>
@@ -12623,7 +12624,7 @@ if(!Array.prototype.at)Array.prototype.at=function(i){i=Math.trunc(i)||0;if(i<0)
 if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(let i=this.length-1;i>=0;i--)if(f(this[i],i,this))return i;return -1;};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
-const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
+const APP_VER='2026.10.13-0814';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
 let DEV='';try{DEV=localStorage.getItem('souko-kanban-dev')||'';if(!DEV){DEV='T'+Math.random().toString(36).slice(2,7);localStorage.setItem('souko-kanban-dev',DEV);}}catch(e){DEV='T'+Math.random().toString(36).slice(2,7);}
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
 function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
@@ -12765,6 +12766,17 @@ function learnAlias(code){if(!state.master.length)return;const head=code.slice(0
  d.querySelector('#alAdd').onclick=()=>{const v=k=>{const n=parseInt(d.querySelector(k).value,10);return n>0?n:null;};const box=v('#alBox');if(!box){toast('箱入数を入れてください');d.querySelector('#alBox').focus();return;}
   const x=calcItem({m:d.querySelector('#alM').value,mold:'',p:code,n:'現品表で登録',box,monthly:null,daily:null,boxes:v('#alBx'),palQty:null,lot:null,rop:null,total:null,boxesCart:v('#alBc'),src:'現品表'});
   state.master.push(x);if(!save()){state.master.pop();return;}d.remove();toast(`${code} を品番として登録しました`);refresh();handleProduct(code,code);};d.querySelector('#alNo').onclick=()=>{d.remove();beep(false);say('ng','区画の一覧にない置き場所か、登録していない品番のQRです：'+code);};beep(false);}
+/* マスタにない品番のかんばんを読んだとき：その場で品番マスタに足す */
+function addItemDialog(p,code){const d=document.createElement('div');d.id='confirm';
+ d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">品番マスタにない品番です</p><p style="margin:0;font-size:22px;font-weight:800">${esc(p)}</p><p class="note" style="margin:0">この品番を今すぐ登録して続けられます。あとでPCの品番マスタ（共通_品番マスタ.xlsx）にも足してください。</p>
+ <label class="note">機械 <input id="aiM" list="aiML" placeholder="例：1号機" style="width:120px"><datalist id="aiML">${[...new Set(state.master.map(x=>x.m).filter(Boolean))].map(m=>`<option value="${esc(m)}">`).join('')}</datalist></label>
+ <div class="row"><label class="note">箱入数 <input id="aiBox" type="number" inputmode="numeric" min="1" style="width:90px"></label><label class="note">パレット <input id="aiBx" type="number" inputmode="numeric" min="1" style="width:70px">箱</label><label class="note">総枚数 <input id="aiT" type="number" inputmode="numeric" min="1" style="width:70px">枚</label></div>
+ <div class="row" style="justify-content:flex-end"><button class="btn sub" id="aiNo">登録しない</button><button class="btn" id="aiGo">登録して続ける</button></div></div>`;document.body.appendChild(d);
+ d.querySelector('#aiNo').onclick=()=>{d.remove();say('ng',`${p} は登録しませんでした。設定 → 品番マスタ で取り込んでから読んでください。`);};
+ d.querySelector('#aiGo').onclick=()=>{const v=k=>{const n=parseInt(d.querySelector(k).value,10);return n>0?n:null;};const box=v('#aiBox');if(!box){toast('箱入数を入れてください');d.querySelector('#aiBox').focus();return;}
+  const x=calcItem({m:d.querySelector('#aiM').value.trim()||'未設定',mold:'',p,n:'',box,monthly:null,daily:null,boxes:v('#aiBx'),palQty:null,lot:null,rop:null,total:v('#aiT'),boxesCart:null,src:'現品表'});if(v('#aiT'))x.total=v('#aiT');
+  state.master.push(x);if(!save()){state.master.pop();return;}d.remove();refresh();toast(`${p} を登録しました`);handle(code);};
+ setTimeout(()=>d.querySelector('#aiBox').focus(),50);}
 function aliasInfo(){const e=$('#alInfo');if(!e)return;const A=Object.entries(state.alias||{});e.innerHTML=A.length?A.map(([k,v])=>`<span class="lc">${esc(k)} → ${esc(v)}</span>`).join(' ')+` <button class="btn sub" id="alClr">全部消す</button>`:'<span class="note">まだありません。知らないバーコードを読むと、品番を選んで登録できます。</span>';const c=$('#alClr');if(c)c.onclick=()=>ask('現品表コードの登録を全部消します。',()=>{state.alias={};save();aliasInfo();});}
 function handle(code){const raw=String(code||'');if(/[\uFFFD\u0080-\u00FF]/.test(raw)||/[0-9A-Za-z][ｦ-ﾟ]{1,3}[\uFFFD]?[0-9A-Za-z]/.test(raw)){beep(false);say('ng','このQRは中身が文字化けしています（日本語の品番を前のかんばん発行アプリで印刷したもの）。新しいかんばん発行アプリで印刷し直してください：'+raw);return;}
  code=norm(code);if(!code)return;if(document.getElementById('confirm'))return;
@@ -12774,6 +12786,7 @@ function handle(code){const raw=String(code||'');if(/[\uFFFD\u0080-\u00FF]/.test
  {const p=productOf(code);if(p){handleProduct(p,code);return;}
   if(!/^.+-\d+$/.test(code)&&!state.locs.includes(code)&&/^[0-9A-Z]{6,}$/.test(code)){learnAlias(code);return;}}
  const S=kstate()[code];const last=lastByKid()[code];let e=checkKid(code,mode==='回収'||last?.kind==='入庫'||S?.st==='積付');if(e&&mode==='回収'&&last?.kind==='入庫'&&e.startsWith('品番マスタにない'))e=null;
+ if(e&&e.startsWith('品番マスタにない')&&mode!=='回収'){beep(false);const p=code.replace(/-\d+$/,'');say('ng',`かんばんは読めました（${code}）。でも品番「${p}」がこのタブレットの品番マスタにありません。`);addItemDialog(p,code);return;}
  if(e){beep(false);say('ng',state.locs.length&&(!/^.+-\d+$/.test(code)||e.startsWith('品番マスタにない'))?'区画の一覧にない置き場所か、登録していない品番のQRです：'+code:e);return;}
  if(mode==='移動'){if(S?.st!=='入庫'){beep(false);say('ng',S?.st==='積付'?'このかんばんはまだ入庫していません（運ぶ途中）。先に「入庫」で置き場所を登録します。':'このかんばんは倉庫にありません。');return;}
   if(cur.kid&&cur.kid!==code&&(cur.to||cur.dest==='出荷')&&cur.take){/* 別のパレットに読み替え */}
