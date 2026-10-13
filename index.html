@@ -101,10 +101,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 #confirm{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #confirm .in{background:var(--surface);border-radius:14px;padding:18px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
 .onepage-off .pnav{display:none}
-#ttl{white-space:nowrap}@media(max-width:430px){.ver{display:none}}.ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
+#ttl{white-space:nowrap}@media(max-width:430px){.ver{display:none}}.whoChips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.wchip{font-size:20px;font-weight:800;padding:12px 18px;border-radius:12px;border:2px solid var(--line,#ccc);background:var(--surface,#fff);color:var(--ink,#222);min-width:90px}.wchip.on{background:var(--teal);color:#fff;border-color:var(--teal)}.wchip.del{border-color:#c62828;color:#c62828;background:#ffebee}#whoBadge{cursor:pointer}.ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
 </style></head><body>
 <div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
-<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-1351</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn" id="hdrDel" aria-label="テストデータを消す" title="テストデータを消す">🗑</button><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
+<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-1354</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn" id="hdrDel" aria-label="テストデータを消す" title="テストデータを消す">🗑</button><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
  <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
@@ -169,7 +169,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="prune">渡し済みの古い記録を整理（90日より前）</button></div>
   <p class="note">Excel「倉庫在庫かんばん_運用版」の「入出庫記録」で、最後の行の次のA列を選んで貼り付けます（日付・時刻・区分・かんばん・置き場所・記入者・メモの順）。貼り付けたら「渡し済みにする」。</p></section>
  <!-- 設定 -->
- <section class="card" id="cWho" data-tabs="set"><h2>記入者</h2><div class="row"><input id="who" placeholder="名前（例：山田）"><button class="btn" id="whoSave">決める</button></div></section>
+ <section class="card" id="cWho" data-tabs="set"><h2>記入者</h2><p class="note" style="margin:0 0 6px">名前を押すと、その人が記入者になります（交代のときは画面上の名前を押しても選べます）。</p><div class="whoChips" id="whoList"></div>
+ <div class="row"><input id="who" list="whoDl" placeholder="新しい名前（例：山田）"><datalist id="whoDl"></datalist><button class="btn" id="whoSave">追加して選ぶ</button><button class="btn sub" id="whoEdit">名前を消す</button></div></section>
  <section class="card" id="cAlias" data-tabs="set"><h2>現品表のバーコード</h2><p class="note">現品表のバーコードの中身と品番の対応です。品番と同じ中身なら登録はいりません。</p><div id="alInfo"></div></section>
  <section class="card" id="cMaster" data-tabs="set"><h2>品番マスタを入れる</h2>
   <p class="note">Excelの「品番マスタ」で4行目から最後の行まで、A列〜L列をコピーして貼り付けます（機械・金型・品番・品名・箱入数・月の需要・1日の需要・パレット1枚の箱数・パレット1枚の個数・ロット・発注点・総枚数）。</p>
@@ -213,7 +214,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="clrRec">テストデータを消す（試験運用を始める前に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
- <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-1351</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
+ <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-1354</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
 <div class="pnav"><button id="prevPg">◀ 前</button><button id="nextPg">次 ▶</button></div>
@@ -12624,7 +12625,7 @@ if(!Array.prototype.at)Array.prototype.at=function(i){i=Math.trunc(i)||0;if(i<0)
 if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(let i=this.length-1;i>=0;i--)if(f(this[i],i,this))return i;return -1;};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
-const APP_VER='2026.10.13-1351';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
+const APP_VER='2026.10.13-1354';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
 let DEV='';try{DEV=localStorage.getItem('souko-kanban-dev')||'';if(!DEV){DEV='T'+Math.random().toString(36).slice(2,7);localStorage.setItem('souko-kanban-dev',DEV);}}catch(e){DEV='T'+Math.random().toString(36).slice(2,7);}
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
 function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
@@ -12851,9 +12852,9 @@ function runRender(){const box=$('#runList');if(!box)return;const R=runs();const
 $('#runList').addEventListener('click',e=>{const b=e.target.closest('[data-end]');if(!b)return;const p=b.dataset.end;const run=runs().open.find(v=>v.p===p);if(!run)return;
  ask(`${p} の成形を終了にします（全${run.items.length}枚・${run.items.reduce((a,x)=>a+(x.qty||0),0).toLocaleString()}個）。`,()=>{const r=Object.assign(stamp(),{kind:'成形終了',kid:p,loc:'',who:state.who||'',exp:true});state.recs.push(r);if(!save()){state.recs.pop();return;}upd();refresh();say('ok',`${p} の成形を終了にしました。`);});});
 function needWho(then){if(state.who)return true;beep(false);say('ng','記入者が決まっていません。名前を入れてください。');if(document.getElementById('whoAsk'))return false;
- const d=document.createElement('div');d.id='confirm';d.className='whoAsk';d.innerHTML=`<div class="in" id="whoAsk"><p style="margin:0;font-weight:800">記入者（このタブレットを使う人）の名前を入れてください</p><input id="waN" placeholder="例：山田" style="font-size:22px;padding:10px;width:100%;box-sizing:border-box"><div class="row" style="justify-content:flex-end"><button class="btn sub" id="waNo">やめる</button><button class="btn" id="waOk">決める</button></div></div>`;document.body.appendChild(d);
- const ok=()=>{const v=$('#waN').value.trim();if(!v){$('#waN').focus();return;}state.who=v;save();try{$('#who').value=v;whoUpd();}catch(e){}d.remove();toast('記入者を「'+v+'」にしました');if(typeof then==='function')then();};
- $('#waOk').onclick=ok;$('#waN').onkeydown=e=>{if(e.key==='Enter')ok();};$('#waNo').onclick=()=>d.remove();setTimeout(()=>{const i=document.getElementById('waN');if(i)i.focus();},50);return false;}
+ const d=document.createElement('div');d.id='confirm';d.className='whoAsk';d.innerHTML=`<div class="in" id="whoAsk"><p style="margin:0;font-weight:800">記入者（このタブレットを使う人）の名前を入れてください</p><div class="whoChips" id="waL"></div><input id="waN" list="whoDl" placeholder="新しい名前（例：山田）" style="font-size:22px;padding:10px;width:100%;box-sizing:border-box"><div class="row" style="justify-content:flex-end"><button class="btn sub" id="waNo">やめる</button><button class="btn" id="waOk">決める</button></div></div>`;document.body.appendChild(d);
+ const ok=(nm)=>{const v=String(nm??$('#waN').value).trim();if(!v){$('#waN').focus();return;}whoSet(v);d.remove();if(typeof then==='function')then();};whoChips($('#waL'),n=>ok(n));
+ $('#waOk').onclick=()=>ok();$('#waN').onkeydown=e=>{if(e.key==='Enter')ok();};$('#waNo').onclick=()=>d.remove();setTimeout(()=>{const i=document.getElementById('waN');if(i)i.focus();},50);return false;}
 $('#goIn').onclick=()=>{if(mode==='入庫'&&cur.kid&&cur.loc&&needWho())commit();};
 $('#quickOut').onclick=()=>{const k=cur.kid;ask(`${k} を回収します（パレットが空になった）。`,()=>{mode='回収';cur={kid:k,loc:null};commit();});};
 // 積付
@@ -13023,8 +13024,17 @@ $('#prune').onclick=()=>{const keep=Date.now()-90*864e5;const S=kstate();const c
  ask(`90日より前でExcelに渡し済みの記録${old.length}件を、このタブレットから消します（Excelには残っています）。先にバックアップを書き出します。`,()=>{dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');const del=new Set(old);state.recs=state.recs.filter(r=>!del.has(r));save();refresh();toast(`${old.length}件を整理しました`);});};
 function dl(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 /* ---------- settings ---------- */
-$('#who').value=state.who;$('#whoSave').onclick=()=>{state.who=$('#who').value.trim();save();whoUpd();toast('記入者を決めました');};
-function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';}
+$('#whoSave').onclick=()=>{if(!whoSet($('#who').value)){toast('名前を入れてください');$('#who').focus();}};$('#who').onkeydown=e=>{if(e.key==='Enter')$('#whoSave').click();};$('#whoEdit').onclick=()=>{whoDel=!whoDel;whoUpd();};$('#whoBadge').onclick=whoSheet;$('#whoBadge').style.cursor='pointer';
+function whoNames(){if(!Array.isArray(state.whoList))state.whoList=[];if(state.who&&!state.whoList.includes(state.who))state.whoList.push(state.who);return state.whoList;}
+function whoChips(el,onPick,del){const L=whoNames();el.innerHTML=L.length?L.map((n,i)=>`<button class="wchip${n===state.who?' on':''}${del?' del':''}" data-i="${i}">${esc(n)}${del?' ✕':''}</button>`).join(''):'<span class="note">まだ名前がありません。下に入れて「追加して選ぶ」。</span>';
+ el.querySelectorAll('.wchip').forEach(b=>b.onclick=()=>onPick(L[+b.dataset.i]));}
+function whoSet(v){v=String(v||'').trim();if(!v)return false;state.who=v;whoNames();save();whoUpd();try{syncSoon();}catch(e){}toast('記入者：'+v);return true;}
+let whoDel=false;
+function whoUpd(){$('#whoBadge').textContent=state.who?state.who:'記入者未設定';const el=document.getElementById('whoList');if(!el)return;
+ whoChips(el,n=>{if(whoDel){if(n===state.who){toast('いま選んでいる人は消せません');return;}state.whoList=whoNames().filter(x=>x!==n);save();try{syncSoon();}catch(e){}whoUpd();return;}whoSet(n);},whoDel);
+ $('#whoDl').innerHTML=whoNames().map(n=>`<option value="${esc(n)}">`).join('');$('#whoEdit').textContent=whoDel?'消すのを終わる':'名前を消す';$('#who').value='';}
+function whoSheet(){const d=document.createElement('div');d.id='confirm';d.innerHTML=`<div class="in"><p style="margin:0;font-weight:800">記入者を選ぶ</p><div class="whoChips" id="wsL"></div><div class="row"><input id="wsN" list="whoDl" placeholder="新しい名前" style="flex:1;font-size:18px;padding:8px"><button class="btn" id="wsAdd">追加して選ぶ</button></div><div class="row" style="justify-content:flex-end"><button class="btn sub" id="wsNo">閉じる</button></div></div>`;document.body.appendChild(d);
+ whoChips($('#wsL'),n=>{whoSet(n);d.remove();});$('#wsAdd').onclick=()=>{if(whoSet($('#wsN').value))d.remove();};$('#wsN').onkeydown=e=>{if(e.key==='Enter')$('#wsAdd').click();};$('#wsNo').onclick=()=>d.remove();}
 function csvToTsv(t){const out=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=ch;}else if(ch==='"')q=true;else if(ch===','){row.push(f);f='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(f);out.push(row.join('\t'));row=[];f='';}else f+=ch;}if(f||row.length){row.push(f);out.push(row.join('\t'));}return out.join('\n');}
 $('#mFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;readMasterFile(f,(t,label)=>{$('#mPaste').value=t;$('#mInfo').textContent=`${label} を読みました`;$('#mApply').click();});};
 const isPno=p=>/^[0-9A-Z][0-9A-Z\-\/._]{3,}$/.test(p)||(/[0-9A-Z]{2,}/.test(p)&&/^[^\s（）()]{4,}$/.test(p)&&!/品番|マスタ|機械/.test(p));
@@ -13245,12 +13255,12 @@ let srvOk=null,srvMsg='',srvLast=0,syncBusy=false,syncT=null,srvAuto=null;
 function srvUrl(){if(PRACTICE)return'';const u=(state.srv||'').trim();if(u)return u.replace(/\/+$/,'');return srvAuto||'';}
 const sig=r=>r.exp?'1':'0';
 function ensureIds(){state.recs.forEach((r,i)=>{if(!r.id)r.id=`${DEV}-${(r.ts||0).toString(36)}-o${i}`;});}
-function sharedDoc(){return{master:state.master,whs:whs(),alias:state.alias||{},params:state.params};}
+function sharedDoc(){return{master:state.master,whs:whs(),alias:state.alias||{},params:state.params,whoList:whoNames()};}
 function hashStr(t){let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return(h>>>0).toString(36)+t.length;}
 const sharedHash=()=>hashStr(JSON.stringify(sharedDoc()));
 function unsent(){return state.recs.filter(r=>r._sy!==sig(r)).length+(state._dels||[]).length;}
 function syncSoon(){if(!srvUrl())return;clearTimeout(syncT);syncT=setTimeout(()=>syncNow(),700);}
-function applyShared(doc){if(!doc)return;state.master=Array.isArray(doc.master)?doc.master:state.master;if(Array.isArray(doc.whs)){state.whs=doc.whs;syncLocs();}state.alias=doc.alias||{};if(doc.params)state.params=Object.assign({work:21,safe:2,lead:7},doc.params);try{lWhFill();aliasInfo();}catch(e){}}
+function applyShared(doc){if(!doc)return;state.master=Array.isArray(doc.master)?doc.master:state.master;if(Array.isArray(doc.whs)){state.whs=doc.whs;syncLocs();}state.alias=doc.alias||{};if(doc.params)state.params=Object.assign({work:21,safe:2,lead:7},doc.params);if(Array.isArray(doc.whoList)){state.whoList=[...doc.whoList];try{whoUpd();}catch(e){}}try{lWhFill();aliasInfo();}catch(e){}}
 async function syncNow(manual){const base=srvUrl();if(!base){srvOk=null;srvUi();return;}if(syncBusy){if(manual)toast('同期中です');return;}syncBusy=true;let rounds=0,got=0;
  try{ensureIds();
   while(rounds++<20){const out=state.recs.filter(r=>r._sy!==sig(r)).slice(0,1500);const dels=(state._dels||[]).slice();
