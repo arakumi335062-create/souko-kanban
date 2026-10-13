@@ -28,7 +28,7 @@ nav.tabbar button.on{color:var(--ink);font-weight:700;box-shadow:inset 0 3px 0 v
 .big2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kind{border:0;border-radius:12px;padding:12px 8px;font-size:24px;font-weight:900;color:#fff;opacity:.45}
 .kind small{display:block;font-size:13px;font-weight:600;opacity:.9}
-.btn.go{width:100%;font-size:24px;font-weight:900;padding:16px;background:var(--teal)}.btn.go:disabled{opacity:.35}
+.btn.go{width:100%;font-size:24px;font-weight:900;padding:16px;background:var(--teal)}.btn.go:disabled{opacity:.35}.btn.go.wait{opacity:.5}#ngBar{position:fixed;left:12px;right:12px;bottom:84px;z-index:90;background:#c62828;color:#fff;font-size:20px;font-weight:800;padding:14px 16px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.35)}#lHint.warn{color:#c62828;font-weight:800}#bxN.need{outline:4px solid #e53935;background:#ffebee}
 .slot3.two{grid-template-columns:1.4fr 1fr}.slot3 .v.big{font-size:26px}
 .map{display:grid;gap:6px;overflow-x:auto}.map .z,.legend .z{border:2px solid var(--line);border-radius:8px;background:var(--surface);min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--ink);padding:2px;user-select:none;-webkit-user-select:none}
 .map .aisle{min-height:14px}
@@ -104,7 +104,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
 </style></head><body>
 <div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
-<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-0814</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
+<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-1051</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
  <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
@@ -200,9 +200,9 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
  <section class="card" id="cBk" data-tabs="set"><h2>SDカード・ファイル（書き出し・取り込み）</h2>
   <b>書き出す（タブレット → SDカード）</b>
   <div class="row"><button class="btn" id="sdOut">まとめて書き出す</button><span class="note">バックアップ・Excel用の入出庫記録（まだ渡していない分）・在庫一覧を、日付つきで3つ保存します。毎日夕方に1回。</span></div>
-  <div class="row"><button class="btn sub" id="bkOut">バックアップだけ書き出す</button></div>
+  <div class="row"><button class="btn sub" id="bkOut">バックアップだけ書き出す</button><button class="btn sub" id="lyOut">🗺 レイアウトだけ書き出す</button></div><p class="note" style="margin:2px 0 8px">「レイアウトだけ」は倉庫・置き場所の並びだけのファイルです。PCで作ったレイアウトをタブレットへ渡すときに使います（記録と品番マスタはそのまま）。</p>
   <b>取り込む（SDカード → タブレット）</b>
-  <div class="row"><label class="btn" id="sdInLbl">ファイルを取り込む<input type="file" id="sdIn" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json,.txt,.tsv,.csv,application/json,text/plain,text/csv" hidden></label><span class="note">バックアップ（.json）なら全部を戻します。品番マスタ（.txt・.csv）なら品番マスタに取り込みます。種類は自動で見分けます。</span></div>
+  <div class="row"><label class="btn" id="sdInLbl">ファイルを取り込む<input type="file" id="sdIn" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json,.txt,.tsv,.csv,application/json,text/plain,text/csv" hidden></label><span class="note">バックアップ（.json）なら全部を戻します。レイアウトのファイルならレイアウトだけ入れ替えます。品番マスタ（.txt・.csv）なら品番マスタに取り込みます。種類は自動で見分けます。</span></div>
   <input type="file" id="bkIn" accept=".json,application/json" hidden>
   <details id="sdHow"><summary>SDカードを使う設定（最初に1回）</summary>
   <ol class="note" style="margin:6px 0;padding-left:20px">
@@ -213,7 +213,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="clrRec">テストデータを消す（試験運用を始める前に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
- <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-0814</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
+ <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-1051</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
 <div class="pnav"><button id="prevPg">◀ 前</button><button id="nextPg">次 ▶</button></div>
@@ -12624,7 +12624,7 @@ if(!Array.prototype.at)Array.prototype.at=function(i){i=Math.trunc(i)||0;if(i<0)
 if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(let i=this.length-1;i>=0;i--)if(f(this[i],i,this))return i;return -1;};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
-const APP_VER='2026.10.13-0814';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
+const APP_VER='2026.10.13-1051';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
 let DEV='';try{DEV=localStorage.getItem('souko-kanban-dev')||'';if(!DEV){DEV='T'+Math.random().toString(36).slice(2,7);localStorage.setItem('souko-kanban-dev',DEV);}}catch(e){DEV='T'+Math.random().toString(36).slice(2,7);}
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
 function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
@@ -12719,10 +12719,11 @@ function upd(){document.body.dataset.mode=mode;$('#modeTtl').innerHTML=esc('① 
  $('#carP').classList.toggle('on',cur.car==='パレット');$('#carC').classList.toggle('on',cur.car==='台車');
  if(document.activeElement!==$('#bxN'))$('#bxN').value=cur.boxes??'';const q=x&&x.box&&cur.boxes?x.box*cur.boxes:null;$('#lQty').textContent=q?q.toLocaleString()+'個':'－';
  const d=defBoxes(x,cur.car);$('#lHint').textContent=!cur.kid?'先にかんばんを読みます。':!x?.box?'この品番は箱入数が空です（設定 → 品番マスタ）。':d?`いつもは${cur.car}${d}箱（${(x.box*d).toLocaleString()}個）。半端なときだけ直します。`:`${cur.car}の箱数がまだ決まっていません（設定 →「箱数」）。数を入れて決定できます。`;
- $('#goLoad').disabled=$('#goLoadEnd').disabled=!(mode==='積付'&&cur.kid&&cur.boxes>0&&x?.box);
+ {const ok=mode==='積付'&&cur.kid&&cur.boxes>0&&x?.box;$('#goLoad').disabled=$('#goLoadEnd').disabled=!(mode==='積付'&&cur.kid);$('#goLoad').classList.toggle('wait',!ok);$('#goLoadEnd').classList.toggle('wait',!ok);$('#lHint').classList.toggle('warn',!!(cur.kid&&!ok));}
  $$('.fin').forEach(b=>b.classList.toggle('on',!!cur.kid&&cur.fin===b.dataset.fin));$$('.finsel').forEach(f=>f.classList.toggle('off',!cur.kid||mode==='回収'));
  drawMap();stripUpd();}
-function say(t,m){const r=$('#result');r.className='res '+t;r.textContent=m;}
+function say(t,m){const r=$('#result');r.className='res '+t;r.textContent=m;
+ if(t==='ng'){const b=r.getBoundingClientRect();if(b.bottom<60||b.top>innerHeight-40||r.offsetParent===null){let n=document.getElementById('ngBar');if(!n){n=document.createElement('div');n.id='ngBar';n.onclick=()=>n.remove();document.body.appendChild(n);}n.textContent='⚠ '+m;clearTimeout(n._t);n._t=setTimeout(()=>n.remove(),5000);}}}
 let actx=null;function beep(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=ok?1320:220;g.gain.value=.12;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+(ok?.12:.35));}catch(e){} if(navigator.vibrate)navigator.vibrate(ok?60:[80,60,80]);}
 function checkKid(k,noMax){const m=M();const mm=/^(.+)-(\d+)$/.exec(k);if(!mm)return'かんばんのQRではありません（品番-番号の形ではない）';
  const x=m[mm[1]];if(!x)return'品番マスタにない品番です：'+mm[1];const n=parseInt(mm[2],10);if(n<1)return'かんばん番号がありません';if(!noMax&&x.total&&n>x.total)return`番号が総枚数（${x.total}枚）を超えています`;return null;}
@@ -12849,14 +12850,17 @@ function runRender(){const box=$('#runList');if(!box)return;const R=runs();const
  box.innerHTML=(R.open.length?R.open.map(v=>one(v,false)).join(''):'<p class="note">いま成形中の品番はありません。かんばんを読んで「決定」すると、ここに読んだ順に並びます。</p>')+done.map(v=>one(v,true)).join('');}
 $('#runList').addEventListener('click',e=>{const b=e.target.closest('[data-end]');if(!b)return;const p=b.dataset.end;const run=runs().open.find(v=>v.p===p);if(!run)return;
  ask(`${p} の成形を終了にします（全${run.items.length}枚・${run.items.reduce((a,x)=>a+(x.qty||0),0).toLocaleString()}個）。`,()=>{const r=Object.assign(stamp(),{kind:'成形終了',kid:p,loc:'',who:state.who||'',exp:true});state.recs.push(r);if(!save()){state.recs.pop();return;}upd();refresh();say('ok',`${p} の成形を終了にしました。`);});});
-function needWho(){if(state.who)return true;beep(false);say('ng','記入者が決まっていません。設定 →「記入者」で名前を入れてください。');return false;}
+function needWho(then){if(state.who)return true;beep(false);say('ng','記入者が決まっていません。名前を入れてください。');if(document.getElementById('whoAsk'))return false;
+ const d=document.createElement('div');d.id='confirm';d.className='whoAsk';d.innerHTML=`<div class="in" id="whoAsk"><p style="margin:0;font-weight:800">記入者（このタブレットを使う人）の名前を入れてください</p><input id="waN" placeholder="例：山田" style="font-size:22px;padding:10px;width:100%;box-sizing:border-box"><div class="row" style="justify-content:flex-end"><button class="btn sub" id="waNo">やめる</button><button class="btn" id="waOk">決める</button></div></div>`;document.body.appendChild(d);
+ const ok=()=>{const v=$('#waN').value.trim();if(!v){$('#waN').focus();return;}state.who=v;save();try{$('#who').value=v;whoUpd();}catch(e){}d.remove();toast('記入者を「'+v+'」にしました');if(typeof then==='function')then();};
+ $('#waOk').onclick=ok;$('#waN').onkeydown=e=>{if(e.key==='Enter')ok();};$('#waNo').onclick=()=>d.remove();setTimeout(()=>{const i=document.getElementById('waN');if(i)i.focus();},50);return false;}
 $('#goIn').onclick=()=>{if(mode==='入庫'&&cur.kid&&cur.loc&&needWho())commit();};
 $('#quickOut').onclick=()=>{const k=cur.kid;ask(`${k} を回収します（パレットが空になった）。`,()=>{mode='回収';cur={kid:k,loc:null};commit();});};
 // 積付
 $$('.car').forEach(b=>b.onclick=()=>{if(!cur.kid){say('ng','先にかんばんのQRを読んでください。');return;}const x=M()[cur.kid.replace(/-\d+$/,'')];cur.car=b.dataset.car;cur.boxes=defBoxes(x,cur.car);upd();});
 $('#bxM').onclick=()=>{if(!cur.kid)return;cur.boxes=Math.max(1,(cur.boxes||1)-1);upd();};$('#bxP').onclick=()=>{if(!cur.kid)return;cur.boxes=(cur.boxes||0)+1;upd();};
 $('#bxN').addEventListener('input',e=>{const v=parseInt(e.target.value,10);cur.boxes=v>0?v:null;upd();});
-function goLoad(end){if(!cur.kid)return;if(!needWho())return;const x=M()[cur.kid.replace(/-\d+$/,'')];if(!(cur.boxes>0&&x?.box))return;const d=defBoxes(x,cur.car);const snap={kid:cur.kid,car:cur.car,boxes:cur.boxes,fin:finN(cur.fin)};
+function goLoad(end){if(!cur.kid)return;const x=M()[cur.kid.replace(/-\d+$/,'')];if(!(cur.boxes>0&&x?.box)){beep(false);say('ng',!x?.box?'この品番は箱入数が空なので決定できません（設定 → 品番マスタで箱入数を入れてください）。':'箱数が空です。下の欄に載せた箱数を入れるか「＋」を押してから「決定」してください。');if(x?.box){const i=$('#bxN');i.classList.add('need');setTimeout(()=>i.classList.remove('need'),1600);i.focus();}return;}if(!needWho(()=>goLoad(end)))return;const d=defBoxes(x,cur.car);const snap={kid:cur.kid,car:cur.car,boxes:cur.boxes,fin:finN(cur.fin)};
  const go=()=>{if(cur.kid!==snap.kid)return;const r=Object.assign(stamp(),{kind:'積付',kid:snap.kid,loc:'',who:state.who||'',exp:true,car:snap.car,boxes:snap.boxes,qty:x.box*snap.boxes,fin:snap.fin});if(end)r.end=true;state.recs.push(r);if(!save()){state.recs.pop();return;}beep(true);
   const k=cur.kid;cur={kid:null,loc:null,car:'パレット',boxes:null};upd();refresh();const rn=runs();const run=end?rn.done.at(-1):rn.open.find(v=>v.p===k.replace(/-\d+$/,''));const seq=run?run.items.findIndex(v=>v.kid===k)+1:1;
   say('ok',`積付しました：${k}・${r.fin}・${r.car} ${r.boxes}箱（${r.qty.toLocaleString()}個）・${seq}枚目。`+(end?`成形終了（全${run.items.length}枚・${run.items.reduce((a,v)=>a+(v.qty||0),0).toLocaleString()}個）。`:'')+'倉庫へ運んで「入庫」してください。');};
@@ -13063,6 +13067,7 @@ function loadDemo(){state.master=[
  {m:'9号機',mold:'練習C-0',p:'RENSHU-C3',n:'',box:96,daily:617,boxes:10,palQty:960,rop:5,total:12},{m:'10号機',mold:'練習D-0',p:'RENSHU-D4',n:'',box:500,daily:1752,boxes:10,palQty:5000,rop:3,total:7},{m:'11号機',mold:'練習E-0',p:'RENSHU-E5',n:'',box:56,daily:431,boxes:10,palQty:560,rop:7,total:15}];
  state.whs=[{name:'第1倉庫',layout:[['A-1','A-2','','B-1','B-2','','C-1','C-2'],['A-3','A-4','','B-3','B-4','','C-3','C-4'],['','','','','','','',''],['D-1','D-2','D-3','D-4','','E-1','E-2','E-3']]},{name:'第2倉庫',layout:[['2A-1','2A-2','2A-3'],['2B-1','2B-2','2B-3']]}];syncLocs();save();lWhFill();upd();refresh();$('#mInfo').textContent='練習用のデータを入れました';}
 $('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。'+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の品番マスタが置き換わります（練習なら「バーチャル練習」を使ってください）。':''),loadDemo);
+$('#lyOut').onclick=()=>{const W=whs();dl(JSON.stringify({kind:'倉庫かんばんレイアウト',v:1,date:today(),whs:W},null,1),`倉庫かんばん_レイアウト_${today()}.json`,'application/json');toast(`レイアウト（${W.length}倉庫・${state.locs.length}か所）を書き出しました`);};
 $('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
 $('#clrRec').onclick=()=>{const n=state.recs.length,ba=bara().length;const d=document.createElement('div');d.id='confirm';
  d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">テストデータを消す</p><p class="note" style="margin:0">消すものにチェックを入れて「消す」。消す前に、今のデータを自動でバックアップ（ファイル）に書き出します。</p>
@@ -13084,7 +13089,15 @@ $('#clrRec').onclick=()=>{const n=state.recs.length,ba=bara().length;const d=doc
   if(v('#rsWho')){state.who='';state.finDef={};done.push('記入者');}
   copied=null;cur={kid:null,loc:null,car:'パレット',boxes:null};save();d.remove();whoUpd();try{lWhFill();aliasInfo();}catch(e){}refresh();upd();
   say('ok',`消しました：${done.join('・')}。消す前のデータはバックアップ（倉庫かんばん_消す前_日付.json）に残っています。`);toast('テストデータを消しました');};};
+function lyUsed(){const u={};Object.values(kstate()).forEach(v=>{if(v.st==='入庫'&&v.loc)u[v.loc]=(u[v.loc]||0)+1;});bara().forEach(b=>{if(b.boxes>0)u[b.loc]=(u[b.loc]||0)+1;});return u;}
+function layoutImport(o){const W=o.whs;if(!Array.isArray(W)||!W.length||!W.every(w=>w&&typeof w.name==='string'&&Array.isArray(w.layout))){toast('レイアウトのファイルが壊れています');return;}
+ const nl=[];W.forEach(w=>w.layout.forEach(r=>(r||[]).forEach(c=>{if(c&&!nl.includes(c))nl.push(c);})));
+ const u=lyUsed(),gone=Object.keys(u).filter(l=>!nl.includes(l));
+ let msg=`レイアウトを取り込みます（${W.map(w=>w.name).join('・')}／置き場所${nl.length}か所）。\n今のレイアウト（${whs().length}倉庫・${state.locs.length}か所）と置き換わります。記録と品番マスタはそのままです。`;
+ if(gone.length)msg+=`\n\n⚠ 次の置き場所には今、物があるのに新しいレイアウトにありません：${gone.join('、')}\n取り込んでも記録は残りますが、地図に出なくなります。同じ名前の置き場所を作るか、移動してから取り込んでください。`;
+ ask(msg,()=>{dl(JSON.stringify({kind:'倉庫かんばんレイアウト',v:1,date:today(),whs:whs()}),`倉庫かんばん_レイアウト_取込前_${today()}.json`,'application/json');state.whs=JSON.parse(JSON.stringify(W));syncLocs();save();try{lWhFill();}catch(e){}try{drawMap();}catch(e){}try{syncSoon();}catch(e){}toast('レイアウトを取り込みました');say('ok',`レイアウトを取り込みました（${W.length}倉庫・${nl.length}か所）。`);});}
 function restoreText(t){let o;try{o=JSON.parse(t);}catch(x){toast('読めないファイルです');return;}
+ if(o&&o.kind==='倉庫かんばんレイアウト'){layoutImport(o);return;}
  if(!o||typeof o!=='object'||!Array.isArray(o.recs)||!Array.isArray(o.master)){toast('倉庫かんばんのバックアップではありません');return;}
  const last=o.recs.length?o.recs[o.recs.length-1]:null;
  ask(`バックアップ（品番${o.master.length}・記録${o.recs.length}件${last?`・最後の記録 ${last.date} ${last.time}`:''}）で今のデータを上書きします。`+(state.recs.length?`\n今のタブレットの記録（${state.recs.length}件）は、念のため先に書き出します。`:''),()=>{if(state.recs.length)dl(JSON.stringify(state),`倉庫かんばん_戻す前_${today()}.json`,'application/json');state=applyLoaded(o);state._seq=0;state._sv=null;state.recs.forEach(r=>delete r._sy);save();setTimeout(()=>location.reload(),600);});}
