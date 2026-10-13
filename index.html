@@ -101,10 +101,10 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 #confirm{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #confirm .in{background:var(--surface);border-radius:14px;padding:18px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
 .onepage-off .pnav{display:none}
-.ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
+#ttl{white-space:nowrap}@media(max-width:430px){.ver{display:none}}.ver{font-size:11px;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.35);border-radius:6px;padding:1px 6px;white-space:nowrap}
 </style></head><body>
 <div id="pracBar" hidden><span>練習中（本番の記録には入りません）</span><button id="pracEnd">練習を終わる</button></div>
-<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-1051</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
+<header><div class="hrow"><h1 id="ttl">倉庫かんばん</h1><span class="ver" id="verBadge">Ver 2026.10.13-1351</span><span id="whoBadge" class="pill p-warn"></span><button class="hbtn" id="hdrDel" aria-label="テストデータを消す" title="テストデータを消す">🗑</button><button class="hbtn lang" id="langBtn" aria-label="言語">文/A</button><button class="hbtn" id="helpBtn" aria-label="使い方">？</button></div><div class="pages" id="pageBtns"></div></header>
 <main>
  <!-- 読む -->
  <section class="card" id="cCoach" data-tabs="scan" hidden><h2 id="coachT">練習のお題</h2><div class="cbar"><i id="coachBar"></i></div><p id="coachX" class="coachx"></p><div class="row"><button class="btn sub" id="coachSkip">このお題をとばす</button><button class="btn sub" id="coachReset">最初からやり直す</button></div></section>
@@ -213,7 +213,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="row"><button class="btn sub" id="clrRec">テストデータを消す（試験運用を始める前に）</button></div>
   <p class="note">毎日夕方に「まとめて書き出す」をしておくと、タブレットが壊れてもSDカードから戻せます。</p></section>
  <section class="card" id="cPrac" data-tabs="set"><h2>バーチャル練習</h2><p class="note">本物のかんばんがなくても、画面の「仮のQR」を押して、積付 → 入庫 → 移動 → 回収 → 間違いの体験を順番に練習できます。本番の記録には入りません。</p><div class="row"><button class="btn" id="pracGo">練習を始める</button></div></section>
- <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-1051</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
+ <section class="card" id="cView" data-tabs="set"><h2>表示・読み取り</h2><p class="note" style="margin:0">アプリのバージョン：<b>Ver 2026.10.13-1351</b>（GitHubを更新したら、ここの番号が変わったか確かめてください）</p><label class="row"><input type="checkbox" id="onePage"> 1画面ずつ表示する（切ると縦に全部）</label><label class="row"><input type="checkbox" id="autoScan"> QRを自動で読み続ける（切ると「読む」ボタンを押したときだけ1回読む）</label></section>
 </main>
 <div class="strip" id="strip" hidden><span id="stripTxt"></span><span>›</span></div>
 <div class="pnav"><button id="prevPg">◀ 前</button><button id="nextPg">次 ▶</button></div>
@@ -12624,7 +12624,7 @@ if(!Array.prototype.at)Array.prototype.at=function(i){i=Math.trunc(i)||0;if(i<0)
 if(!Array.prototype.findLastIndex)Array.prototype.findLastIndex=function(f){for(let i=this.length-1;i>=0;i--)if(f(this[i],i,this))return i;return -1;};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 let PRACTICE=false;try{PRACTICE=localStorage.getItem('souko-kanban-practice-on')==='1';}catch(e){}
-const APP_VER='2026.10.13-1051';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
+const APP_VER='2026.10.13-1351';const KEY=PRACTICE?'souko-kanban-practice':'souko-kanban', TKEY='souko-kanban-tours';
 let DEV='';try{DEV=localStorage.getItem('souko-kanban-dev')||'';if(!DEV){DEV='T'+Math.random().toString(36).slice(2,7);localStorage.setItem('souko-kanban-dev',DEV);}}catch(e){DEV='T'+Math.random().toString(36).slice(2,7);}
 let state={v:1,master:[],locs:[],recs:[],who:'',onePage:true,tab:'scan'};
 function applyLoaded(o){const d={v:1,master:[],locs:[],layout:null,mode:'入庫',recs:[],who:'',onePage:true,tab:'scan',params:{work:21,safe:2,lead:7}};const r=Object.assign(d,o||{});r.params=Object.assign({work:21,safe:2,lead:7},r.params||{});return r;}
@@ -13069,6 +13069,7 @@ function loadDemo(){state.master=[
 $('#demo').onclick=()=>ask('練習用の品番5つと区画を入れます。本番の品番マスタは置き換わります。'+(srvUrl()?'\n社内サーバーにつながっているので、全部の端末の品番マスタが置き換わります（練習なら「バーチャル練習」を使ってください）。':''),loadDemo);
 $('#lyOut').onclick=()=>{const W=whs();dl(JSON.stringify({kind:'倉庫かんばんレイアウト',v:1,date:today(),whs:W},null,1),`倉庫かんばん_レイアウト_${today()}.json`,'application/json');toast(`レイアウト（${W.length}倉庫・${state.locs.length}か所）を書き出しました`);};
 $('#bkOut').onclick=()=>{state.lastBackup=Date.now();save();dl(JSON.stringify(state),`倉庫かんばん_バックアップ_${today()}.json`,'application/json');health();};
+$('#hdrDel').onclick=()=>$('#clrRec').click();
 $('#clrRec').onclick=()=>{const n=state.recs.length,ba=bara().length;const d=document.createElement('div');d.id='confirm';
  d.innerHTML=`<div class="in"><p style="margin:0;font-weight:700">テストデータを消す</p><p class="note" style="margin:0">消すものにチェックを入れて「消す」。消す前に、今のデータを自動でバックアップ（ファイル）に書き出します。</p>
  <label class="ck"><input type="checkbox" id="rsRec" checked><span>記録（積付・入庫・移動・回収・バラ箱）${n}件 → 在庫は0になります</span></label>
@@ -13145,7 +13146,7 @@ function ask(msg,yes){const d=document.createElement('div');d.id='confirm';d.inn
  d.querySelector('#cNo').onclick=()=>d.remove();d.querySelector('#cYes').onclick=()=>{d.remove();yes();};}
 function toast(m){const t=document.createElement('div');t.id='tip';t.style.left='50%';t.style.top='70px';t.style.transform='translateX(-50%)';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 /* ---------- long-press help ---------- */
-const HELP=[{a:'qa',s:'#scanGo',t:'読む',x:'押してから6秒の間に、枠に入ったQR（バーコード）を1つだけ読みます。読んだら止まるので、何度も読みません。カメラの映像を押しても同じです。連続で読みたいときは 設定 →「表示・読み取り」。'},{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'未セット品／セット品／単品',x:'そのパレットの区分を記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで区分だけ変えられます（例：未セット品→セット品）。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
+const HELP=[{a:'backup',s:'#hdrDel',t:'🗑 テストデータを消す',x:'どの画面からでも押せます。試験運用の前に、テストの記録などを消します。消す前に自動でバックアップを書き出します。「けす」と入れないと消えません。'},{a:'qa',s:'#scanGo',t:'読む',x:'押してから6秒の間に、枠に入ったQR（バーコード）を1つだけ読みます。読んだら止まるので、何度も読みません。カメラの映像を押しても同じです。連続で読みたいときは 設定 →「表示・読み取り」。'},{a:'qa',s:'#kMv',t:'移動（箱単位）',x:'倉庫のパレットから箱を取り出すとき。かんばん → 箱数 → 行き先（別の区画＝バラ箱として在庫に残る／出荷・持ち出し＝在庫から減る）→「移動する」。パレットごと動かすときは「入庫」。'},{a:'qa',s:'.fin',t:'未セット品／セット品／単品',x:'そのパレットの区分を記録します。品番ごとに前回の選び方を覚えます。倉庫にあるパレットを読んでから押すと、場所はそのままで区分だけ変えられます（例：未セット品→セット品）。'},{a:'qa',s:'#mapEdit',t:'区画を編集',x:'点線の「＋」で区画を足す、区画を押して名前変更・削除、「＋倉庫を追加」で倉庫を増やします。倉庫は左右にスライドで切り替え。'},{a:'load',s:'#kLd',t:'積付',x:'成形が終わったとき。かんばんを読み、パレットか台車を選び、載せた箱数を確かめて「決定」。続けて何枚でも積付できます。'},{a:'scan',s:'#kIn',t:'入庫',x:'倉庫に置いたとき・場所を移したとき。かんばん → 置き場所（タップかレイアウトのQR）→「入庫する」。'},
  {a:'scan',s:'#kOut',t:'回収',x:'パレットの製品がなくなったとき。押してからかんばんを読むと回収。1回ごとに入庫に戻ります。'},
  {a:'scan',s:'#goIn',t:'入庫する',x:'かんばんと置き場所がそろうと押せます。押したときに登録されます。'},
  {a:'layout',s:'#map',t:'置き場所の地図',x:'数字はその区画のパレット枚数。黄色は同じ品番がある区画、赤い点線はこのかんばんが今ある区画。'},
